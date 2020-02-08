@@ -1,0 +1,23 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: r
+bioc_packages: msa
+r:
+  - oldrel
+  - release
+  - devel
+
+matrix:
+  exclude:
+    - r: devel
+      os: osx
+
+cache: packages
+
+sudo: false
+
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'
