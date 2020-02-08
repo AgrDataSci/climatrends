@@ -25,6 +25,7 @@ Imports:
     tibble
 Suggests: 
     knitr,
+    raster,
     rmarkdown,
     testthat
 Language: en-GB

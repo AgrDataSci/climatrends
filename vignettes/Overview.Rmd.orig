@@ -1,0 +1,214 @@
+---
+title: "rclimate: Precipitation and temperature extremes for climate variability analysis"
+package: rclimate
+author:
+- name: Kauê de Sousa
+  affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway; and The Alliance of Bioversity International and CIAT, Rome, Italy
+- name: Jacob van Etten 
+  affiliation: The Alliance of Bioversity International and CIAT, Rome, Italy
+- name: Svein Ø. Solberg 
+  affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{Overview}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
+bibliography: ["rclimate.bib"]
+csl: citation_style.csl
+---
+
+```{r setup, include=FALSE}
+TRAVIS <- !identical(tolower(Sys.getenv("TRAVIS")), "true")
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  purl = TRAVIS,
+  fig.width = 10,
+  fig.height = 7,
+  fig.align = "center",
+  fig.path = "vignettes/"
+)
+```
+
+# Summary
+
+Understanding how climate extremes influences ecological processes is a valuable approach to provide recommendations for climate adaptation. **rclimate** aims to provide the toolkit to compute extreme precipitation and temperature indices that serves as input for climate models, crop modelling, trends in climate change and ecology. The climate variables available in **rclimate** were previously used to identify climate patterns in crop growing cycles[@Kehel2016], regional climate change assessment[@Aguilar2005], crowdsourcing citizen science in agriculture[@vanEtten2019] and comparison between perceptions to climate change and satellite observations[@DeSousa2018].
+
+# Source of data and input
+
+By default **rclimate** uses [NASA POWER](https://power.larc.nasa.gov/) to compute the indices via the R package [nasapower](https://CRAN.R-project.org/package=nasapower)[@Sparks2018]. By providing the target dates and the geographic information, **rclimate** makes an internal call *nasapower* to fetch the required time series data and compute the environmental indices. This process do not requires much computer capacity but requires a persistent internet connection. NASAPOWER, however has a low grid resolution (0.5°) and could not provide the expected results for ecological interactions in a narrow geographical range.
+
+Other option relies in providing the climate data locally as a `matrix` or `array` (please see details below), using the function `extract()` from the package [raster](https://CRAN.R-project.org/package=raster)[@Hijmans2015]. The environmental data can be computed using input from CHIRPS[@Funk2015] for rainfall, and MODIS[@Wan2015] for land surface temperature. These databases has the advantage to be free and publicly available sources of global coverage and a high resolution (0.05°), but may require much higher local storage capacity. MODIS data also requires some work to reduce noise and fill gaps.
+
+# Usage
+
+## Temperature 
+
+The function `temperature()` has as the basic input data an `object` of class data.frame with geographic information (lonlat) or an array with day and night temperature (when provided locally) and the a vector of class `Date` for the first day that will be taken into account for the indices. The duration from where the environmental indices will be computed is defined by the argument `span` which can be a single integer that takes into account a single time span for all tricot experiments or a vector indicating the time span for each of the observations.
+
+Here we generate some random data within the Innlandet county in Norway from May-2015:
+
+```{r temperature, message=TRUE, eval=TRUE, echo=TRUE}
+set.seed(6)
+lonlat <- data.frame(lon = runif(5, 8.3, 12),
+                     lat = runif(5, 60, 62.3))
+
+date <- as.Date("2015-05-01", format = "%Y-%m-%d")
+
+temp <- temperature(lonlat, day.one = date, span = 50)
+
+head(temp)
+
+```
+
+With the argument `timeseries = TRUE`, `temperature()` returns the indices for a time series based on `intervals`. Here we compute the indices for intervals of 7 days:
+
+```{r temperature2, message=TRUE, eval=TRUE, echo=TRUE}
+temp2 <- temperature(lonlat,
+                     day.one = date,
+                     span = 50, 
+                     timeseries = TRUE,
+                     intervals = 7)
+
+head(temp2)
+```
+
+
+### Timespan defined by growing degree days
+
+In ecological studies, if the time span is unknown we can apply the function `GDD()` which estimates the number of days needed for an organism to reach the required growing degree days. Here we compute the days to reach the growing degree days for a certain organism which requires 200 degree days with a `base = 5` from `day.one`:
+
+```{r gdd, message=TRUE, eval=TRUE, echo=TRUE}
+
+gdd <- GDD(lonlat, 
+           day.one = date,
+           degree.days = 200,
+           base = 5)
+
+head(gdd)
+
+```
+
+Then, these growing degree days can be applied as time span to compute the temperature indices across the period:
+
+```{r temperature3, message=TRUE, eval=TRUE, echo=TRUE}
+temp <- temperature(lonlat, 
+                    day.one = date, 
+                    span = gdd)
+
+head(temp)
+
+```
+
+
+## Rainfall 
+
+Precipitation indices are computed in the same way as the temperature indices using the function `rainfall()`. Here we use the NASA POWER data with a time span defined by the growing degree days.  
+
+```{r rain, message=TRUE, eval=TRUE, echo=TRUE}
+rain <- rainfall(lonlat, 
+                 day.one = date,
+                 span = gdd)
+
+head(rain)
+```
+
+The function `rainfall()` also compute indices for a timeseries:
+
+```{r rain2, message=FALSE, eval=FALSE, echo=TRUE}
+rainfall(lonlat,
+         day.one = date,
+         span = gdd,
+         timeseries = TRUE,
+         intervals = 15)
+```
+
+
+Another option in `rainfall()` is that it enables the indices to be calculated from some days before `day.one`. This is important for case studies where a residual precipitation must be taken into account. To do so, we use the argument `days.before`:
+
+```{r rain3, message=FALSE, eval=FALSE, echo=TRUE}
+rainfall(lonlat,
+         day.one = date,
+         span = gdd,
+         days.before = 15)
+```
+
+## Evapotranspiration
+
+Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth's surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **rclimate* this index can be calculate using the function `ETo()` which computes the evapotranspiration based on the Blaney-Criddle method[@Brouwer1986], an ideal equation when only air-temperature data sets are available for a site. 
+
+
+```{r eto, message=TRUE, eval=TRUE, echo=TRUE}
+eto <- ETo(lonlat, 
+           day.one = date,
+           span = gdd,
+           lat = lonlat[["lat"]])
+
+head(eto)
+
+```
+# Compute indices from local databases
+
+When using data from local sources, such as CHIRPS or MODIS. The inputted `object` must be provided in a specific format. This is how the `object` should be organised for `rainfall()`. A matrix where column names are the days as extracted from CHIRPS. Let's create some random values to simulate the input bahaviour.
+
+```{r localrain, message=FALSE, eval=FALSE, echo=TRUE}
+set.seed(999)
+rain <- matrix(runif(150, 0, 2), ncol = 15, nrow = 10)
+dimnames(rain)[[2]] <- as.character(as.Date(16005:16019, origin = "1970-01-01"))
+
+dates <- as.Date(runif(10, 16005, 16008), origin = "1970-01-01")
+
+rainfall(rain, 
+         day.one = dates,
+         span = 10)
+```
+
+The same for temperature. But in that case the inputted `object` is an array with two layers, the first for day temperature and the second for the night temperature.
+
+```{r localtemp, message=FALSE, eval=FALSE, echo=TRUE}
+set.seed(888)
+day <- runif(150, 27, 35)
+night <- runif(150, 20, 25)
+
+mod <- array(c(day, night), dim = c(10, 15, 2))
+dimnames(mod)[[2]] <- as.character(as.Date(16005:16019, origin = "1970-01-01"))
+
+dates <- as.Date(runif(10, 16005, 16008), origin = "1970-01-01")
+
+temperature(mod,
+            day.one = dates,
+            span = 10)
+```
+
+# Indices
+
+**rclimate** computes 18 temperature and precipitation indices:
+
+```{r echo=FALSE, results="asis"}
+index <- as.data.frame(matrix(c("maxDT", "maximun day temperature", "°C",
+                                "minDT", "minimum day temperature", "°C",
+                                "maxNT", "maximun night temperature", "°C",
+                                "minNT", "minimum night temperature", "°C",
+                                "DTR", "diurnal temperature range (mean difference between DT and NT)", "°C",
+                                "SU", "summer days, number of days with maximum temperature > 30 °C", "days", 
+                                "TR", "tropical nights, number of nights with maximum temperature > 25 °C", "days",
+                                "CFD", "consecutive frosty days, number of days with temperature < 0 °C", "days", 
+                                "MLDS", "maximum length of consecutive dry day, rain < 1 mm", "days",
+                                "MLWS", "maximum length of consecutive wet day, rain >= 1 mm", "days",
+                                "R10mm", "heavy precipitation days 10 >= rain < 20 mm", "days",
+                                "R20mm", "very heavy precipitation days rain >= 20", "days",
+                                "Rx1day", "maximum 1-day precipitation", "mm",
+                                "Rx5day", "maximum 5-day precipitation", "mm",
+                                "R95p", "total precipitation when rain > 95th percentile", "mm",
+                                "R99p", "total precipitation when rain > 99th percentile", "mm",
+                                "Rtotal", "total precipitation in wet days, rain >= 1 mm", "mm",
+                                "SDII", "simple daily intensity index, total precipitation divided by the number of wet days", "mm/days"),
+                              nrow = 18, ncol = 3, byrow = TRUE))
+
+names(index) <- c("Index", "Definition", "Unit")
+
+knitr::kable(index, align = "l")
+```
+
+
+## References

@@ -20,7 +20,7 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 
 ## Overview
 
-The **rclimate** package provides the toolkit to compute precipitation and temperature extremes for climate models. The indices produced here can be used as explanatory variables for crop modelling, trends in climate change and ecology.
+The **rclimate** package provides the toolkit to compute precipitation and temperature extremes for climate models. The indices produced here can be used as explanatory variables for  
 
 ## Installation
 

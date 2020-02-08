@@ -13,3 +13,4 @@
 ^dev$
 ^doc$
 ^codemeta\.json$
+^Meta$
