@@ -1,8 +1,8 @@
 # Contributing
 
-When contributing to this project, please first discuss the change you wish to make via [issue](https://github.com/kauedesousa/gosset/issues) before making a change and pull request. Please submit questions, bug reports, and requests in the issues tracker.
+When contributing to this project, please first discuss the change you wish to make via [issue](https://github.com/kauedesousa/climatrends/issues) before making a change and pull request. Please submit questions, bug reports, and requests in the issues tracker.
 
-Note that we have a [code of conduct](https://agrobioinfoservices.github.io/gosset/CODE_OF_CONDUCT.html), please follow it in all your interactions with the project.
+Note that we have a [code of conduct](https://agrobioinfoservices.github.io/climatrends/CODE_OF_CONDUCT.html), please follow it in all your interactions with the project.
 
 If you plan to contribute, please read our pull request process:
 

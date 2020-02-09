@@ -3,16 +3,11 @@
 
 <!-- badges: start -->
 
-[![CRAN
-status](https://www.r-pkg.org/badges/version/climatrends)](https://cran.r-project.org/package=climatrends)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/agrobioinfoservices/climatrends?branch=master&svg=true)](https://ci.appveyor.com/project/kauedesousa/climatrends)
-[![Build
-Status](https://travis-ci.org/agrobioinfoservices/climatrends.svg?branch=master)](https://travis-ci.org/agrobioinfoservices/climatrends)
+[![CRAN status](https://www.r-pkg.org/badges/version/climatrends)](https://cran.r-project.org/package=climatrends)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/agrobioinfoservices/climatrends?branch=master&svg=true)](https://ci.appveyor.com/project/kauedesousa/climatrends)
+[![Build Status](https://travis-ci.org/agrobioinfoservices/climatrends.svg?branch=master)](https://travis-ci.org/agrobioinfoservices/climatrends)
 [![codecov](https://codecov.io/gh/agrobioinfoservices/climatrends/master.svg)](https://codecov.io/github/agrobioinfoservices/climatrends?branch=master)
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 <!-- badges: end -->
 
