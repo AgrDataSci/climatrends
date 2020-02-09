@@ -1,4 +1,4 @@
-library(testthat)
-library(gosset)
+library("testthat")
+library("climatrends")
 
-test_check("gosset")
+test_check("climatrends")
