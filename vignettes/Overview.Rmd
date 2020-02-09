@@ -27,15 +27,15 @@ Understanding how climate extremes influences ecological processes is a key appr
 
 # Source of data
 
-By default **climatrends** uses [NASA POWER](https://power.larc.nasa.gov/) to compute the indices via the R package [nasapower](https://CRAN.R-project.org/package=nasapower)[@Sparks2018]. By providing the target dates and the geographic information, **climatrends** sends an internal call to *nasapower* to request the time series data and compute the environmental indices. This process do not requires much computer capacity but requires a persistent internet connection. NASA POWER, however has a low grid resolution (0.5 arc-degree) and could not provide the expected results for ecological interactions in a narrow geographical range.
+By default **climatrends** uses [NASA POWER](https://power.larc.nasa.gov/) to compute the indices via the R package [nasapower](https://CRAN.R-project.org/package=nasapower)[@Sparks2018]. By providing the target dates and the geographic information, **climatrends** sends an internal call to *nasapower* to request the time series data and compute the environmental indices. This process do not requires much computer capacity but requires a persistent internet connection. NASA POWER, however, has a low grid resolution (0.5 arc-degree) and could not provide the expected results for ecological interactions in a narrow geographical range.
 
-Other option relies in providing the climate data locally as a `matrix` or `array` (please see details below), using, for example, the function `extract()` from the package [raster](https://CRAN.R-project.org/package=raster)[@Hijmans2015]. The environmental data can be computed using inputted data from CHIRPS[@Funk2015] for rainfall, and MODIS[@Wan2015] for land surface temperature. These databases has the advantage to be free and publicly available sources of global coverage and a high resolution (0.05 arc-degree), but may require significant local storage capacity. MODIS data also requires some work to reduce noise and fill gaps.
+Other option relies in providing the climate data locally as a `matrix` or `array` (please see details below), using, for example, the function `extract()` from the package [raster](https://CRAN.R-project.org/package=raster)[@Hijmans2015]. The environmental data can be computed using inputted data from CHIRPS[@Funk2015] for rainfall, and MODIS[@Wan2015] for land surface temperature. These databases are free and publicly available sources of global coverage with high resolution (0.05 arc-degree), but may require significant local storage capacity. MODIS data also requires some work to reduce noise and gap filling.
 
 # Usage
 
 ## Temperature 
 
-The function `temperature()` has as the basic input data an `object` of class data.frame with geographic information (lonlat) or an array with day and night temperature (when provided locally) and the a vector of class `Date` for the first day that will be taken into account for the indices. The duration from where the environmental indices will be computed is defined by the argument `span` which can be a single integer that takes into account a single time span for all tricot experiments or a vector indicating the time span for each of the observations.
+The function `temperature()` has as the basic input data an `object` of class `data.frame` with geographic information (lonlat) or an `array` with day and night temperature (when provided locally) and a vector of class `Date` for the first day that will be taken into account for the indices. The duration from where the environmental indices will be computed is defined by the argument `span` which can be a single integer that takes into account a single timespan for all tricot experiments or a vector indicating the timespan for each point.
 
 Here we generate some random points within the Innlandet county in Norway from May-2015:
 
@@ -82,9 +82,9 @@ head(temp2)
 #> 6     1 2015-05-01 SU      0
 ```
 
-### Timespan defined by growing degree days
+## Growing degree-days
 
-In ecological studies, if the time span is unknown we can apply the function `GDD()` which estimates the number of days needed for an organism to reach the required growing degree days. Here we compute the days to reach the growing degree days for a certain organism which requires 200 degree days with a `base = 5` from `day.one`:
+Growing degree-days is a heuristic tool in phenology, it is a measure of heat accumulation used to predict plant and animal development rates. With the function `GDD()` we can compute the growing degree-days to assess the degree-days required by an certain organism during a certain season. Also, this index can be used as an estimate for the timespan to compute the temperature and precipitation indices. Here we compute the days to reach the growing degree-days for a certain organism which requires 200 degree-days with a `base = 5` from `day.one`:
 
 
 ```r
@@ -104,7 +104,7 @@ head(gdd)
 #> 5    56
 ```
 
-Then, these growing degree days can be applied as time span to compute the temperature indices across the period:
+Then, these growing degree-days can be applied as timespan to compute the temperature indices across the season:
 
 
 ```r
@@ -126,7 +126,7 @@ head(temp)
 
 ## Rainfall 
 
-Precipitation indices are computed in the same way as the temperature indices using the function `rainfall()`. Here we use the NASA POWER data with a time span defined by the growing degree days.  
+Precipitation indices are computed in the same way as the temperature indices using the function `rainfall()`. Here we use the NASA POWER data with a timespan defined by the growing degree-days.  
 
 
 ```r
@@ -145,7 +145,7 @@ head(rain)
 #> 5     6     6     3     0   17.6   41.3  42.4  17.6   187.  1.48
 ```
 
-The function `rainfall()` also compute indices for a timeseries:
+The function `rainfall()` also compute indices for a time series:
 
 
 ```r
@@ -156,7 +156,7 @@ rainfall(lonlat,
          intervals = 15)
 ```
 
-Another option in `rainfall()` is that it enables the indices to be calculated from some days before `day.one`. This is important for case studies where a residual precipitation must be taken into account. To do so, we use the argument `days.before`:
+Another feature in `rainfall()` is that it enables the indices to be calculated from some days before `day.one`. This is important for case studies where a residual precipitation must be taken into account. To do so, we use the argument `days.before`:
 
 
 ```r
@@ -191,7 +191,7 @@ head(eto)
 
 # Compute indices from local databases
 
-When using data from local sources, such as CHIRPS or MODIS. The inputted `object` must be provided in a specific format. This is how the `object` should be organised for `rainfall()`. A matrix where column names are the days as extracted from CHIRPS. Let's create some random values to simulate the input bahaviour.
+When using data from local databases, such as CHIRPS or MODIS. The inputted `object` must be provided in a specific format. This is how the `object` should be organised for `rainfall()`. A matrix where column names are the days as extracted from CHIRPS. Let's create some random values to simulate the input behaviour.
 
 
 ```r
@@ -206,7 +206,7 @@ rainfall(rain,
          span = 10)
 ```
 
-The same for `temperature()`. But in that case the inputted `object` is an array with two layers, the first for day temperature and the second for the night temperature.
+The same for `temperature()`. But in that case the inputted `object` is an array with two layers, the first for the day temperature and the second for the night temperature.
 
 
 ```r

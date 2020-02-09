@@ -107,8 +107,8 @@
 <div id="source-of-data" class="section level1">
 <h1 class="hasAnchor">
 <a href="#source-of-data" class="anchor"></a>Source of data</h1>
-<p>By default <strong>climatrends</strong> uses <a href="https://power.larc.nasa.gov/">NASA POWER</a> to compute the indices via the R package <a href="https://CRAN.R-project.org/package=nasapower">nasapower</a><span class="citation"><sup>5</sup></span>. By providing the target dates and the geographic information, <strong>climatrends</strong> sends an internal call to <em>nasapower</em> to request the time series data and compute the environmental indices. This process do not requires much computer capacity but requires a persistent internet connection. NASA POWER, however has a low grid resolution (0.5 arc-degree) and could not provide the expected results for ecological interactions in a narrow geographical range.</p>
-<p>Other option relies in providing the climate data locally as a <code>matrix</code> or <code>array</code> (please see details below), using, for example, the function <code>extract()</code> from the package <a href="https://CRAN.R-project.org/package=raster">raster</a><span class="citation"><sup>6</sup></span>. The environmental data can be computed using inputted data from CHIRPS<span class="citation"><sup>7</sup></span> for rainfall, and MODIS<span class="citation"><sup>8</sup></span> for land surface temperature. These databases has the advantage to be free and publicly available sources of global coverage and a high resolution (0.05 arc-degree), but may require significant local storage capacity. MODIS data also requires some work to reduce noise and fill gaps.</p>
+<p>By default <strong>climatrends</strong> uses <a href="https://power.larc.nasa.gov/">NASA POWER</a> to compute the indices via the R package <a href="https://CRAN.R-project.org/package=nasapower">nasapower</a><span class="citation"><sup>5</sup></span>. By providing the target dates and the geographic information, <strong>climatrends</strong> sends an internal call to <em>nasapower</em> to request the time series data and compute the environmental indices. This process do not requires much computer capacity but requires a persistent internet connection. NASA POWER, however, has a low grid resolution (0.5 arc-degree) and could not provide the expected results for ecological interactions in a narrow geographical range.</p>
+<p>Other option relies in providing the climate data locally as a <code>matrix</code> or <code>array</code> (please see details below), using, for example, the function <code>extract()</code> from the package <a href="https://CRAN.R-project.org/package=raster">raster</a><span class="citation"><sup>6</sup></span>. The environmental data can be computed using inputted data from CHIRPS<span class="citation"><sup>7</sup></span> for rainfall, and MODIS<span class="citation"><sup>8</sup></span> for land surface temperature. These databases are free and publicly available sources of global coverage with high resolution (0.05 arc-degree), but may require significant local storage capacity. MODIS data also requires some work to reduce noise and gap filling.</p>
 </div>
 <div id="usage" class="section level1">
 <h1 class="hasAnchor">
@@ -116,7 +116,7 @@
 <div id="temperature" class="section level2">
 <h2 class="hasAnchor">
 <a href="#temperature" class="anchor"></a>Temperature</h2>
-<p>The function <code><a href="../reference/temperature.html">temperature()</a></code> has as the basic input data an <code>object</code> of class data.frame with geographic information (lonlat) or an array with day and night temperature (when provided locally) and the a vector of class <code>Date</code> for the first day that will be taken into account for the indices. The duration from where the environmental indices will be computed is defined by the argument <code>span</code> which can be a single integer that takes into account a single time span for all tricot experiments or a vector indicating the time span for each of the observations.</p>
+<p>The function <code><a href="../reference/temperature.html">temperature()</a></code> has as the basic input data an <code>object</code> of class <code>data.frame</code> with geographic information (lonlat) or an <code>array</code> with day and night temperature (when provided locally) and a vector of class <code>Date</code> for the first day that will be taken into account for the indices. The duration from where the environmental indices will be computed is defined by the argument <code>span</code> which can be a single integer that takes into account a single timespan for all tricot experiments or a vector indicating the timespan for each point.</p>
 <p>Here we generate some random points within the Innlandet county in Norway from May-2015:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">6</span>)</span>
 <span id="cb1-2"><a href="#cb1-2"></a>lonlat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">lon =</span> <span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="dv">5</span>, <span class="fl">8.3</span>, <span class="dv">12</span>),</span>
@@ -152,10 +152,11 @@
 <span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt; 4     1 2015-05-01 minNT -10.8  </span></span>
 <span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; 5     1 2015-05-01 DTR     8.19 </span></span>
 <span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt; 6     1 2015-05-01 SU      0</span></span></code></pre></div>
-<div id="timespan-defined-by-growing-degree-days" class="section level3">
-<h3 class="hasAnchor">
-<a href="#timespan-defined-by-growing-degree-days" class="anchor"></a>Timespan defined by growing degree days</h3>
-<p>In ecological studies, if the time span is unknown we can apply the function <code><a href="../reference/GDD.html">GDD()</a></code> which estimates the number of days needed for an organism to reach the required growing degree days. Here we compute the days to reach the growing degree days for a certain organism which requires 200 degree days with a <code>base = 5</code> from <code>day.one</code>:</p>
+</div>
+<div id="growing-degree-days" class="section level2">
+<h2 class="hasAnchor">
+<a href="#growing-degree-days" class="anchor"></a>Growing degree-days</h2>
+<p>Growing degree-days is a heuristic tool in phenology, it is a measure of heat accumulation used to predict plant and animal development rates. With the function <code><a href="../reference/GDD.html">GDD()</a></code> we can compute the growing degree-days to assess the degree-days required by an certain organism during a certain season. Also, this index can be used as an estimate for the timespan to compute the temperature and precipitation indices. Here we compute the days to reach the growing degree-days for a certain organism which requires 200 degree-days with a <code>base = 5</code> from <code>day.one</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>gdd &lt;-<span class="st"> </span><span class="kw"><a href="../reference/GDD.html">GDD</a></span>(lonlat, </span>
 <span id="cb3-2"><a href="#cb3-2"></a>           <span class="dt">day.one =</span> date,</span>
 <span id="cb3-3"><a href="#cb3-3"></a>           <span class="dt">degree.days =</span> <span class="dv">200</span>,</span>
@@ -170,7 +171,7 @@
 <span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; 3   150</span></span>
 <span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; 4   105</span></span>
 <span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; 5    56</span></span></code></pre></div>
-<p>Then, these growing degree days can be applied as time span to compute the temperature indices across the period:</p>
+<p>Then, these growing degree-days can be applied as timespan to compute the temperature indices across the season:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>temp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/temperature.html">temperature</a></span>(lonlat, </span>
 <span id="cb4-2"><a href="#cb4-2"></a>                    <span class="dt">day.one =</span> date, </span>
 <span id="cb4-3"><a href="#cb4-3"></a>                    <span class="dt">span =</span> gdd)</span>
@@ -185,11 +186,10 @@
 <span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; 4  22.3  1.53   13.0  -6.85  8.72     0     0    12</span></span>
 <span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; 5  19.6  5.82   10.5  -2.4   8.20     0     0     1</span></span></code></pre></div>
 </div>
-</div>
 <div id="rainfall" class="section level2">
 <h2 class="hasAnchor">
 <a href="#rainfall" class="anchor"></a>Rainfall</h2>
-<p>Precipitation indices are computed in the same way as the temperature indices using the function <code><a href="../reference/rainfall.html">rainfall()</a></code>. Here we use the NASA POWER data with a time span defined by the growing degree days.</p>
+<p>Precipitation indices are computed in the same way as the temperature indices using the function <code><a href="../reference/rainfall.html">rainfall()</a></code>. Here we use the NASA POWER data with a timespan defined by the growing degree-days.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>rain &lt;-<span class="st"> </span><span class="kw"><a href="../reference/rainfall.html">rainfall</a></span>(lonlat, </span>
 <span id="cb5-2"><a href="#cb5-2"></a>                 <span class="dt">day.one =</span> date,</span>
 <span id="cb5-3"><a href="#cb5-3"></a>                 <span class="dt">span =</span> gdd)</span>
@@ -203,13 +203,13 @@
 <span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt; 3    12    14    10     3   37.0   72.0 169.   63.7   586.  6.04</span></span>
 <span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt; 4     5     6    12     1   30.6   47.0  99.3  46.8   397.  3.61</span></span>
 <span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt; 5     6     6     3     0   17.6   41.3  42.4  17.6   187.  1.48</span></span></code></pre></div>
-<p>The function <code><a href="../reference/rainfall.html">rainfall()</a></code> also compute indices for a timeseries:</p>
+<p>The function <code><a href="../reference/rainfall.html">rainfall()</a></code> also compute indices for a time series:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw"><a href="../reference/rainfall.html">rainfall</a></span>(lonlat,</span>
 <span id="cb6-2"><a href="#cb6-2"></a>         <span class="dt">day.one =</span> date,</span>
 <span id="cb6-3"><a href="#cb6-3"></a>         <span class="dt">span =</span> gdd,</span>
 <span id="cb6-4"><a href="#cb6-4"></a>         <span class="dt">timeseries =</span> <span class="ot">TRUE</span>,</span>
 <span id="cb6-5"><a href="#cb6-5"></a>         <span class="dt">intervals =</span> <span class="dv">15</span>)</span></code></pre></div>
-<p>Another option in <code><a href="../reference/rainfall.html">rainfall()</a></code> is that it enables the indices to be calculated from some days before <code>day.one</code>. This is important for case studies where a residual precipitation must be taken into account. To do so, we use the argument <code>days.before</code>:</p>
+<p>Another feature in <code><a href="../reference/rainfall.html">rainfall()</a></code> is that it enables the indices to be calculated from some days before <code>day.one</code>. This is important for case studies where a residual precipitation must be taken into account. To do so, we use the argument <code>days.before</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw"><a href="../reference/rainfall.html">rainfall</a></span>(lonlat,</span>
 <span id="cb7-2"><a href="#cb7-2"></a>         <span class="dt">day.one =</span> date,</span>
 <span id="cb7-3"><a href="#cb7-3"></a>         <span class="dt">span =</span> gdd,</span>
@@ -238,7 +238,7 @@
 <div id="compute-indices-from-local-databases" class="section level1">
 <h1 class="hasAnchor">
 <a href="#compute-indices-from-local-databases" class="anchor"></a>Compute indices from local databases</h1>
-<p>When using data from local sources, such as CHIRPS or MODIS. The inputted <code>object</code> must be provided in a specific format. This is how the <code>object</code> should be organised for <code><a href="../reference/rainfall.html">rainfall()</a></code>. A matrix where column names are the days as extracted from CHIRPS. Let’s create some random values to simulate the input bahaviour.</p>
+<p>When using data from local databases, such as CHIRPS or MODIS. The inputted <code>object</code> must be provided in a specific format. This is how the <code>object</code> should be organised for <code><a href="../reference/rainfall.html">rainfall()</a></code>. A matrix where column names are the days as extracted from CHIRPS. Let’s create some random values to simulate the input behaviour.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">999</span>)</span>
 <span id="cb9-2"><a href="#cb9-2"></a>rain &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="dv">150</span>, <span class="dv">0</span>, <span class="dv">2</span>), <span class="dt">ncol =</span> <span class="dv">15</span>, <span class="dt">nrow =</span> <span class="dv">10</span>)</span>
 <span id="cb9-3"><a href="#cb9-3"></a><span class="kw"><a href="https://rdrr.io/r/base/dimnames.html">dimnames</a></span>(rain)[[<span class="dv">2</span>]] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/as.Date.html">as.Date</a></span>(<span class="dv">16005</span><span class="op">:</span><span class="dv">16019</span>, <span class="dt">origin =</span> <span class="st">"1970-01-01"</span>))</span>
@@ -248,7 +248,7 @@
 <span id="cb9-7"><a href="#cb9-7"></a><span class="kw"><a href="../reference/rainfall.html">rainfall</a></span>(rain, </span>
 <span id="cb9-8"><a href="#cb9-8"></a>         <span class="dt">day.one =</span> dates,</span>
 <span id="cb9-9"><a href="#cb9-9"></a>         <span class="dt">span =</span> <span class="dv">10</span>)</span></code></pre></div>
-<p>The same for <code><a href="../reference/temperature.html">temperature()</a></code>. But in that case the inputted <code>object</code> is an array with two layers, the first for day temperature and the second for the night temperature.</p>
+<p>The same for <code><a href="../reference/temperature.html">temperature()</a></code>. But in that case the inputted <code>object</code> is an array with two layers, the first for the day temperature and the second for the night temperature.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">888</span>)</span>
 <span id="cb10-2"><a href="#cb10-2"></a>day &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="dv">150</span>, <span class="dv">27</span>, <span class="dv">35</span>)</span>
 <span id="cb10-3"><a href="#cb10-3"></a>night &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="dv">150</span>, <span class="dv">20</span>, <span class="dv">25</span>)</span>
@@ -418,6 +418,7 @@
 <a href="#usage">Usage</a>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#temperature">Temperature</a></li>
+      <li><a href="#growing-degree-days">Growing degree-days</a></li>
       <li><a href="#rainfall">Rainfall</a></li>
       <li><a href="#evapotranspiration">Evapotranspiration</a></li>
       </ul>
