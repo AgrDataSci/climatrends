@@ -4,11 +4,11 @@
     "http://schema.org"
   ],
   "@type": "SoftwareSourceCode",
-  "identifier": "rclimate",
-  "description": "Toolkit to compute precipitation and temperature extremes for climate models. \n    The indices produced here can be used as explanatory variables for crop modelling, \n    trends in climate change and ecology.",
-  "name": "rclimate: Precipitation and temperature extremes in R",
-  "codeRepository": "https://agrobioinfoservices.github.io/rclimate/",
-  "issueTracker": "https://github.com/agrobioinfoservices/rclimate/issues",
+  "identifier": "climatrends",
+  "description": "Toolkit for climate extreme indices for ecological modelling. The indices produced \n    here can be used as explanatory variables for crop modellinng, trends in climate change and \n    ecological interactions.",
+  "name": "climatrends: Precipitation and Temperature Extremes for Climate Variability Analysis",
+  "codeRepository": "https://agrobioinfoservices.github.io/climatrends/",
+  "issueTracker": "https://github.com/agrobioinfoservices/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
   "version": "0.0.1",
   "programmingLanguage": {
@@ -79,6 +79,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "raster",
+      "name": "raster",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=raster"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "rmarkdown",
       "name": "rmarkdown",
       "provider": {
@@ -139,9 +151,8 @@
       "sameAs": "https://CRAN.R-project.org/package=tibble"
     }
   ],
-  "releaseNotes": "https://github.com/agrobioinfoservices/rclimate/blob/master/NEWS.md",
-  "readme": "https://github.com/agrobioinfoservices/rclimate/blob/master/README.md",
-  "fileSize": "441.219KB",
+  "releaseNotes": "https://github.com/agrobioinfoservices/climatrends/blob/master/NEWS.md",
+  "readme": "https://github.com/agrobioinfoservices/climatrends/blob/master/README.md",
   "contIntegration": [
     "https://ci.appveyor.com/project/kauedesousa/gosset",
     "https://travis-ci.org/agrobioinfoservices/gosset",
