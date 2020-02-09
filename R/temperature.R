@@ -136,7 +136,7 @@ temperature <- function(object, day.one = NULL,
       
       d <- day.one[[i]]:(day.one[[i]] + (span - 1))
       
-      d <- d[1:length(bins)]
+      d <- d[seq_along(bins)]
       
       d <- d[!duplicated(bins)]
       
@@ -155,9 +155,9 @@ temperature <- function(object, day.one = NULL,
     night <- t(night)
     
     # keep data within the lenght of bins
-    day <- as.data.frame(day[1:length(bins), ])
+    day <- as.data.frame(day[seq_along(bins), ])
     
-    night <- as.data.frame(night[1:length(bins), ])
+    night <- as.data.frame(night[seq_along(bins), ])
     
     # split by bins
     day <- split(day, bins)

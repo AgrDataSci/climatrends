@@ -4,27 +4,48 @@ library("nasapower")
 load("../test_data.rda")
 
 
-e <- c(4.752054,4.897989,4.659525,3.947859,4.535946,
-       4.231035,4.535325,4.390011,4.412367,4.124223)
+e <- c(4.752, 4.898, 4.66, 3.948, 4.536,
+       4.231, 4.535, 4.39, 4.412, 4.124)
 
 
-test_that("equal", {
-  skip_on_cran()
-  ev <- suppressWarnings(
-    ETo(temp,
+test_that("give correct values", {
+  
+  ev <- ETo(temp,
         day.one = d, 
         span = 10,
         lat = rep(0, 10))
-  )
     
   
-  ev <- all.equal(e, ev[[1]])
+  ev <- round(ev[[1]], 3)
   
-  expect_equal(ev, TRUE)
+  ev <- all(e == ev)
+  
+  expect_true(ev)
+  
 })
 
-test_that("error", {
+rv <- c(2.892, 2.921, 2.907)
+
+test_that("nasapower works", {
   skip_on_cran()
+  
+  ll <- lonlat[1:3, ]
+  
+  dd <- d[1,]
+  
+  r <- ETo(object = ll,
+           day.one = dd,
+           span = 20,
+           lat = ll[,2])
+  
+  r <- round(r[[1]], 3)
+  
+  r <- all(r == rv)
+  
+  expect_true(r)
+})
+
+test_that("error, non Date object in day.one", {
   expect_error(
     ETo(temp,
         day.one = c(1:10), 
@@ -34,51 +55,21 @@ test_that("error", {
 })
 
 
-test_that("nasapower works", {
-  skip_on_cran()
-  r <- suppressWarnings(
-    ETo(object = lonlat, 
-             day.one = d,
-             span = 20,
-             lat = lonlat[,2])
-  )
-  
-  r <- !is.null(r)
-  
-  expect_equal(r, TRUE)
-})
-
-
-test_that("daytime hours", {
-  skip_on_cran()
-  r <- ETo(temp,
-           day.one = d, 
-           span = 10)
-  
-  r <- is.numeric(r[[1]])
-  
-  expect_equal(r, TRUE)
-})
-
-
 test_that("accept a tibble", {
-  skip_on_cran()
+  
   coord <- as.data.frame(lonlat)
   coord <- tibble::as_tibble(coord)
   
-  e <- ETo(temp,
+  ev <- ETo(temp,
            day.one = d,
            span = 10,
-           lat = coord[,2])
+           lat = rep(0, 10))
   
-  e <- !any(is.na(e))
+  ev <- round(ev[[1]], 3)
   
-  expect_equal(e, TRUE)
+  ev <- all(e == ev)
+  
+  expect_true(ev)
   
   
 })
-
-
-
-
-

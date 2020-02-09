@@ -117,7 +117,7 @@ rainfall <- function(object, day.one = NULL,
 
       d <- day.one[[i]]:(day.one[[i]] + (span - 1))
 
-      d <- d[1:length(bins)]
+      d <- d[seq_along(bins)]
       
       d <- d[!duplicated(bins)]
 
@@ -134,7 +134,7 @@ rainfall <- function(object, day.one = NULL,
     rr <- t(r)
     
     # keep data within the lenght of bins
-    rr <- as.data.frame(rr[1:length(bins), ])
+    rr <- as.data.frame(rr[seq_along(bins), ])
     
     # split by ids
     rr <- split(rr, bins)
@@ -181,8 +181,9 @@ rainfall <- function(object, day.one = NULL,
   # if no time series required then
   if (!timeseries) {
     
+    nr <- dim(r)[[1]]
     # split r by rows
-    r <- split(r, 1:nrow(r))
+    r <- split(r, seq_len(nr))
     
     ind <- lapply(r, function(x) {
       

@@ -70,7 +70,7 @@ GDD <- function(object, day.one = NULL, degree.days = NULL,
   # sum temperature values until reach the defined degree days
   Y <- apply(Y, 1, function(x){
     
-    for (d in 1:length(x)) {
+    for (d in seq_along(x)) {
       
       i <- d
       
