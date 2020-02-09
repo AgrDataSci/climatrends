@@ -1,4 +1,4 @@
-Package: climatrends
+Package: climax
 Type: Package
 Title: Precipitation and Temperature Extremes for Climate Variability Analysis
 Version: 0.0.1
@@ -12,7 +12,7 @@ Authors@R: c(person("Kaue", "de Sousa",
 Maintainer: Kaue de Sousa <kaue.desousa@inn.no>
 URL: https://agrobioinfoservices.github.io/rclimate/
 BugReports: https://github.com/agrobioinfoservices/rclimate/issues
-Description: An API for climate extreme indices for ecological modelling. The indices produced 
+Description: Toolkit for climate extreme indices for ecological modelling. The indices produced 
     here can be used as explanatory variables for crop modellinng, trends in climate change and 
     ecological interactions.
 License: MIT + file LICENSE

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>climatrends: Precipitation and Temperature Extremes for Climate Variability Analysis • climatrends</title>
+<title>climax: Precipitation and Temperature Extremes for Climate Variability Analysis • climax</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -16,7 +16,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="climatrends: Precipitation and Temperature Extremes for Climate Variability Analysis">
+<script src="../pkgdown.js"></script><meta property="og:title" content="climax: Precipitation and Temperature Extremes for Climate Variability Analysis">
 <meta property="og:description" content="">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
@@ -37,7 +37,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">climatrends</a>
+        <a class="navbar-link" href="../index.html">climax</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
@@ -61,7 +61,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/Overview.html">climatrends: Precipitation and Temperature Extremes for Climate Variability Analysis</a>
+      <a href="../articles/Overview.html">climax: Precipitation and Temperature Extremes for Climate Variability Analysis</a>
     </li>
   </ul>
 </li>
@@ -82,7 +82,7 @@
       </header><script src="Overview_files/header-attrs-2.1/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>climatrends: Precipitation and Temperature Extremes for Climate Variability Analysis</h1>
+      <h1>climax: Precipitation and Temperature Extremes for Climate Variability Analysis</h1>
                         <h4 class="author">Kauê de Sousa</h4>
             <address class="author_afil">
       Department of Agricultural Sciences, Inland Norway University, Hamar, Norway; and The Alliance of Bioversity International and CIAT, Rome, Italy<br><h4 class="author">Jacob van Etten</h4>
@@ -102,12 +102,12 @@
 <div id="summary" class="section level1">
 <h1 class="hasAnchor">
 <a href="#summary" class="anchor"></a>Summary</h1>
-<p>Understanding how climate extremes influences ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. <strong>climatrends</strong> aims to provide the toolkit to compute extreme precipitation and temperature indices that serves as input for climate models, crop modelling, trends in climate change and ecology. The climate variables available in <strong>climatrends</strong> were previously used to identify climate patterns in crop growing cycles<span class="citation"><sup>1</sup></span>, regional climate change assessment<span class="citation"><sup>2</sup></span>, crowdsourcing citizen science in agriculture<span class="citation"><sup>3</sup></span> and comparison between perceptions to climate change and satellite observations<span class="citation"><sup>4</sup></span>.</p>
+<p>Understanding how climate extremes influences ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. <strong>climax</strong> aims to provide the toolkit to compute extreme precipitation and temperature indices that serves as input for climate models, crop modelling, trends in climate change and ecology. The climate variables available in <strong>climax</strong> were previously used to identify climate patterns in crop growing cycles<span class="citation"><sup>1</sup></span>, regional climate change assessment<span class="citation"><sup>2</sup></span>, crowdsourcing citizen science in agriculture<span class="citation"><sup>3</sup></span> and comparison between perceptions to climate change and satellite observations<span class="citation"><sup>4</sup></span>.</p>
 </div>
 <div id="source-of-data" class="section level1">
 <h1 class="hasAnchor">
 <a href="#source-of-data" class="anchor"></a>Source of data</h1>
-<p>By default <strong>climatrends</strong> uses <a href="https://power.larc.nasa.gov/">NASA POWER</a> to compute the indices via the R package <a href="https://CRAN.R-project.org/package=nasapower">nasapower</a><span class="citation"><sup>5</sup></span>. By providing the target dates and the geographic information, <strong>climatrends</strong> sends an internal call to <em>nasapower</em> to request the time series data and compute the environmental indices. This process do not requires much computer capacity but requires a persistent internet connection. NASA POWER, however has a low grid resolution (0.5 arc-degree) and could not provide the expected results for ecological interactions in a narrow geographical range.</p>
+<p>By default <strong>climax</strong> uses <a href="https://power.larc.nasa.gov/">NASA POWER</a> to compute the indices via the R package <a href="https://CRAN.R-project.org/package=nasapower">nasapower</a><span class="citation"><sup>5</sup></span>. By providing the target dates and the geographic information, <strong>climax</strong> sends an internal call to <em>nasapower</em> to request the time series data and compute the environmental indices. This process do not requires much computer capacity but requires a persistent internet connection. NASA POWER, however has a low grid resolution (0.5 arc-degree) and could not provide the expected results for ecological interactions in a narrow geographical range.</p>
 <p>Other option relies in providing the climate data locally as a <code>matrix</code> or <code>array</code> (please see details below), using, for example, the function <code>extract()</code> from the package <a href="https://CRAN.R-project.org/package=raster">raster</a><span class="citation"><sup>6</sup></span>. The environmental data can be computed using inputted data from CHIRPS<span class="citation"><sup>7</sup></span> for rainfall, and MODIS<span class="citation"><sup>8</sup></span> for land surface temperature. These databases has the advantage to be free and publicly available sources of global coverage and a high resolution (0.05 arc-degree), but may require significant local storage capacity. MODIS data also requires some work to reduce noise and fill gaps.</p>
 </div>
 <div id="usage" class="section level1">
@@ -218,7 +218,7 @@
 <div id="evapotranspiration" class="section level2">
 <h2 class="hasAnchor">
 <a href="#evapotranspiration" class="anchor"></a>Evapotranspiration</h2>
-<p>Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth’s surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function <code><a href="../reference/ETo.html">ETo()</a></code> which computes the evapotranspiration based on the Blaney-Criddle method<span class="citation"><sup>9</sup></span>, an ideal equation when only air-temperature data sets are available for a site.</p>
+<p>Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth’s surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climax* this index can be calculate using the function <code><a href="../reference/ETo.html">ETo()</a></code> which computes the evapotranspiration based on the Blaney-Criddle method<span class="citation"><sup>9</sup></span>, an ideal equation when only air-temperature data sets are available for a site.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>eto &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ETo.html">ETo</a></span>(lonlat, </span>
 <span id="cb8-2"><a href="#cb8-2"></a>           <span class="dt">day.one =</span> date,</span>
 <span id="cb8-3"><a href="#cb8-3"></a>           <span class="dt">span =</span> gdd,</span>
@@ -265,7 +265,7 @@
 <div id="indices" class="section level1">
 <h1 class="hasAnchor">
 <a href="#indices" class="anchor"></a>Indices</h1>
-<p><strong>climatrends</strong> computes 18 temperature and precipitation indices:</p>
+<p><strong>climax</strong> computes 18 temperature and precipitation indices:</p>
 <table class="table">
 <colgroup>
 <col width="7%">

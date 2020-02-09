@@ -1,4 +1,4 @@
 library("testthat")
-library("climatrends")
+library("climax")
 
-test_check("climatrends")
+test_check("climax")
