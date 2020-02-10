@@ -2,7 +2,7 @@ Package: climatrends
 Type: Package
 Title: Precipitation and Temperature Extremes for Climate Variability Analysis
 Version: 0.0.1
-Authors@R: c(person("Kaue", "de Sousa", 
+Authors@R: c(person("Kauê", "de Sousa", 
         email = "kaue.desousa@inn.no", role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-7571-7845")),
         person("Jacob", "van Etten", role = c("aut", "ths"),
