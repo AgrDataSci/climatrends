@@ -14,7 +14,11 @@
 
 ## Overview
 
-The **climatrends** package provides the toolkit to compute precipitation and temperature indices for climate models. The indices produced here can be used as explanatory variables for crop modelling, trends in climate change and to assess the interactions of plants and animals with the environment.
+The **climatrends** package provides the toolkit to compute precipitation and temperature indices for climate models in ecology. The indices produced here can be used as explanatory variables for crop modelling, trends in climate change and to assess the interactions of plants and animals with the environment.
+
+## Package website
+
+<https://agrobioinfoservices.github.io/climatrends/>
 
 ## Installation
 
@@ -22,7 +26,7 @@ The development version can be installed via
 
 ``` r
 library("devtools")
-devtools::install_github("agrobioinfoservices/climatrends", build_vignettes = TRUE)
+install_github("agrobioinfoservices/climatrends", build_vignettes = TRUE)
 ```
 
 ## Example
