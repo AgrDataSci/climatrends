@@ -14,7 +14,7 @@
 
 ## Overview
 
-The **climatrends** package provides the toolkit to compute precipitation and temperature extremes for climate models. The indices produced here can be used as explanatory variables for crop modellinng, trends in climate change and to assess the interactions of plants and animals with the environment.
+The **climatrends** package provides the toolkit to compute precipitation and temperature extremes for climate models. The indices produced here can be used as explanatory variables for crop modelling, trends in climate change and to assess the interactions of plants and animals with the environment.
 
 ## Installation
 

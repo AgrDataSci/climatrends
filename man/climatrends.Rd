@@ -10,7 +10,7 @@
 
 Toolkit for climate extreme indices for ecological modelling. 
     The indices produced here can be used as explanatory variables for crop 
-    modellinng, trends in climate change and to assess the interactions
+    modelling, trends in climate change and to assess the interactions
     of plants and animals with the environment.
 }
 \seealso{
