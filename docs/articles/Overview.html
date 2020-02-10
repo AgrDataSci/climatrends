@@ -156,7 +156,7 @@
 <div id="growing-degree-days" class="section level2">
 <h2 class="hasAnchor">
 <a href="#growing-degree-days" class="anchor"></a>Growing degree-days</h2>
-<p>Growing degree-days is a heuristic tool in phenology, it is a measure of heat accumulation used to predict plant and animal development rates. With the function <code><a href="../reference/GDD.html">GDD()</a></code> we can compute the growing degree-days to assess the degree-days required by an certain organism during a certain season. Also, this index can be used as an estimate for the timespan to compute the temperature and precipitation indices. Here we compute the days to reach the growing degree-days for a certain organism which requires 200 degree-days with a <code>base = 5</code> from <code>day.one</code>:</p>
+<p>Growing degree-days is a heuristic tool in phenology, it is a measure of heat accumulation used to predict plant and animal development rates<span class="citation"><sup>9</sup></span>. With the function <code><a href="../reference/GDD.html">GDD()</a></code> we can compute the growing degree-days to assess the degree-days required by an certain organism during a certain season. Also, this index can be used as an estimate for the timespan to compute the temperature and precipitation indices. Here we compute the days to reach the growing degree-days for a certain organism which requires 200 degree-days with a <code>base = 5</code> from <code>day.one</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>gdd &lt;-<span class="st"> </span><span class="kw"><a href="../reference/GDD.html">GDD</a></span>(lonlat, </span>
 <span id="cb3-2"><a href="#cb3-2"></a>           <span class="dt">day.one =</span> date,</span>
 <span id="cb3-3"><a href="#cb3-3"></a>           <span class="dt">degree.days =</span> <span class="dv">200</span>,</span>
@@ -218,7 +218,7 @@
 <div id="evapotranspiration" class="section level2">
 <h2 class="hasAnchor">
 <a href="#evapotranspiration" class="anchor"></a>Evapotranspiration</h2>
-<p>Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth’s surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function <code><a href="../reference/ETo.html">ETo()</a></code> which computes the evapotranspiration based on the Blaney-Criddle method<span class="citation"><sup>9</sup></span>, an ideal equation when only air-temperature data sets are available for a site.</p>
+<p>Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth’s surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function <code><a href="../reference/ETo.html">ETo()</a></code> which computes the evapotranspiration based on the Blaney-Criddle method<span class="citation"><sup>10</sup></span>, an ideal equation when only air-temperature data sets are available for a site.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>eto &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ETo.html">ETo</a></span>(lonlat, </span>
 <span id="cb8-2"><a href="#cb8-2"></a>           <span class="dt">day.one =</span> date,</span>
 <span id="cb8-3"><a href="#cb8-3"></a>           <span class="dt">span =</span> gdd,</span>
@@ -398,8 +398,11 @@
 <div id="ref-Wan2015">
 <p>8. Wan, Z., Hook, S. &amp; Hulley, G. MYD11A1 MODIS/Aqua Land Surface Temperature/Emissivity Daily L3 Global 1km SIN Grid V006 [Data set]. <em>NASA EOSDIS LP DAAC</em> (2015). doi:<a href="https://doi.org/10.5067/MODIS/MYD11A1.006">10.5067/MODIS/MYD11A1.006</a></p>
 </div>
+<div id="ref-Prentice1992">
+<p>9. Prentice, I. C., Cramer, W., Harrison, S. P. &amp; Leemans, R. <em>et al.</em> Special Paper: A Global Biome Model Based on Plant Physiology and Dominance, Soil Properties and Climate. <em>Journal of Biogeography</em> <strong>19</strong>, 117 (1992).</p>
+</div>
 <div id="ref-Brouwer1986">
-<p>9. Brouwer, C. &amp; Heibloem, M. <em>Irrigation water management: Irrigation water needs</em>. (Food; Agriculture Organization of The United Nations, 1986).</p>
+<p>10. Brouwer, C. &amp; Heibloem, M. <em>Irrigation water management: Irrigation water needs</em>. (Food; Agriculture Organization of The United Nations, 1986).</p>
 </div>
 </div>
 </div>

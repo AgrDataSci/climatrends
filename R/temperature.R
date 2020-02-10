@@ -9,14 +9,15 @@
 #' \code{nasapower::get_power()} to fetch and concatenate environmental
 #' data from NASA POWER (\url{https://power.larc.nasa.gov/})
 #' @param day.one a vector of class \code{Date} for the starting date to 
-#' capture the environmental data
+#' capture the environmental data (YYYY-MM-DD)
 #' @param span an integer or a vector with integers for the duration 
 #' of the timespan to be captured
 #' @param timeseries logical, \code{FALSE} for a single point time series
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
 #' @param intervals integer no lower than 5, for the days intervals when
 #'  \var{timeseries} = \code{TRUE}
-#' @param ... additional arguments passed to methods
+#' @param ... additional arguments passed to 
+#'  \code{\link[nasapower]{get_power}} methods
 #' @return A dataframe with temperature indices:
 #' \item{maxDT}{maximun day temperature (degree Celsius)}
 #' \item{minDT}{minimum day temperature (degree Celsius)}

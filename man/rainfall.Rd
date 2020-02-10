@@ -21,7 +21,7 @@ When lonlat is used, the function makes a call to
 data from NASA POWER (\url{https://power.larc.nasa.gov/})}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to 
-capture the environmental data}
+capture the environmental data (YYYY-MM-DD)}
 
 \item{span}{an integer or a vector with integers for the duration 
 of the timespan to be captured}
@@ -32,7 +32,8 @@ observation or \code{TRUE} for a time series based on \var{intervals}}
 \item{intervals}{integer no lower than 5, for the days intervals when
 \var{timeseries} = \code{TRUE}}
 
-\item{...}{additional arguments passed to methods}
+\item{...}{additional arguments passed to 
+\code{\link[nasapower]{get_power}} methods}
 }
 \value{
 A dataframe with rainfall indices:

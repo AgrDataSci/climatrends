@@ -15,12 +15,13 @@ temperature. When lonlat is used, the function makes a call to
 data from NASA POWER (\url{https://power.larc.nasa.gov/})}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to 
-capture the environmental data}
+capture the environmental data (YYYY-MM-DD)}
 
 \item{span}{an integer or a vector with integers for the duration 
 of the timespan to be captured}
 
-\item{lat}{a vector for the latitude (in Decimal degrees)}
+\item{lat}{a vector for the latitude (in Decimal degrees) used to 
+compute mean daily percentage of annual daytime hours}
 
 \item{Kc}{a numeric value for the crop factor for water requirement}
 

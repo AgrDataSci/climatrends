@@ -44,10 +44,10 @@
 
 <meta property="og:title" content="Growing degree-days — GDD" />
 <meta property="og:description" content="Compute number of days required to reach Growing degree-days.
-Is a heuristic tool in phenology. Growing degree-days are a measure of
-heat accumulation used to predict plant and animal development rates.
-Growing degree-days are calculated by taking the integral of warmth above 
-a base temperature." />
+GDD is a heuristic tool in phenology that measures heat 
+accumulation and is used to predict plant and animal development 
+rates. Growing degree-days are calculated by taking the 
+integral of warmth above a base temperature." />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -134,10 +134,10 @@ a base temperature." />
 
     <div class="ref-description">
     <p>Compute number of days required to reach Growing degree-days.
-Is a heuristic tool in phenology. Growing degree-days are a measure of
-heat accumulation used to predict plant and animal development rates.
-Growing degree-days are calculated by taking the integral of warmth above 
-a base temperature.</p>
+GDD is a heuristic tool in phenology that measures heat 
+accumulation and is used to predict plant and animal development 
+rates. Growing degree-days are calculated by taking the 
+integral of warmth above a base temperature.</p>
     </div>
 
     <pre class="usage"><span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>150</span>, <span class='no'>...</span>)</pre>
@@ -157,16 +157,16 @@ data from NASA POWER (<a href='https://power.larc.nasa.gov/'>https://power.larc.
     <tr>
       <th>day.one</th>
       <td><p>a vector of class <code>Date</code> for the starting date to 
-capture the environmental data</p></td>
+capture the environmental data (YYYY-MM-DD)</p></td>
     </tr>
     <tr>
       <th>degree.days</th>
-      <td><p>an integer for the degree days required by the crop 
-(look at the physiology of the focal crop)</p></td>
+      <td><p>an integer for the degree-days required by the 
+organism (look for the physiology of the focal organism)</p></td>
     </tr>
     <tr>
       <th>base</th>
-      <td><p>an integer for the base temperature.</p></td>
+      <td><p>an integer for the base temperature</p></td>
     </tr>
     <tr>
       <th>span</th>
@@ -175,13 +175,14 @@ of the timespan to be captured</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments passed to methods</p></td>
+      <td><p>additional arguments passed to 
+<code><a href='https://docs.ropensci.org/nasapower/reference/get_power.html'>get_power</a></code> methods</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The number of days required to reach the growing degree days.</p>
+    <p>The number of days required to reach the growing degree-days.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 

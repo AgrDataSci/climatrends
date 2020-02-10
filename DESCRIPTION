@@ -12,9 +12,10 @@ Authors@R: c(person("Kaue", "de Sousa",
 Maintainer: Kaue de Sousa <kaue.desousa@inn.no>
 URL: https://agrobioinfoservices.github.io/climatrends/
 BugReports: https://github.com/agrobioinfoservices/climatrends/issues
-Description: Toolkit for climate extreme indices for ecological modelling. The indices produced 
-    here can be used as explanatory variables for crop modellinng, trends in climate change and 
-    ecological interactions.
+Description: Toolkit for climate extreme indices for ecological modelling. 
+    The indices produced here can be used as explanatory variables for crop 
+    modellinng, trends in climate change and to assess the interactions
+    of plants and animals with the environment.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

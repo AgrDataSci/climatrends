@@ -5,7 +5,7 @@
   ],
   "@type": "SoftwareSourceCode",
   "identifier": "climatrends",
-  "description": "Toolkit for climate extreme indices for ecological modelling. The indices produced \n    here can be used as explanatory variables for crop modellinng, trends in climate change and \n    ecological interactions.",
+  "description": "Toolkit for climate extreme indices for ecological modelling. \n    The indices produced here can be used as explanatory variables for crop \n    modellinng, trends in climate change and to assess the interactions\n    of plants and animals with the environment.",
   "name": "climatrends: Precipitation and Temperature Extremes for Climate Variability Analysis",
   "codeRepository": "https://agrobioinfoservices.github.io/climatrends/",
   "issueTracker": "https://github.com/agrobioinfoservices/climatrends/issues",

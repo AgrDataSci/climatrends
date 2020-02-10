@@ -84,7 +84,7 @@ head(temp2)
 
 ## Growing degree-days
 
-Growing degree-days is a heuristic tool in phenology, it is a measure of heat accumulation used to predict plant and animal development rates. With the function `GDD()` we can compute the growing degree-days to assess the degree-days required by an certain organism during a certain season. Also, this index can be used as an estimate for the timespan to compute the temperature and precipitation indices. Here we compute the days to reach the growing degree-days for a certain organism which requires 200 degree-days with a `base = 5` from `day.one`:
+Growing degree-days is a heuristic tool in phenology, it is a measure of heat accumulation used to predict plant and animal development rates[@Prentice1992]. With the function `GDD()` we can compute the growing degree-days to assess the degree-days required by an certain organism during a certain season. Also, this index can be used as an estimate for the timespan to compute the temperature and precipitation indices. Here we compute the days to reach the growing degree-days for a certain organism which requires 200 degree-days with a `base = 5` from `day.one`:
 
 
 ```r

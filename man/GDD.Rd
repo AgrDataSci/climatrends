@@ -15,27 +15,28 @@ temperature. When lonlat is used, the function makes a call to
 data from NASA POWER (\url{https://power.larc.nasa.gov/})}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to 
-capture the environmental data}
+capture the environmental data (YYYY-MM-DD)}
 
-\item{degree.days}{an integer for the degree days required by the crop 
-(look at the physiology of the focal crop)}
+\item{degree.days}{an integer for the degree-days required by the 
+organism (look for the physiology of the focal organism)}
 
-\item{base}{an integer for the base temperature.}
+\item{base}{an integer for the base temperature}
 
 \item{span}{an integer or a vector with integers for the duration 
 of the timespan to be captured}
 
-\item{...}{additional arguments passed to methods}
+\item{...}{additional arguments passed to 
+\code{\link[nasapower]{get_power}} methods}
 }
 \value{
-The number of days required to reach the growing degree days.
+The number of days required to reach the growing degree-days.
 }
 \description{
 Compute number of days required to reach Growing degree-days.
-Is a heuristic tool in phenology. Growing degree-days are a measure of
-heat accumulation used to predict plant and animal development rates.
-Growing degree-days are calculated by taking the integral of warmth above 
-a base temperature.
+GDD is a heuristic tool in phenology that measures heat 
+accumulation and is used to predict plant and animal development 
+rates. Growing degree-days are calculated by taking the 
+integral of warmth above a base temperature.
 }
 \examples{
 \donttest{

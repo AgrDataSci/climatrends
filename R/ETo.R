@@ -5,7 +5,8 @@
 #' are available locally. 
 #' 
 #' @inheritParams temperature
-#' @param lat a vector for the latitude (in Decimal degrees)
+#' @param lat a vector for the latitude (in Decimal degrees) used to 
+#'  compute mean daily percentage of annual daytime hours
 #' @param Kc a numeric value for the crop factor for water requirement
 #' @param p optional, a numeric value (from 0 to 1) used if lat is not given,
 #' representing the mean daily percentage of annual daytime hours 
