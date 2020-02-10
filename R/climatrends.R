@@ -1,4 +1,4 @@
-#' Precipitation and Temperature Extremes for Climate Variability Analysis
+#' Precipitation and Temperature Indices for Climate Variability Analysis
 #'
 #' @name climatrends
 #' @author Kauê de Sousa and Jacob van Etten and Svein Ø. Solberg

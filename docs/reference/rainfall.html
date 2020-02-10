@@ -100,7 +100,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Overview.html">climatrends: Precipitation and Temperature Extremes for Climate Variability Analysis</a>
+      <a href="../articles/Overview.html">climatrends: Precipitation and Temperature Indices for Climate Variability Analysis</a>
     </li>
   </ul>
 </li>
@@ -217,7 +217,7 @@ pp. 151–174. CRC Press.</p>
 <code><a href='temperature.html'>temperature</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># \donttest{</span>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
 
 <span class='co'># random points within bbox(11, 12, 55, 58)</span>
@@ -233,22 +233,44 @@ pp. 151–174. CRC Press.</p>
 <span class='co'># calculate rainfall for the first 50 days after day.one</span>
 <span class='fu'>rainfall</span>(<span class='no'>lonlat</span>,
          <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
-         <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>50</span>)
-
+         <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>50</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 10</span><span>
+#&gt;    MLDS  MLWS R10mm R20mm Rx1day Rx5day  R95p  R99p Rtotal  SDII
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>    15     6     1     0  11.0   26.9   27.1 11.0    61.4  5.58
+#&gt; </span><span style='color: #555555;'>2</span><span>    15     6     1     0  11.1   27     27.2 11.1    64.3  5.85
+#&gt; </span><span style='color: #555555;'>3</span><span>    12     2     0     0   4.88   9.31  12.3  4.88   25.2  4.19</div><div class='input'>
 
 <span class='co'># include the first 15 days before day.one (residual precipitation)</span>
 <span class='fu'>rainfall</span>(<span class='no'>lonlat</span>,
          <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
          <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-         <span class='kw'>days.before</span> <span class='kw'>=</span> <span class='fl'>15</span>)
-
+         <span class='kw'>days.before</span> <span class='kw'>=</span> <span class='fl'>15</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 3 x 10</span><span>
+#&gt;    MLDS  MLWS R10mm R20mm Rx1day Rx5day  R95p  R99p Rtotal  SDII
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>    24     6     1     0  11.0   26.9   33.0 11.0    64.8  5.40
+#&gt; </span><span style='color: #555555;'>2</span><span>    24     6     1     0  11.1   27     33.6 11.1    67.9  5.66
+#&gt; </span><span style='color: #555555;'>3</span><span>    15     2     0     0   4.88   9.31  16.4  4.88   36.0  3.60</div><div class='input'>
 <span class='co'># rainfall indices over a time series          </span>
 <span class='fu'>rainfall</span>(<span class='no'>lonlat</span>,
          <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
          <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>50</span>,
          <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-         <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>7</span>)
-<span class='co'># }       </span></pre>
+         <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>7</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 210 x 4</span><span>
+#&gt;       id date       index  value
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span>     1 2018-05-18 MLDS    7   
+#&gt; </span><span style='color: #555555;'> 2</span><span>     1 2018-05-18 MLWS    0   
+#&gt; </span><span style='color: #555555;'> 3</span><span>     1 2018-05-18 R10mm   0   
+#&gt; </span><span style='color: #555555;'> 4</span><span>     1 2018-05-18 R20mm   0   
+#&gt; </span><span style='color: #555555;'> 5</span><span>     1 2018-05-18 Rx1day  0.16
+#&gt; </span><span style='color: #555555;'> 6</span><span>     1 2018-05-18 Rx5day  0.17
+#&gt; </span><span style='color: #555555;'> 7</span><span>     1 2018-05-18 R95p    0.16
+#&gt; </span><span style='color: #555555;'> 8</span><span>     1 2018-05-18 R99p    0.16
+#&gt; </span><span style='color: #555555;'> 9</span><span>     1 2018-05-18 Rtotal  0.2 
+#&gt; </span><span style='color: #555555;'>10</span><span>     1 2018-05-18 SDII    0   
+#&gt; </span><span style='color: #555555;'># … with 200 more rows</span><span></div><div class='input'># }       
+         
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

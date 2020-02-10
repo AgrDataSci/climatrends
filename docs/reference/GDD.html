@@ -104,7 +104,7 @@ integral of warmth above a base temperature." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Overview.html">climatrends: Precipitation and Temperature Extremes for Climate Variability Analysis</a>
+      <a href="../articles/Overview.html">climatrends: Precipitation and Temperature Indices for Climate Variability Analysis</a>
     </li>
   </ul>
 </li>
@@ -195,7 +195,7 @@ https://doi.org/10.2307/2845499.</p>
 <code><a href='temperature.html'>temperature</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># \donttest{</span>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>123</span>)
@@ -213,8 +213,14 @@ https://doi.org/10.2307/2845499.</p>
 <span class='fu'>GDD</span>(<span class='no'>lonlat</span>,
     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
     <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>1300</span>,
-    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>)
-<span class='co'># }</span></pre>
+    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 1</span><span>
+#&gt;     GDD
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>    98
+#&gt; </span><span style='color: #555555;'>2</span><span>    98
+#&gt; </span><span style='color: #555555;'>3</span><span>    95</div><div class='input'># }
+
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

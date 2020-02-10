@@ -1,6 +1,6 @@
 Package: climatrends
 Type: Package
-Title: Precipitation and Temperature Extremes for Climate Variability Analysis
+Title: Precipitation and Temperature Indices for Climate Variability Analysis
 Version: 0.0.2
 Authors@R: c(person("Kaue", "de Sousa", 
         email = "kaue.desousa@inn.no", role = c("aut", "cre"),
@@ -11,7 +11,7 @@ Authors@R: c(person("Kaue", "de Sousa",
         comment = c(ORCID = "0000-0002-4491-4483")))
 URL: https://agrobioinfoservices.github.io/climatrends/
 BugReports: https://github.com/agrobioinfoservices/climatrends/issues
-Description: Toolkit for climate extreme indices for ecological modelling. 
+Description: Toolkit for climate variability indices for ecological modelling. 
     The indices produced here can be used as explanatory variables for crop 
     modelling, trends in climate change and to assess the interactions
     of plants and animals with the environment.
