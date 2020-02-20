@@ -12,7 +12,9 @@ an array with two dimensions containing the temperature data;
 1st dimension contains the day temperature and 2nd dimension the night
 temperature. When lonlat is used, the function makes a call to
 \code{nasapower::get_power()} to fetch and concatenate environmental
-data from NASA POWER (\url{https://power.larc.nasa.gov/})}
+data from NASA POWER (\url{https://power.larc.nasa.gov/}) for the parameters
+T2M_MAX (Maximum Temperature at 2 m) and 
+T2M_MIN (Minimum Temperature at 2 m)}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to 
 capture the environmental data (YYYY-MM-DD)}
@@ -39,7 +41,19 @@ rates. Growing degree-days are calculated by taking the
 integral of warmth above a base temperature.
 }
 \examples{
+# Using local sources
+data("modis", package = "climatrends")
+
+day <- as.Date("2013-10-28", format = "\%Y-\%m-\%d")
+
+GDD(modis, 
+    day.one = day,
+    degree.days = 100, 
+    base = 5,
+    span = 13)
+
 \donttest{
+# Using NASA POWER
 library("nasapower")
 
 set.seed(123)
@@ -63,7 +77,7 @@ GDD(lonlat,
 }
 \references{
 Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 
-https://doi.org/10.2307/2845499.
+\cr\url{https://doi.org/10.2307/2845499}
 }
 \seealso{
 Other climatology functions: 

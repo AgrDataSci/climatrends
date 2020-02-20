@@ -14,10 +14,22 @@
 #' @family climatology functions
 #' @references 
 #' Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 
-#' https://doi.org/10.2307/2845499.
+#' \cr\url{https://doi.org/10.2307/2845499}
 #' 
 #' @examples
+#' # Using local sources
+#' data("modis", package = "climatrends")
+#' 
+#' day <- as.Date("2013-10-28", format = "%Y-%m-%d")
+#' 
+#' GDD(modis, 
+#'     day.one = day,
+#'     degree.days = 100, 
+#'     base = 5,
+#'     span = 13)
+#' 
 #' \donttest{
+#' # Using NASA POWER
 #' library("nasapower")
 #' 
 #' set.seed(123)

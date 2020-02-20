@@ -81,7 +81,7 @@ integral of warmth above a base temperature." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -152,7 +152,9 @@ an array with two dimensions containing the temperature data;
 1st dimension contains the day temperature and 2nd dimension the night
 temperature. When lonlat is used, the function makes a call to
 <code><a href='https://docs.ropensci.org/nasapower/reference/get_power.html'>nasapower::get_power()</a></code> to fetch and concatenate environmental
-data from NASA POWER (<a href='https://power.larc.nasa.gov/'>https://power.larc.nasa.gov/</a>)</p></td>
+data from NASA POWER (<a href='https://power.larc.nasa.gov/'>https://power.larc.nasa.gov/</a>) for the parameters
+T2M_MAX (Maximum Temperature at 2 m) and 
+T2M_MIN (Minimum Temperature at 2 m)</p></td>
     </tr>
     <tr>
       <th>day.one</th>
@@ -186,7 +188,7 @@ of the timespan to be captured</p></td>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 
-https://doi.org/10.2307/2845499.</p>
+<br /><a href='https://doi.org/10.2307/2845499'>https://doi.org/10.2307/2845499</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other climatology functions: 
@@ -195,7 +197,30 @@ https://doi.org/10.2307/2845499.</p>
 <code><a href='temperature.html'>temperature</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+    <pre class="examples"><div class='input'><span class='co'># Using local sources</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"modis"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+
+<span class='no'>day</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='st'>"2013-10-28"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"%Y-%m-%d"</span>)
+
+<span class='fu'>GDD</span>(<span class='no'>modis</span>,
+    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>day</span>,
+    <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+    <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>13</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 10 x 1</span><span>
+#&gt;      GDD
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span>     7
+#&gt; </span><span style='color: #555555;'> 2</span><span>     6
+#&gt; </span><span style='color: #555555;'> 3</span><span>     7
+#&gt; </span><span style='color: #555555;'> 4</span><span>    11
+#&gt; </span><span style='color: #555555;'> 5</span><span>     8
+#&gt; </span><span style='color: #555555;'> 6</span><span>     9
+#&gt; </span><span style='color: #555555;'> 7</span><span>     8
+#&gt; </span><span style='color: #555555;'> 8</span><span>     8
+#&gt; </span><span style='color: #555555;'> 9</span><span>     8
+#&gt; </span><span style='color: #555555;'>10</span><span>    10</div><div class='input'>
+<span class='co'># \donttest{</span>
+<span class='co'># Using NASA POWER</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>123</span>)
@@ -213,7 +238,7 @@ https://doi.org/10.2307/2845499.</p>
 <span class='fu'>GDD</span>(<span class='no'>lonlat</span>,
     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
     <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>1300</span>,
-    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 3 x 1</span><span>
+    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 3 x 1</span><span>
 #&gt;     GDD
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>1</span><span>    98

@@ -12,7 +12,9 @@ an array with two dimensions containing the temperature data;
 1st dimension contains the day temperature and 2nd dimension the night
 temperature. When lonlat is used, the function makes a call to
 \code{nasapower::get_power()} to fetch and concatenate environmental
-data from NASA POWER (\url{https://power.larc.nasa.gov/})}
+data from NASA POWER (\url{https://power.larc.nasa.gov/}) for the parameters
+T2M_MAX (Maximum Temperature at 2 m) and 
+T2M_MIN (Minimum Temperature at 2 m)}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to 
 capture the environmental data (YYYY-MM-DD)}
@@ -20,13 +22,14 @@ capture the environmental data (YYYY-MM-DD)}
 \item{span}{an integer or a vector with integers for the duration 
 of the timespan to be captured}
 
-\item{lat}{a vector for the latitude (in Decimal degrees) used to 
-compute mean daily percentage of annual daytime hours}
+\item{lat}{a vector for the latitude (in Decimal degrees) 
+used to compute mean daily percentage of annual daytime hours based 
+on the latitude and month. See details}
 
 \item{Kc}{a numeric value for the crop factor for water requirement}
 
-\item{p}{optional, a numeric value (from 0 to 1) used if lat is not given,
-representing the mean daily percentage of annual daytime hours 
+\item{p}{optional, a numeric value (from 0 to 1) used if lat is not 
+given, representing the mean daily percentage of annual daytime hours 
 for different latitudes}
 }
 \value{
@@ -37,8 +40,25 @@ Compute evapotranspiration using the Blaney-Criddle method. A
 theoretical method used when no measured data on pan evaporation 
 are available locally.
 }
+\details{
+When \var{lat} is used, it is combined with the month provided in 
+ \var{day.one} to call for the system data \code{daylight} to find
+ the correct value for \var{p} which represents the daily percentage
+ of daytime hours in the given month and latitude.
+}
 \examples{
+# Using local sources
+data("modis", package = "climatrends")
+
+day <- as.Date("2013-10-28", format = "\%Y-\%m-\%d")
+
+ETo(modis, 
+    day.one = day,
+    span = 10,
+    Kc = 0.92)
+    
 \donttest{
+# Using remote sources 
 library("nasapower")
 
 # random geographic locations around bbox(11, 12, 55, 58)
@@ -62,7 +82,8 @@ ETo(lonlat,
 \references{
 Brouwer C. & Heibloem M. (1986). Irrigation water management: 
 Irrigation water needs. Food and Agriculture Organization of The 
-United Nations, Rome, Italy. http://www.fao.org/3/S2022E/s2022e00.htm
+United Nations, Rome, Italy. 
+\url{http://www.fao.org/3/S2022E/s2022e00.htm}
 }
 \seealso{
 Other climatology functions: 

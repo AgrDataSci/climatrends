@@ -7,11 +7,6 @@ r:
   - release
   - devel
 
-matrix:
-  exclude:
-    - r: devel
-      os: osx
-
 cache: packages
 
 sudo: false

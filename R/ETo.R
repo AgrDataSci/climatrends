@@ -5,21 +5,39 @@
 #' are available locally. 
 #' 
 #' @inheritParams temperature
-#' @param lat a vector for the latitude (in Decimal degrees) used to 
-#'  compute mean daily percentage of annual daytime hours
+#' @param lat a vector for the latitude (in Decimal degrees) 
+#'  used to compute mean daily percentage of annual daytime hours based 
+#'  on the latitude and month. See details
 #' @param Kc a numeric value for the crop factor for water requirement
-#' @param p optional, a numeric value (from 0 to 1) used if lat is not given,
-#' representing the mean daily percentage of annual daytime hours 
+#' @param p optional, a numeric value (from 0 to 1) used if lat is not 
+#' given, representing the mean daily percentage of annual daytime hours 
 #' for different latitudes
 #' @return The evapotranspiration in mm/day
+#' @details 
+#' When \var{lat} is used, it is combined with the month provided in 
+#'  \var{day.one} to call for the system data \code{daylight} to find
+#'  the correct value for \var{p} which represents the daily percentage
+#'  of daytime hours in the given month and latitude.
 #' @family climatology functions
 #' @references
 #' Brouwer C. & Heibloem M. (1986). Irrigation water management: 
 #' Irrigation water needs. Food and Agriculture Organization of The 
-#' United Nations, Rome, Italy. http://www.fao.org/3/S2022E/s2022e00.htm
+#' United Nations, Rome, Italy. 
+#' \url{http://www.fao.org/3/S2022E/s2022e00.htm}
 #' 
 #' @examples
+#' # Using local sources
+#' data("modis", package = "climatrends")
+#' 
+#' day <- as.Date("2013-10-28", format = "%Y-%m-%d")
+#' 
+#' ETo(modis, 
+#'     day.one = day,
+#'     span = 10,
+#'     Kc = 0.92)
+#'     
 #' \donttest{
+#' # Using remote sources 
 #' library("nasapower")
 #' 
 #' # random geographic locations around bbox(11, 12, 55, 58)
@@ -58,7 +76,7 @@ ETo <- function(object, day.one = NULL, span = 150,
   if (!is.null(lat)) {
     l <- .round5(lat, 5)
     m <- as.integer(format(day.one, "%m"))
-    p <- daylight[cbind(match(l , daylight[, 1]), match(m , names(daylight)))]
+    p <- daylight[cbind(match(l , daylight[, "y"]), match(m , names(daylight)))]
   } 
   
   if (is.null(p)) {

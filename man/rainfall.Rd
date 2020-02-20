@@ -18,7 +18,8 @@ rainfall(
 a matrix containing the precipitation data.
 When lonlat is used, the function makes a call to
 \code{nasapower::get_power} to fetch and concatenate environmental 
-data from NASA POWER (\url{https://power.larc.nasa.gov/})}
+data from NASA POWER (\url{https://power.larc.nasa.gov/})
+for the parameter PRECTOT (precipitation)}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to 
 capture the environmental data (YYYY-MM-DD)}
@@ -56,7 +57,17 @@ A dataframe with rainfall indices:
 Compute rainfall indices over a timespan
 }
 \examples{
+# Using local sources
+data("chirp", package = "climatrends")
+
+day <- as.Date("2013-10-28", format = "\%Y-\%m-\%d")
+
+rainfall(chirp,
+         day.one = day,
+         span = 11)
+
 \donttest{
+# Using NASA POWER
 library("nasapower")
 
 # random points within bbox(11, 12, 55, 58)
@@ -93,13 +104,6 @@ rainfall(lonlat,
 \references{
 Aguilar E., et al. (2005). Journal of Geophysical Research, 
 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
-
-Kehel Z., et al. (2016). Identifying Climate Patterns during the 
-Crop-Growing Cycle from 30 Years of CIMMYT Elite Spring Wheat 
-International Yield Trials. In: Applied Mathematics and Omics to 
-Assess Crop Genetic Resources for Climate Change Adaptive Traits 
-(eds Bari A., Damania A. B., Mackay M., Dayanandan S.), 
-pp. 151–174. CRC Press.
 
 Sparks A. H. (2018). Journal of Open Source Software, 3(30), 1035. 
 \cr\url{https://doi.org/10.21105/joss.01035}
