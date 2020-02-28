@@ -19,8 +19,6 @@ csl: citation_style.csl
 
 
 
-<img align="right" src="logo.png">
-
 # Summary
 
 Understanding how climate variability influences ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the toolkit to compute extreme precipitation and temperature indices that serves as input for climate models, crop modelling, trends in climate change and ecology. The climate variables available in **climatrends** were previously used to identify climate patterns in crop growing cycles[@Kehel2016], regional climate change assessment[@Aguilar2005], crowdsourcing citizen science in agriculture[@vanEtten2019] and comparison between perceptions to climate change and satellite observations[@DeSousa2018].

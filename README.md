@@ -3,7 +3,8 @@
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/climatrends)](https://cran.r-project.org/package=climatrends)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/agrobioinfoservices/climatrends?branch=master&svg=true)](https://ci.appveyor.com/project/kauedesousa/climatrends)
+[![cran checks](https://cranchecks.info/badges/worst/climatrends)](https://cran.r-project.org/web/checks/check_results_climatrends.html)
+[![Downloads](https://cranlogs.r-pkg.org/badges/climatrends)](https://cran.r-project.org/package=climatrends)
 [![Build Status](https://travis-ci.org/agrobioinfoservices/climatrends.svg?branch=master)](https://travis-ci.org/agrobioinfoservices/climatrends)
 [![codecov](https://codecov.io/gh/agrobioinfoservices/climatrends/master.svg)](https://codecov.io/github/agrobioinfoservices/climatrends?branch=master)
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -21,6 +22,12 @@ The **climatrends** package provides the toolkit to compute precipitation and te
 <https://agrobioinfoservices.github.io/climatrends/>
 
 ## Installation
+
+The package may be installed from CRAN via
+
+``` r
+install.packages("climatrends")
+```
 
 The development version can be installed via
 

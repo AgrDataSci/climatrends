@@ -197,7 +197,7 @@ of the timespan to be captured</p></td>
 <code><a href='temperature.html'>temperature</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Using local sources</span>
+    <pre class="examples"><span class='co'># Using local sources</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"modis"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='no'>day</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='st'>"2013-10-28"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"%Y-%m-%d"</span>)
@@ -206,19 +206,8 @@ of the timespan to be captured</p></td>
     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>day</span>,
     <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>100</span>,
     <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-    <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>13</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 10 x 1</span><span>
-#&gt;      GDD
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span>     7
-#&gt; </span><span style='color: #555555;'> 2</span><span>     6
-#&gt; </span><span style='color: #555555;'> 3</span><span>     7
-#&gt; </span><span style='color: #555555;'> 4</span><span>    11
-#&gt; </span><span style='color: #555555;'> 5</span><span>     8
-#&gt; </span><span style='color: #555555;'> 6</span><span>     9
-#&gt; </span><span style='color: #555555;'> 7</span><span>     8
-#&gt; </span><span style='color: #555555;'> 8</span><span>     8
-#&gt; </span><span style='color: #555555;'> 9</span><span>     8
-#&gt; </span><span style='color: #555555;'>10</span><span>    10</div><div class='input'>
+    <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>13</span>)
+
 <span class='co'># \donttest{</span>
 <span class='co'># Using NASA POWER</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
@@ -238,14 +227,8 @@ of the timespan to be captured</p></td>
 <span class='fu'>GDD</span>(<span class='no'>lonlat</span>,
     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
     <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>1300</span>,
-    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 3 x 1</span><span>
-#&gt;     GDD
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>    98
-#&gt; </span><span style='color: #555555;'>2</span><span>    98
-#&gt; </span><span style='color: #555555;'>3</span><span>    95</div><div class='input'># }
-
-</div></span></pre>
+    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
