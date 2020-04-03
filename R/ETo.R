@@ -58,9 +58,14 @@
 #' }
 #' 
 #' @importFrom tibble tibble
+#' @importFrom sf st_bind_cols
 #' @export
 ETo <- function(object, day.one = NULL, span = 150, 
-                lat = NULL, Kc = 1, p = NULL){
+                lat = NULL, Kc = 1, p = NULL, ...){
+  
+  dots <- list(...)
+  as.sf <- dots[["as.sf"]]
+  pars <- dots[["pars"]]
   
   # remove vector from a tibble object
   if (.is_tibble(day.one)) {
@@ -83,27 +88,38 @@ ETo <- function(object, day.one = NULL, span = 150,
     p <- 0.27
   }
   
-  # get timespan for the day temperature
-  if (dim(object)[2] == 2) {
-    day <- .get_timeseries(object, day.one, span, pars = "T2M_MAX")
-  } else {
-    day <- .get_timeseries(object[, , 1], day.one, span)
-  }
-  
-  # get timespan for the night temperature
-  if (dim(object)[2] == 2) {
-    night <- .get_timeseries(object, day.one, span, pars = "T2M_MIN")
-  } else {
-    night <- .get_timeseries(object[, , 2], day.one, span)
+  # get climate data
+  if (is.array(object)) {
+    
+    day <- get_timeseries(object[, , 1], day.one, span)
+    
+    night <- get_timeseries(object[, , 2], day.one, span)
+    
+  }else{
+    
+    if (is.null(pars)) {
+      pars <- c("T2M_MAX", "T2M_MIN")
+    }
+    
+    day <- get_timeseries(object, day.one, span, pars = pars[1])
+    
+    night <- get_timeseries(object, day.one, span, pars = pars[2])
+    
   }
   
   # calculate Tmean
-  Tmean <- (rowMeans(day, na.rm = TRUE) +  rowMeans(night, na.rm = TRUE)) / 2
+  Tmean <- (rowMeans(day, na.rm = TRUE) + rowMeans(night, na.rm = TRUE)) / 2
   
   # evapotranspiration
   eto <- p * (0.46 * Tmean + 8) * Kc
   
   result <- tibble::tibble(ETo = eto)
+  
+  is_sf <- "sf" %in% class(object)
+  
+  if (isTRUE(as.sf & is_sf)) {
+    result <- suppressWarnings(sf::st_bind_cols(object, result))
+  }
   
   return(result)
   

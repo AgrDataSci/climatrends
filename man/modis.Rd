@@ -5,7 +5,9 @@
 \alias{modis}
 \alias{chirp}
 \title{Example from input data using local sources}
-\format{an array with two layers (modis) and matrix (chirp)}
+\format{
+an array with two layers (modis) and matrix (chirp)
+}
 \source{
 Funk, C. et al. (2015). The climate hazards infrared precipitation 
 with stations—a new environmental record for monitoring extremes. 
@@ -21,16 +23,17 @@ Input example from MODIS and CHIRPS data. See details
 \details{
 modis: array with two layers 1) day temperature and 2) night temperature. 
  An excerpt of MODIS (MYD11A1) data to represent an example 
- of the input data in \code{temperature()} when a local data is provided 
- instead of using remote sources (NASA POWER).
+ of the input data in \code{temperature()} and \code{get_timeseries()} 
+ when a local data is provided instead of using remote sources.
 
-chirp: matrix with rainfall temperature from CHIRPS data set. An excerpt to 
- represent an example of the imput data in \code{rainfall()} when a local data
- is provided instead of using remote sources.
+chirp: matrix with precipitation from CHIRPS. An excerpt to represent 
+ an example of the input data in \code{rainfall()} or 
+ \code{get_timeseries()} when a local data is provided instead of 
+ using remote sources.
  
 Both sources were extracted using function \code{raster::extract()}. Rows 
  represents the coordinates for the given lonlat provided in 
  \code{raster::extract()} and cols represents the dates from the observed 
- rain/temperature.
+ precipitation/temperature.
 }
 \keyword{datasets}

@@ -7,28 +7,24 @@
 GDD(object, day.one = NULL, degree.days = NULL, base = 10, span = 150, ...)
 }
 \arguments{
-\item{object}{a numeric vector of geographic coordinates (lonlat) or
-an array with two dimensions containing the temperature data;
-1st dimension contains the day temperature and 2nd dimension the night
-temperature. When lonlat is used, the function makes a call to
-\code{nasapower::get_power()} to fetch and concatenate environmental
-data from NASA POWER (\url{https://power.larc.nasa.gov/}) for the parameters
-T2M_MAX (Maximum Temperature at 2 m) and 
-T2M_MIN (Minimum Temperature at 2 m)}
+\item{object}{a data.frame (or object that can be coerced to data.frame) 
+with geographical coordinates (lonlat), or an object of class \code{sf} 
+with geographical coordinates (lonlat), or an array with two dimensions 
+containing the temperature data; 1st dimension contains the day temperature 
+and 2nd dimension the night temperature.}
 
-\item{day.one}{a vector of class \code{Date} for the starting date to 
-capture the environmental data (YYYY-MM-DD)}
+\item{day.one}{a vector of class \code{Date} for the starting date to capture 
+the climate data}
 
 \item{degree.days}{an integer for the degree-days required by the 
 organism (look for the physiology of the focal organism)}
 
 \item{base}{an integer for the base temperature}
 
-\item{span}{an integer or a vector with integers for the duration 
-of the timespan to be captured}
+\item{span}{an integer or a vector with integers for the duration of the 
+time series to be captured}
 
-\item{...}{additional arguments passed to 
-\code{\link[nasapower]{get_power}} methods}
+\item{...}{additional arguments passed to methods. See details.}
 }
 \value{
 The number of days required to reach the growing degree-days.

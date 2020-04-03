@@ -21,11 +21,11 @@ When lonlat is used, the function makes a call to
 data from NASA POWER (\url{https://power.larc.nasa.gov/})
 for the parameter PRECTOT (precipitation)}
 
-\item{day.one}{a vector of class \code{Date} for the starting date to 
-capture the environmental data (YYYY-MM-DD)}
+\item{day.one}{a vector of class \code{Date} for the starting date to capture 
+the climate data}
 
-\item{span}{an integer or a vector with integers for the duration 
-of the timespan to be captured}
+\item{span}{an integer or a vector with integers for the duration of the 
+time series to be captured}
 
 \item{timeseries}{logical, \code{FALSE} for a single point time series
 observation or \code{TRUE} for a time series based on \var{intervals}}
@@ -33,8 +33,7 @@ observation or \code{TRUE} for a time series based on \var{intervals}}
 \item{intervals}{integer no lower than 5, for the days intervals when
 \var{timeseries} = \code{TRUE}}
 
-\item{...}{additional arguments passed to 
-\code{\link[nasapower]{get_power}} methods}
+\item{...}{additional arguments passed to methods. See details.}
 }
 \value{
 A dataframe with rainfall indices:

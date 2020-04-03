@@ -91,9 +91,9 @@ rainfall <- function(object, day.one = NULL,
   
   # get timespan
   if (dim(object)[2] == 2) {
-    r <- .get_timeseries(object, day.one, span, pars = "PRECTOT", ...)
+    r <- get_timeseries(object, day.one, span, pars = "PRECTOT", ...)
   } else {
-    r <- .get_timeseries(object, day.one, span, ...)
+    r <- get_timeseries(object, day.one, span, ...)
   }
   
   n <- nrow(r)

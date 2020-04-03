@@ -2,24 +2,25 @@
 #'
 #' Compute temperature indices over a timespan 
 #'
-#' @param object a numeric vector of geographic coordinates (lonlat) or
-#' an array with two dimensions containing the temperature data;
-#' 1st dimension contains the day temperature and 2nd dimension the night
-#' temperature. When lonlat is used, the function makes a call to
-#' \code{nasapower::get_power()} to fetch and concatenate environmental
-#' data from NASA POWER (\url{https://power.larc.nasa.gov/}) for the parameters
-#' T2M_MAX (Maximum Temperature at 2 m) and 
-#' T2M_MIN (Minimum Temperature at 2 m)
-#' @param day.one a vector of class \code{Date} for the starting date to 
-#' capture the environmental data (YYYY-MM-DD)
-#' @param span an integer or a vector with integers for the duration 
-#' of the timespan to be captured
+#' @param object a data.frame (or object that can be coerced to data.frame) 
+#'  with geographical coordinates (lonlat), or an object of class \code{sf} 
+#'  with geographical coordinates (lonlat), or an array with two dimensions 
+#'  containing the temperature data; 1st dimension contains the day temperature 
+#'  and 2nd dimension the night temperature. 
+#' @inheritParams get_timeseries
 #' @param timeseries logical, \code{FALSE} for a single point time series
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
 #' @param intervals integer no lower than 5, for the days intervals when
 #'  \var{timeseries} = \code{TRUE}
-#' @param ... additional arguments passed to 
-#'  \code{\link[nasapower]{get_power}} methods
+#' @param ... additional arguments passed to methods. See details.
+#' @details 
+#' 
+#' When lonlat is used, the function makes a call to
+#' \code{nasapower::get_power()} to fetch and concatenate environmental
+#' data from NASA POWER (\url{https://power.larc.nasa.gov/}) for the parameters
+#' T2M_MAX (Maximum Temperature at 2 m) and 
+#' T2M_MIN (Minimum Temperature at 2 m)
+#' 
 #' @return A dataframe with temperature indices:
 #' \item{maxDT}{maximun day temperature (degree Celsius)}
 #' \item{minDT}{minimum day temperature (degree Celsius)}
@@ -93,26 +94,26 @@ temperature <- function(object, day.one = NULL,
   
   # get timespan for the day temperature
   if (dim(object)[2] == 2) {
-    day <- .get_timeseries(object = object, 
+    day <- get_timeseries(object = object, 
                            day.one = day.one, 
                            span = span, 
                            pars = "T2M_MAX",
                            ...)
   } else {
-    day <- .get_timeseries(object = object[ , ,1], 
+    day <- get_timeseries(object = object[ , ,1], 
                            day.one = day.one, 
                            span = span)
   }
   
   # get timespan for the night temperature
   if (dim(object)[2] == 2) {
-    night <- .get_timeseries(object = object, 
+    night <- get_timeseries(object = object, 
                              day.one = day.one, 
                              span = span, 
                              pars = "T2M_MIN",
                              ...)
   } else {
-    night <- .get_timeseries(object = object[ , ,2], 
+    night <- get_timeseries(object = object[ , ,2], 
                              day.one = day.one, 
                              span = span)
   }
