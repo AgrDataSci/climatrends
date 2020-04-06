@@ -8,10 +8,9 @@ GDD(object, day.one = NULL, degree.days = NULL, base = 10, span = 150, ...)
 }
 \arguments{
 \item{object}{a data.frame (or object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf} 
-with geographical coordinates (lonlat), or an array with two dimensions 
-containing the temperature data; 1st dimension contains the day temperature 
-and 2nd dimension the night temperature.}
+with geographical coordinates (lonlat), or an object of class \code{sf}
+with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
+containing the temperature data, see details.}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to capture 
 the climate data}
@@ -77,8 +76,6 @@ Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117.
 }
 \seealso{
 Other climatology functions: 
-\code{\link{ETo}()},
-\code{\link{rainfall}()},
-\code{\link{temperature}()}
+\code{\link{rainfall}()}
 }
 \concept{climatology functions}

@@ -1,24 +1,43 @@
 #' Evapotranspiration
 #' 
-#' Compute evapotranspiration using the Blaney-Criddle method. A 
+#' Evapotranspiration using the Blaney-Criddle method. This is  
 #' theoretical method used when no measured data on pan evaporation 
-#' are available locally. 
+#' is available locally. 
 #' 
 #' @inheritParams temperature
-#' @param lat a vector for the latitude (in Decimal degrees) 
-#'  used to compute mean daily percentage of annual daytime hours based 
-#'  on the latitude and month. See details
+#' @param lat a vector for the latitude (in Decimal degrees), used to compute 
+#'  mean daily percentage of annual daytime hours based on the latitude and month.
+#'  This is extracted automatically in the \code{sf} method. See details
 #' @param Kc a numeric value for the crop factor for water requirement
-#' @param p optional, a numeric value (from 0 to 1) used if lat is not 
-#' given, representing the mean daily percentage of annual daytime hours 
-#' for different latitudes
 #' @return The evapotranspiration in mm/day
 #' @details 
-#' When \var{lat} is used, it is combined with the month provided in 
+#' When \var{lat} is provided, it is combined with the month provided in 
 #'  \var{day.one} to call for the system data \code{daylight} to find
 #'  the correct value for \var{p} which represents the daily percentage
-#'  of daytime hours in the given month and latitude.
-#' @family climatology functions
+#'  of daytime hours in the given month and latitude. Otherwise \var{p} is set 
+#'  to 0.27 as default.
+#'  
+#' The \code{array} method assumes that \var{object} contains climate data provided 
+#'  from a local source; this requires a array with two dimensions, 1st dimension 
+#'  contains the day temperature and 2nd dimension the night temperature, 
+#'  see help("modis", "climatrends") for an example on input structure.
+#' 
+#' The \code{default} method and the \code{sf} method assumes that the climate data 
+#'  will be fetched from an remote (cloud) \var{source}.
+#' 
+#' Additional arguments:
+#' 
+#' \code{source}: character for the source of climate data. Current remote \var{source} 
+#'  is: 'nasapower'
+#' 
+#' \code{pars}: character vector for the temperature data to be fetched. If 
+#'  \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+#'  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
+#' 
+#' \code{days.before}: optional, an integer for the number of days before 
+#'  \var{day.one} to be included in the timespan.
+#' 
+#' @family temperature functions
 #' @references
 #' Brouwer C. & Heibloem M. (1986). Irrigation water management: 
 #' Irrigation water needs. Food and Agriculture Organization of The 
@@ -38,8 +57,6 @@
 #'     
 #' \donttest{
 #' # Using remote sources 
-#' library("nasapower")
-#' 
 #' # random geographic locations around bbox(11, 12, 55, 58)
 #' set.seed(123)
 #' lonlat <- data.frame(lon = runif(2, 11, 12),
@@ -54,58 +71,130 @@
 #' ETo(lonlat,
 #'     day.one = dates,
 #'     span = 50,
-#'     lat = lonlat[["lat"]])
+#'     lat = lonlat["lat"])
 #' }
 #' 
 #' @importFrom tibble tibble
 #' @importFrom sf st_bind_cols
 #' @export
-ETo <- function(object, day.one = NULL, span = 150, 
-                lat = NULL, Kc = 1, p = NULL, ...){
+ETo <- function(object, day.one, span, ...){
+  
+  UseMethod("ETo")
+
+}
+
+#' @rdname ETo
+#' @method ETo default
+#' @export
+ETo.default <- function(object, day.one, span, lat = NULL, Kc = 1, ...){
   
   dots <- list(...)
-  as.sf <- dots[["as.sf"]]
   pars <- dots[["pars"]]
   
-  # remove vector from a tibble object
-  if (.is_tibble(day.one)) {
-    day.one <- day.one[[1]]
+  # coerce inputs to data.frame
+  object <- as.data.frame(object)
+  if(dim(object)[[2]] != 2) {
+    stop("Subscript out of bounds. Only lonlat should be provided ",
+         "in the default method \n.")
   }
   
-  # remove vector from a tibble object
-  if (.is_tibble(lat)) {
-    lat <- lat[[1]]
-  }
+  day.one <- as.data.frame(day.one)[, 1]
   
   # get p if lat is provided
   if (!is.null(lat)) {
-    l <- .round5(lat, 5)
     m <- as.integer(format(day.one, "%m"))
-    p <- daylight[cbind(match(l , daylight[, "y"]), match(m , names(daylight)))]
+    p <- .p_daytime(lat = lat, month = m)
   } 
   
-  if (is.null(p)) {
+  if (is.null(lat)) {
     p <- 0.27
   }
   
-  # get climate data
-  if (is.array(object)) {
-    
-    day <- get_timeseries(object[, , 1], day.one, span)
-    
-    night <- get_timeseries(object[, , 2], day.one, span)
-    
-  }else{
-    
-    if (is.null(pars)) {
-      pars <- c("T2M_MAX", "T2M_MIN")
-    }
-    
-    day <- get_timeseries(object, day.one, span, pars = pars[1])
-    
-    night <- get_timeseries(object, day.one, span, pars = pars[2])
-    
+  if (is.null(pars)) {
+    pars <- c("T2M_MAX", "T2M_MIN")
   }
+  
+  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  
+  day <- dat[[pars[[1]]]]
+  
+  night <- dat[[pars[[2]]]]
+  
+  result <- .eto(day, night, Kc, p)
+  
+  return(result)
+}
+
+
+#' @rdname ETo
+#' @method ETo array
+#' @export
+ETo.array <- function(object, day.one, span, lat = NULL, Kc = 1){
+  
+  # coerce to data.frame
+  day.one <- as.data.frame(day.one)[, 1]
+
+  # get p if lat is provided
+  if (!is.null(lat)) {
+    m <- as.integer(format(day.one, "%m"))
+    p <- .p_daytime(lat = lat, month = m)
+  } 
+  
+  if (is.null(lat)) {
+    p <- 0.27
+  }
+  
+  day <- get_timeseries(object[, , 1], day.one, span)[[1]]
+  
+  night <- get_timeseries(object[, , 2], day.one, span)[[1]]
+  
+  result <- .eto(day, night, Kc, p)
+  
+  return(result)
+  
+}
+
+
+#' @rdname ETo
+#' @method ETo sf
+#' @export
+ETo.sf <- function(object, day.one, span, Kc = 1, as.sf = TRUE, ...){
+  
+  dots <- list(...)
+  pars <- dots[["pars"]]
+  
+  # get lat
+  lat <- .lonlat_from_sf(object)
+  lat <- lat[, 2]
+  
+  day.one <- as.data.frame(day.one)[, 1]
+  
+  # get p
+  m <- as.integer(format(day.one, "%m"))
+  p <- .p_daytime(lat = lat, month = m)
+  
+  if (is.null(pars)) {
+    pars <- c("T2M_MAX", "T2M_MIN")
+  }
+  
+  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  
+  day <- dat[[pars[[1]]]]
+  
+  night <- dat[[pars[[2]]]]
+  
+  result <- .eto(day, night, Kc, p)
+  
+  if (isTRUE(as.sf)) {
+    result <- suppressWarnings(sf::st_bind_cols(object, result))
+  }
+  
+  return(result)
+  
+}
+
+# Compute evapotranspiration
+.eto <- function(day, night, Kc, p) {
   
   # calculate Tmean
   Tmean <- (rowMeans(day, na.rm = TRUE) + rowMeans(night, na.rm = TRUE)) / 2
@@ -114,15 +203,20 @@ ETo <- function(object, day.one = NULL, span = 150,
   eto <- p * (0.46 * Tmean + 8) * Kc
   
   result <- tibble::tibble(ETo = eto)
-  
-  is_sf <- "sf" %in% class(object)
-  
-  if (isTRUE(as.sf & is_sf)) {
-    result <- suppressWarnings(sf::st_bind_cols(object, result))
-  }
-  
-  return(result)
-  
+
 }
 
 
+# Compute daylight percentage of daytime
+# get p if lat is provided
+.p_daytime <- function(lat, month){
+  lat <- as.data.frame(lat)[, 1]
+  
+  l <- .round5(lat, 5)
+  
+  p <- daylight[cbind(match(l , daylight[, "y"]), match(month, names(daylight)))]
+  
+  return(p)
+
+}
+ 

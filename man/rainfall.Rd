@@ -30,7 +30,7 @@ time series to be captured}
 \item{timeseries}{logical, \code{FALSE} for a single point time series
 observation or \code{TRUE} for a time series based on \var{intervals}}
 
-\item{intervals}{integer no lower than 5, for the days intervals when
+\item{intervals}{integer (no lower than 5), for the days intervals when
 \var{timeseries} = \code{TRUE}}
 
 \item{...}{additional arguments passed to methods. See details.}
@@ -109,8 +109,6 @@ Sparks A. H. (2018). Journal of Open Source Software, 3(30), 1035.
 }
 \seealso{
 Other climatology functions: 
-\code{\link{ETo}()},
-\code{\link{GDD}()},
-\code{\link{temperature}()}
+\code{\link{GDD}()}
 }
 \concept{climatology functions}

@@ -1,34 +1,34 @@
 #' Time series climate data
 #' 
-#' Concatenate time series climate data
+#' General functions and methods to concatenate climate data across a time series.
 #' 
-#' @param object a data.frame (or object that can be coerced to data.frame) with
-#'  geographical coordinates (lonlat), or an object of class \code{sf} with 
-#'  geographical coordinates (lonlat), or a named \code{matrix} with climate 
-#'  data. See details.   
+#' @param object a \code{data.frame} (or object that can be coerced to data.frame) 
+#'  with geographical coordinates (lonlat), or an object of class \code{sf} with 
+#'  geometry 'POINT' or 'POLYGON', or a named \code{matrix} with climate data.
+#'  See details.   
 #' @param day.one a vector of class \code{Date} for the starting date to capture 
 #'  the climate data
 #' @param span an integer or a vector with integers for the duration of the 
 #'  time series to be captured
-#' @param as.sf logical, returns an object of class \code{[sf]{sf}}
 #' @param source character, for the source of climate data. See details.
 #' @param ... additional arguments passed to methods. See details.
 #' @details 
-#' The default method and the sf method assumes that the climate data will be retrieved 
-#'  from an external \code{source}.
+#' The \code{default} method and the \code{sf} method assumes that the climate 
+#'  data will be fetched from an remote (cloud) \var{source}.
 #'
-#' The matrix method assumes that the climate data was previously handled and will be 
-#'  inputted in the format of a named matrix. See help(modis) for examples.
+#' The \code{matrix} method assumes that the climate data was previously handled 
+#'  and will be inputted in the format of a named matrix. 
+#'  See help("modis", "climatrends") for examples.
 #' 
-#' Current remote \code{source} is: 'nasapower'
+#' Available remote \var{source}s are: "nasapower"
 #' 
 #' Additional arguments:
 #' 
 #' \code{pars}: character vector of solar, meteorological or climatology parameters 
-#' to download. See help("parameters", "nasapower").
+#' to download. See help("parameters", "nasapower") when \var{source} = "nasapower".
 #' 
-#' \code{days.before}: optional, an integer for the number of days before 
-#'  \code{day.one} to be included in the timespan.
+#' \code{days.before}: an integer for the number of days before \var{day.one} to be 
+#'  included in the timespan.
 #' 
 #' @return An object with time series climate data for the chosen period
 #' @family GET functions
@@ -53,21 +53,15 @@
 #' 
 #' do <- as.Date(17667, origin = "1970-01-01")
 #' 
-#' g <- get_timeseries(lonlat, day.one = do, span = 10, pars = "PRECTOT")
-#' 
-#' g
-#' 
-#' g <- get_timeseries(lonlat, day.one = do, span = c(10, 13), 
-#'                     pars = "T10M", as.sf = TRUE)
+#' g <- get_timeseries(lonlat, day.one = do, span = 10, pars = c("PRECTOT", "T2M", "T10M"))
 #' 
 #' g
 #' }
 #' @importFrom methods addNextMethod asMethodDefinition assignClassDef
 #' @importFrom nasapower get_power
 #' @importFrom sf st_centroid st_geometry_type st_as_sf
-#' @importFrom tibble as_tibble
 #' @export
-get_timeseries <- function(object, day.one = NULL, span = 150, ...) {
+get_timeseries <- function(object, day.one, span, ...) {
   
   UseMethod("get_timeseries")
   
@@ -76,8 +70,8 @@ get_timeseries <- function(object, day.one = NULL, span = 150, ...) {
 #' @rdname get_timeseries
 #' @export
 get_timeseries.default <- function(object, 
-                                   day.one = NULL,
-                                   span = 150,  
+                                   day.one,
+                                   span,  
                                    source = "nasapower",
                                    ...){
   
@@ -101,11 +95,12 @@ get_timeseries.default <- function(object,
   
   object <- do.call(makecall, args)
 
-  
-  r <- .setup_timeseries(object,
-                         days = sts$b,
-                         span = sts$span,
-                         maxspan = sts$maxspan)
+  r <- lapply(object, function(x){
+    .setup_timeseries(x,
+                      days = sts$b,
+                      span = sts$span,
+                      maxspan = sts$maxspan)
+  })
   
   return(r)
   
@@ -115,10 +110,9 @@ get_timeseries.default <- function(object,
 #' @method get_timeseries sf
 #' @export
 get_timeseries.sf <- function(object, 
-                              day.one = NULL,
-                              span = 150,  
-                              source = "nasapower", 
-                              as.sf = FALSE, 
+                              day.one,
+                              span,  
+                              source = "nasapower",
                               ...){
   
   dots <- list(...)
@@ -128,55 +122,9 @@ get_timeseries.sf <- function(object,
     days.before <- 0
   }
   
-  # check geometry type
-  type <- c("POINT", "POLYGON")
+  object <- .lonlat_from_sf(object)
   
-  # check for supported types 
-  supp_type <- c(all(grepl(type[[1]], sf::st_geometry_type(object))),
-                 all(grepl(type[[2]], sf::st_geometry_type(object))))
-  
-  if (!any(supp_type)) {
-    stop("The sf geometry type is not supported. ",
-         "Please provide a sf object of geometry type ",
-         "'POINT' or 'POLYGON'\n")
-  }
-  
-  type <- type[which(supp_type)]
-  
-  nr <- dim(object)[[1]]
-  
-  # find the sf_column
-  index <- attr(object, "sf_column")
-  
-  # get the sf column
-  lonlat <- object[[index]]
-  
-  if (type == "POINT") {
-    
-    # unlist the sf_column
-    lonlat <- unlist(object[[index]])
-    
-  }
-  
-  if (type == "POLYGON") {
-    
-    # set centroid to validade lonlat
-    lonlat <- sf::st_centroid(lonlat)
-    
-    # unlist the sf_column
-    lonlat <- unlist(lonlat)
-    
-  }
-  
-  lonlat <- matrix(lonlat,
-                   nrow = nr,
-                   ncol = 2, 
-                   byrow = TRUE, 
-                   dimnames = list(seq_len(nr), c("lon","lat")))
-  
-  object <- as.data.frame(lonlat)
-  
-  ll <- object
+  object <- as.data.frame(object)
   
   sts <- .set_span_length(day.one, span, days.before)
   
@@ -190,18 +138,12 @@ get_timeseries.sf <- function(object,
   object <- do.call(makecall, args)
   
   
-  r <- .setup_timeseries(object = object,
-                         days = sts$b,
-                         span = sts$span,
-                         maxspan = sts$maxspan)
-  
-  if (as.sf) {
-    
-    r <- cbind(ll, r)
-    
-    r <- sf::st_as_sf(r, coords = c("lon","lat"), crs = 4326)
-    
-  } 
+  r <- lapply(object, function(x){
+    .setup_timeseries(x,
+                      days = sts$b,
+                      span = sts$span,
+                      maxspan = sts$maxspan)
+  })
   
   return(r)
   
@@ -212,8 +154,8 @@ get_timeseries.sf <- function(object,
 #' @method get_timeseries matrix
 #' @export
 get_timeseries.matrix <- function(object, 
-                                  day.one = NULL,
-                                  span = 150, 
+                                  day.one,
+                                  span, 
                                   ...){
   
   dots <- list(...)
@@ -231,90 +173,9 @@ get_timeseries.matrix <- function(object,
                          span = sts$span,
                          maxspan = sts$maxspan)
   
+  r <- list(r)
+  
   return(r)
-}
-
-#' Get data from NASAPOWER using nasapower::get_power()
-#' 
-#' @param dates character with first and final date in the format YYYY-MM-DD
-#' @param lonlat data.frame with longitude and latitude, in that order
-#' @param pars character vector of solar, meteorological or climatology parameters 
-#' to download. See nasapower::get_power() for details.
-#' @param ... addtional arguments passed to nasapower::get_power()
-#' @examples 
-#' set.seed(123)
-#' ll <- data.frame(lon = runif(2, 11, 12),
-#'                  lat = runif(2, 55, 58))
-#' 
-#' .nasapower(dates = c("2010-01-01", "2010-01-30"),
-#'            lonlat = ll,
-#'            pars = "PRECTOT")
-#' @noRd
-.nasapower <- function(dates, lonlat, pars, ...){
-  
-  # define geographic boundaries for lonlat
-  lims <- with(lonlat, c(floor(min(lonlat[,1])), 
-                         floor(min(lonlat[,2])),
-                         ceiling(max(lonlat[,1])), 
-                         ceiling(max(lonlat[,2]))))
-  
-  # get NASA POWER
-  info <- nasapower::get_power(community = "AG",
-                               lonlat = lims,
-                               dates = dates,
-                               temporal_average = "DAILY", 
-                               pars = pars)
-  
-  class(info) <- class(info)[-1]
-  
-  # rename target fetched product
-  nc <- dim(info)[[2]]
-  names(info)[nc] <- "value"
-  
-  # split by YYYYMMDD to create a list of data frames
-  info <- split(info, info$YYYYMMDD)
-  
-  # keep only coordinates and the variable fetched
-  info <- lapply(info, function(x) {
-    x[(!names(x) %in% c("YEAR", "MM", "DD", "DOY"))]
-  })
-  
-  # put this information in its right lonlat as provided in the input
-  xy2 <- info[[1]][,c("LON","LAT")]
-  xy2 <- as.data.frame(xy2)
-  
-  n <- dim(lonlat)[[1]]
-  
-  # split lonlat into a list by its rows
-  xy1 <- split(lonlat, seq_len(n))
-  
-  # get the index for lonlat in info
-  nn <- lapply(xy1, function(n) {
-    n <- as.vector(t(n))
-    .nearest(xy1 = n, xy2 = xy2)
-  })
-  
-  # unlist to get the vector
-  nn <- unlist(nn)
-  
-  # force the vector to be in the right order, from 1 to n 
-  nn <- nn[ sort(as.numeric(names(nn))) ]
-  
-  # retrieve the data from info using nn
-  dat <- lapply(info, function(n) {
-    n <- n[nn, "value"]
-    n
-  })
-  
-  # combine vectors in this list 
-  dat <- do.call("cbind", dat)
-  
-  object <- as.data.frame(dat)
-  
-  names(object) <- as.character(names(info))
-  
-  return(object)
-    
 }
 
 #' Set up span length and organise dates
@@ -331,6 +192,10 @@ get_timeseries.matrix <- function(object,
   
   if (.is_tibble(day.one)) {
     day.one <- day.one[[1]]
+  }
+  
+  if (!.is_Date(day.one)) {
+    stop("'day.one' should be a vector of class 'Date' \n")
   }
 
   # the timespan
@@ -417,14 +282,112 @@ get_timeseries.matrix <- function(object,
     
     dimnames(Y)[[2]] <- paste0("day", 1:ncol(Y))
     
-    Y <- tibble::as_tibble(Y[, seq_len(maxspan)])
+    Y <- as.data.frame(Y[, seq_len(maxspan)])
     
   } else {
     
-    Y <- tibble::as_tibble(t(Y[, seq_len(maxspan)]))
+    Y <- as.data.frame(t(Y[, seq_len(maxspan)]))
     
     names(Y) <- paste0("day", seq_len(maxspan))
   }
   
   return(Y)
 }
+
+
+#' Get data from NASAPOWER using nasapower::get_power()
+#' 
+#' @param dates character with first and final date in the format YYYY-MM-DD
+#' @param lonlat data.frame with longitude and latitude, in that order
+#' @param pars character vector of solar, meteorological or climatology parameters 
+#' to download. See help("parameters", "nasapower") for details.
+#' @examples 
+#' set.seed(123)
+#' lonlat <- data.frame(lon = runif(3, 11, 12),
+#'                      lat = runif(3, 55, 58))
+#' 
+#' .nasapower(dates = c("2010-01-01", "2010-01-30"),
+#'            lonlat = lonlat,
+#'            pars = c("T2M_MAX"))
+#' @noRd
+.nasapower <- function(dates, lonlat, pars){
+  
+  message("Getting climate data from NASA POWER \n")
+  
+  # define geographic boundaries for lonlat
+  lims <- with(lonlat, c(floor(min(lonlat[,1])), 
+                         floor(min(lonlat[,2])),
+                         ceiling(max(lonlat[,1])), 
+                         ceiling(max(lonlat[,2]))))
+  
+  # get NASA POWER
+  info <- nasapower::get_power(community = "AG",
+                               lonlat = lims,
+                               dates = dates,
+                               temporal_average = "DAILY", 
+                               pars = pars)
+  
+  info <- as.data.frame(info)
+  
+  # split by YYYYMMDD to create a list of data frames
+  info <- split(info, info$YYYYMMDD)
+  
+  # keep only coordinates and the variable fetched
+  info <- lapply(info, function(x) {
+    x[(!names(x) %in% c("YEAR", "MM", "DD", "DOY"))]
+  })
+  
+  # put this information in its right lonlat as provided in the input
+  xy2 <- info[[1]][,c("LON","LAT")]
+  
+  n <- dim(lonlat)[[1]]
+  
+  # split lonlat into a list by its rows
+  xy1 <- split(lonlat, seq_len(n))
+  
+  # get the index for lonlat in info
+  nn <- lapply(xy1, function(n) {
+    n <- as.vector(t(n))
+    .nearest(xy1 = n, xy2 = xy2)
+  })
+  
+  # unlist to get the vector
+  nn <- unlist(nn)
+  
+  # force the vector to be in the right order, from 1 to n 
+  nn <- nn[ sort(as.numeric(names(nn))) ]
+  
+  # retrieve the data from info using nn
+  dat <- lapply(info, function(n) {
+    n <- n[nn, pars]
+    n
+  })
+  
+  namedays <- names(dat)
+  
+  # combine vectors in this list
+  dat <- do.call("cbind", dat)
+  
+  result <- list()
+  if (length(pars) > 1) {
+    for(i in seq_along(pars)){
+      index <- grepl(pars[[i]], names(dat))
+      rs <- dat[, index]
+      rs <- as.data.frame(rs)
+      names(rs) <- namedays
+      result[[i]] <- rs
+    }
+  }
+ 
+  if (length(pars) == 1) {
+    dat <- as.data.frame(dat)
+    names(dat) <- namedays
+    result[[1]] <- dat
+  }
+  
+  names(result) <- pars
+  
+  return(result)
+  
+}
+

@@ -2,16 +2,24 @@
 % Please edit documentation in R/ETo.R
 \name{ETo}
 \alias{ETo}
+\alias{ETo.default}
+\alias{ETo.array}
+\alias{ETo.sf}
 \title{Evapotranspiration}
 \usage{
-ETo(object, day.one = NULL, span = 150, lat = NULL, Kc = 1, p = NULL, ...)
+ETo(object, day.one, span, ...)
+
+\method{ETo}{default}(object, day.one, span, lat = NULL, Kc = 1, ...)
+
+\method{ETo}{array}(object, day.one, span, lat = NULL, Kc = 1)
+
+\method{ETo}{sf}(object, day.one, span, Kc = 1, as.sf = TRUE, ...)
 }
 \arguments{
 \item{object}{a data.frame (or object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf} 
-with geographical coordinates (lonlat), or an array with two dimensions 
-containing the temperature data; 1st dimension contains the day temperature 
-and 2nd dimension the night temperature.}
+with geographical coordinates (lonlat), or an object of class \code{sf}
+with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
+containing the temperature data, see details.}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to capture 
 the climate data}
@@ -19,31 +27,50 @@ the climate data}
 \item{span}{an integer or a vector with integers for the duration of the 
 time series to be captured}
 
-\item{lat}{a vector for the latitude (in Decimal degrees) 
-used to compute mean daily percentage of annual daytime hours based 
-on the latitude and month. See details}
+\item{...}{additional arguments passed to methods. See details.}
+
+\item{lat}{a vector for the latitude (in Decimal degrees), used to compute 
+mean daily percentage of annual daytime hours based on the latitude and month.
+This is extracted automatically in the \code{sf} method. See details}
 
 \item{Kc}{a numeric value for the crop factor for water requirement}
 
-\item{p}{optional, a numeric value (from 0 to 1) used if lat is not 
-given, representing the mean daily percentage of annual daytime hours 
-for different latitudes}
-
-\item{...}{additional arguments passed to methods. See details.}
+\item{as.sf}{logical, to return an object of class 'sf'}
 }
 \value{
 The evapotranspiration in mm/day
 }
 \description{
-Compute evapotranspiration using the Blaney-Criddle method. A 
+Evapotranspiration using the Blaney-Criddle method. This is  
 theoretical method used when no measured data on pan evaporation 
-are available locally.
+is available locally.
 }
 \details{
-When \var{lat} is used, it is combined with the month provided in 
+When \var{lat} is provided, it is combined with the month provided in 
  \var{day.one} to call for the system data \code{daylight} to find
  the correct value for \var{p} which represents the daily percentage
- of daytime hours in the given month and latitude.
+ of daytime hours in the given month and latitude. Otherwise \var{p} is set 
+ to 0.27 as default.
+ 
+The \code{array} method assumes that \var{object} contains climate data provided 
+ from a local source; this requires a array with two dimensions, 1st dimension 
+ contains the day temperature and 2nd dimension the night temperature, 
+ see help("modis", "climatrends") for an example on input structure.
+
+The \code{default} method and the \code{sf} method assumes that the climate data 
+ will be fetched from an remote (cloud) \var{source}.
+
+Additional arguments:
+
+\code{source}: character for the source of climate data. Current remote \var{source} 
+ is: 'nasapower'
+
+\code{pars}: character vector for the temperature data to be fetched. If 
+ \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+ c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
+
+\code{days.before}: optional, an integer for the number of days before 
+ \var{day.one} to be included in the timespan.
 }
 \examples{
 # Using local sources
@@ -58,8 +85,6 @@ ETo(modis,
     
 \donttest{
 # Using remote sources 
-library("nasapower")
-
 # random geographic locations around bbox(11, 12, 55, 58)
 set.seed(123)
 lonlat <- data.frame(lon = runif(2, 11, 12),
@@ -74,7 +99,7 @@ dates <- as.Date(dates, origin = "1970-01-01")
 ETo(lonlat,
     day.one = dates,
     span = 50,
-    lat = lonlat[["lat"]])
+    lat = lonlat["lat"])
 }
 
 }
@@ -85,9 +110,7 @@ United Nations, Rome, Italy.
 \url{http://www.fao.org/3/S2022E/s2022e00.htm}
 }
 \seealso{
-Other climatology functions: 
-\code{\link{GDD}()},
-\code{\link{rainfall}()},
+Other temperature functions: 
 \code{\link{temperature}()}
 }
-\concept{climatology functions}
+\concept{temperature functions}

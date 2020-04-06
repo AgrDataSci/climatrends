@@ -4,21 +4,13 @@
 \alias{temperature}
 \title{Temperature indices}
 \usage{
-temperature(
-  object,
-  day.one = NULL,
-  span = 150,
-  timeseries = FALSE,
-  intervals = 5,
-  ...
-)
+temperature(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
 }
 \arguments{
 \item{object}{a data.frame (or object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf} 
-with geographical coordinates (lonlat), or an array with two dimensions 
-containing the temperature data; 1st dimension contains the day temperature 
-and 2nd dimension the night temperature.}
+with geographical coordinates (lonlat), or an object of class \code{sf}
+with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
+containing the temperature data, see details.}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to capture 
 the climate data}
@@ -29,10 +21,12 @@ time series to be captured}
 \item{timeseries}{logical, \code{FALSE} for a single point time series
 observation or \code{TRUE} for a time series based on \var{intervals}}
 
-\item{intervals}{integer no lower than 5, for the days intervals when
+\item{intervals}{integer (no lower than 5), for the days intervals when
 \var{timeseries} = \code{TRUE}}
 
 \item{...}{additional arguments passed to methods. See details.}
+
+\item{as.sf}{logical, to return an object of class 'sf'}
 }
 \value{
 A dataframe with temperature indices:
@@ -49,21 +43,34 @@ temperature > 25 (degree Celsius)}
 \item{CFD}{consecutive frosty days, number of days with temperature 
 bellow 0 degree Celsius}
 
- When \var{timeseries} = \code{TRUE}, an id is created, 
+When \var{timeseries} = \code{TRUE}, an id is created, 
  which is the index for the rownames of the provided \var{object}.
 }
 \description{
-Compute temperature indices over a timespan
+Methods to compute temperature indices over a time period
 }
 \details{
-a numeric vector of geographic coordinates (lonlat) or
-an array with two dimensions containing the temperature data;
-1st dimension contains the day temperature and 2nd dimension the night
-temperature. When lonlat is used, the function makes a call to
-\code{nasapower::get_power()} to fetch and concatenate environmental
-data from NASA POWER (\url{https://power.larc.nasa.gov/}) for the parameters
-T2M_MAX (Maximum Temperature at 2 m) and 
-T2M_MIN (Minimum Temperature at 2 m)
+The \code{array} method assumes that \var{object} contains climate data provided 
+ from a local source; this requires a array with two dimensions, 1st dimension 
+ contains the day temperature and 2nd dimension the night temperature, 
+ see help("modis", "climatrends") for an example on input structure.
+
+The default method and the sf method assumes that the climate data will be fetched 
+ from an remote (cloud) \var{source}.
+
+Additional arguments:
+
+\code{source}: character for the source of remote data. Current remote \var{source} 
+ is: 'nasapower'
+
+\code{pars}: character vector for the temperature data to be fetched. If 
+ \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+ c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
+
+\code{days.before}: optional, an integer for the number of days before 
+ \var{day.one} to be included in the timespan.
+ 
+\code{as.sf}: logical, to return a 'sf' object when \var{object} is of class 'sf'
 }
 \examples{
 # Using local sources
@@ -105,14 +112,9 @@ temperature(lonlat,
 \references{
 Aguilar E., et al. (2005). Journal of Geophysical Research, 
 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
-
-Sparks A. H. (2018). Journal of Open Source Software, 3(30), 1035. 
-\cr\url{https://doi.org/10.21105/joss.01035}
 }
 \seealso{
-Other climatology functions: 
-\code{\link{ETo}()},
-\code{\link{GDD}()},
-\code{\link{rainfall}()}
+Other temperature functions: 
+\code{\link{ETo}()}
 }
-\concept{climatology functions}
+\concept{temperature functions}

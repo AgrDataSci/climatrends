@@ -7,26 +7,19 @@
 \alias{get_timeseries.matrix}
 \title{Time series climate data}
 \usage{
-get_timeseries(object, day.one = NULL, span = 150, ...)
+get_timeseries(object, day.one, span, ...)
 
-\method{get_timeseries}{default}(object, day.one = NULL, span = 150, source = "nasapower", ...)
+\method{get_timeseries}{default}(object, day.one, span, source = "nasapower", ...)
 
-\method{get_timeseries}{sf}(
-  object,
-  day.one = NULL,
-  span = 150,
-  source = "nasapower",
-  as.sf = FALSE,
-  ...
-)
+\method{get_timeseries}{sf}(object, day.one, span, source = "nasapower", ...)
 
-\method{get_timeseries}{matrix}(object, day.one = NULL, span = 150, ...)
+\method{get_timeseries}{matrix}(object, day.one, span, ...)
 }
 \arguments{
-\item{object}{a data.frame (or object that can be coerced to data.frame) with
-geographical coordinates (lonlat), or an object of class \code{sf} with 
-geographical coordinates (lonlat), or a named \code{matrix} with climate 
-data. See details.}
+\item{object}{a \code{data.frame} (or object that can be coerced to data.frame) 
+with geographical coordinates (lonlat), or an object of class \code{sf} with 
+geometry 'POINT' or 'POLYGON', or a named \code{matrix} with climate data.
+See details.}
 
 \item{day.one}{a vector of class \code{Date} for the starting date to capture 
 the climate data}
@@ -37,31 +30,30 @@ time series to be captured}
 \item{...}{additional arguments passed to methods. See details.}
 
 \item{source}{character, for the source of climate data. See details.}
-
-\item{as.sf}{logical, returns an object of class \code{[sf]{sf}}}
 }
 \value{
 An object with time series climate data for the chosen period
 }
 \description{
-Concatenate time series climate data
+General functions and methods to concatenate climate data across a time series.
 }
 \details{
-The default method and the sf method assumes that the climate data will be retrieved 
- from an external \code{source}.
+The \code{default} method and the \code{sf} method assumes that the climate 
+ data will be fetched from an remote (cloud) \var{source}.
 
-The matrix method assumes that the climate data was previously handled and will be 
- inputted in the format of a named matrix. See help(modis) for examples.
+The \code{matrix} method assumes that the climate data was previously handled 
+ and will be inputted in the format of a named matrix. 
+ See help("modis", "climatrends") for examples.
 
-Current remote \code{source} is: 'nasapower'
+Available remote \var{source}s are: "nasapower"
 
 Additional arguments:
 
 \code{pars}: character vector of solar, meteorological or climatology parameters 
-to download. See help("parameters", "nasapower").
+to download. See help("parameters", "nasapower") when \var{source} = "nasapower".
 
-\code{days.before}: optional, an integer for the number of days before 
- \code{day.one} to be included in the timespan.
+\code{days.before}: an integer for the number of days before \var{day.one} to be 
+ included in the timespan.
 }
 \examples{
 # Using local sources
@@ -84,12 +76,7 @@ lonlat <- st_as_sf(lonlat, coords = c("lon","lat"), crs = 4326)
 
 do <- as.Date(17667, origin = "1970-01-01")
 
-g <- get_timeseries(lonlat, day.one = do, span = 10, pars = "PRECTOT")
-
-g
-
-g <- get_timeseries(lonlat, day.one = do, span = c(10, 13), 
-                    pars = "T10M", as.sf = TRUE)
+g <- get_timeseries(lonlat, day.one = do, span = 10, pars = c("PRECTOT", "T2M", "T10M"))
 
 g
 }

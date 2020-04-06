@@ -1,25 +1,40 @@
 #' Temperature indices
 #'
-#' Compute temperature indices over a timespan 
+#' Methods to compute temperature indices over a time period
 #'
 #' @param object a data.frame (or object that can be coerced to data.frame) 
-#'  with geographical coordinates (lonlat), or an object of class \code{sf} 
-#'  with geographical coordinates (lonlat), or an array with two dimensions 
-#'  containing the temperature data; 1st dimension contains the day temperature 
-#'  and 2nd dimension the night temperature. 
+#'  with geographical coordinates (lonlat), or an object of class \code{sf}
+#'  with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
+#'  containing the temperature data, see details. 
 #' @inheritParams get_timeseries
 #' @param timeseries logical, \code{FALSE} for a single point time series
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
-#' @param intervals integer no lower than 5, for the days intervals when
+#' @param intervals integer (no lower than 5), for the days intervals when
 #'  \var{timeseries} = \code{TRUE}
+#' @param as.sf logical, to return an object of class 'sf'
 #' @param ... additional arguments passed to methods. See details.
 #' @details 
+#' The \code{array} method assumes that \var{object} contains climate data provided 
+#'  from a local source; this requires a array with two dimensions, 1st dimension 
+#'  contains the day temperature and 2nd dimension the night temperature, 
+#'  see help("modis", "climatrends") for an example on input structure.
 #' 
-#' When lonlat is used, the function makes a call to
-#' \code{nasapower::get_power()} to fetch and concatenate environmental
-#' data from NASA POWER (\url{https://power.larc.nasa.gov/}) for the parameters
-#' T2M_MAX (Maximum Temperature at 2 m) and 
-#' T2M_MIN (Minimum Temperature at 2 m)
+#' The default method and the sf method assumes that the climate data will be fetched 
+#'  from an remote (cloud) \var{source}.
+#' 
+#' Additional arguments:
+#' 
+#' \code{source}: character for the source of remote data. Current remote \var{source} 
+#'  is: 'nasapower'
+#' 
+#' \code{pars}: character vector for the temperature data to be fetched. If 
+#'  \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+#'  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
+#' 
+#' \code{days.before}: optional, an integer for the number of days before 
+#'  \var{day.one} to be included in the timespan.
+#'  
+#' \code{as.sf}: logical, to return a 'sf' object when \var{object} is of class 'sf'
 #' 
 #' @return A dataframe with temperature indices:
 #' \item{maxDT}{maximun day temperature (degree Celsius)}
@@ -35,16 +50,13 @@
 #' \item{CFD}{consecutive frosty days, number of days with temperature 
 #' bellow 0 degree Celsius}
 #' 
-#'  When \var{timeseries} = \code{TRUE}, an id is created, 
+#' When \var{timeseries} = \code{TRUE}, an id is created, 
 #'  which is the index for the rownames of the provided \var{object}.
 #' 
-#' @family climatology functions
+#' @family temperature functions
 #' @references 
 #' Aguilar E., et al. (2005). Journal of Geophysical Research, 
 #' 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
-#' 
-#' Sparks A. H. (2018). Journal of Open Source Software, 3(30), 1035. 
-#' \cr\url{https://doi.org/10.21105/joss.01035}
 #' 
 #' @examples
 #' # Using local sources
@@ -84,8 +96,8 @@
 #' }
 #' @importFrom tibble as_tibble
 #' @export
-temperature <- function(object, day.one = NULL, 
-                        span = 150, timeseries = FALSE,
+temperature <- function(object, day.one, 
+                        span, timeseries = FALSE,
                         intervals = 5,
                         ...)
 {

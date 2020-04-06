@@ -11,6 +11,34 @@
 
 }
 
+#' Is a Date object
+#' @param object an object to have its class tested
+#' @return a logical value where TRUE indicates that the 
+#' object is of class "Date"
+#' @examples
+#' x <- as.Date(c(1000, 2000), origin = "1970-01-01")
+#' .is_Date(x)
+#' @noRd
+.is_Date <- function(object) {
+  
+  c("Date") %in% class(object)
+
+}
+
+#' Is a sf object
+#' @param object an object to have its class tested
+#' @return a logical value where TRUE indicates that the 
+#' object is of class "sf"
+#' @examples
+#' x <- as.Date(c(1000, 2000), origin = "1970-01-01")
+#' .is_sf(x)
+#' @noRd
+.is_sf <- function(object) {
+  
+  c("sf") %in% class(object)
+  
+}
+
 #' Round to the nearest base value
 #' @param x a vector of class numeric
 #' @param a number for the base value to round
@@ -59,3 +87,71 @@
   return(index_xy)
   
 }
+
+#' Get lonlat from a sf object
+#' 
+#' @param object an object of class sf and geometry "POINT" or "POLYGON"
+#' @return a matrix with longitude and latitude and that order
+#'  for sf "POLYGON" a centroid within the polygon is returned
+#' @examples 
+#' library("sf")
+#' set.seed(123)
+#' lonlat <- data.frame(lon = runif(2, 11, 12),
+#'                      lat = runif(2, 55, 58))
+#' lonlat <- st_as_sf(lonlat, coords = c("lon","lat"))
+#' 
+#' .unnest_sf(lonlat)
+#' 
+#' @importFrom sf st_geometry_type st_centroid
+#' @noRd
+.lonlat_from_sf <- function(object){
+  # check geometry type
+  type <- c("POINT", "POLYGON")
+  
+  # check for supported types 
+  supp_type <- c(all(grepl(type[[1]], sf::st_geometry_type(object))),
+                 all(grepl(type[[2]], sf::st_geometry_type(object))))
+  
+  if (!any(supp_type)) {
+    stop("The sf geometry type is not supported. ",
+         "Please provide a sf object of geometry type ",
+         "'POINT' or 'POLYGON'\n")
+  }
+  
+  type <- type[which(supp_type)]
+  
+  nr <- dim(object)[[1]]
+  
+  # find the sf_column
+  index <- attr(object, "sf_column")
+  
+  # get the sf column
+  lonlat <- object[[index]]
+  
+  if (type == "POINT") {
+    
+    # unlist the sf_column
+    lonlat <- unlist(object[[index]])
+    
+  }
+  
+  if (type == "POLYGON") {
+    
+    # set centroid to validade lonlat
+    lonlat <- sf::st_centroid(lonlat)
+    
+    # unlist the sf_column
+    lonlat <- unlist(lonlat)
+    
+  }
+  
+  lonlat <- matrix(lonlat,
+                   nrow = nr,
+                   ncol = 2, 
+                   byrow = TRUE, 
+                   dimnames = list(seq_len(nr), c("lon","lat")))
+  
+  return(lonlat)
+}
+
+
