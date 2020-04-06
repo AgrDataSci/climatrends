@@ -1,7 +1,8 @@
-#' Example of input data using local sources
+#' Example of input data using local and remote sources
 #' 
 #' Input example from MODIS and CHIRPS data. See details
 #' 
+#' @details 
 #' modis: array with two layers 1) day temperature and 2) night temperature. 
 #'  An excerpt of MODIS (MYD11A1) data to represent an example 
 #'  of the input data in \code{temperature()} and \code{get_timeseries()} 
@@ -21,6 +22,7 @@
 #' @rdname modis
 #' @docType data
 #' @aliases chirp
+#' @aliases lonlatsf
 #' @aliases modis
 #' @keywords datasets
 #' @source 
@@ -34,6 +36,6 @@
 #' SIN Grid V006 \url{http://dx.doi.org/10.5067/MODIS/MYD11A2.006}.
 #' 
 #' @format 
-#' an array with two layers (modis) and matrix (chirp)
-c("modis", "chirp")
+#' an array with two layers (modis) and matrix (chirp), an sf object (lonlatsf)
+c("modis", "chirp", "lonlatsf")
 

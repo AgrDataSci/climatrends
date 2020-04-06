@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
 
-Toolkit for climate variability indices for ecological modelling. 
+Climate variability indices for ecological modelling. 
     The indices produced here can be used as explanatory variables for crop 
     modelling, trends in climate change and to assess the interactions
     of plants and animals with the environment.

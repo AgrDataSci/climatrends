@@ -11,7 +11,7 @@ Authors@R: c(person("Kaue", "de Sousa",
         comment = c(ORCID = "0000-0002-4491-4483")))
 URL: https://agrobioinfoservices.github.io/climatrends
 BugReports: https://github.com/agrobioinfoservices/climatrends/issues
-Description: Toolkit for climate variability indices for ecological modelling. 
+Description: Climate variability indices for ecological modelling. 
     The indices produced here can be used as explanatory variables for crop 
     modelling, trends in climate change and to assess the interactions
     of plants and animals with the environment.
@@ -22,8 +22,7 @@ Depends: R (>= 3.5.0), methods
 Imports:
     nasapower,
     sf,
-    stats,
-    tibble
+    stats
 Suggests: 
     knitr,
     rmarkdown,

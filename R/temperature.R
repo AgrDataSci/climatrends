@@ -68,36 +68,42 @@
 #' 
 #' \donttest{
 #' #####################################################
-#' 
+#'  
 #' # Using remote sources of climate data
-#' # random points within bbox(11, 12, 55, 58)
-#' set.seed(123)
-#' lonlat <- data.frame(lon = runif(3, 11, 12),
-#'                      lat = runif(3, 55, 58))
 #' 
-#' # random dates within 2018-05-15 and 2018-05-2
-#' set.seed(321)
-#' dates <- as.integer(runif(3, 17666, 17670))
+#' data("lonlatsf", package = "climatrends")
+#' 
+#' set.seed(123)
+#' dates <- as.integer(runif(5, 17660, 17675))
 #' dates <- as.Date(dates, origin = "1970-01-01")
 #' 
-#' # get temperature indices for 40 days after day.one
-#' temperature(lonlat,
-#'             day.one = dates,
-#'             span = 40)
+#' # get temperature indices for 30 days after day.one
+#' # return a data.frame
+#' temp <- temperature(lonlatsf,
+#'                     day.one = dates,
+#'                     span = 30, 
+#'                     as.sf = FALSE)
+#' temp
 #' 
-#' # get temperature indices over a time series
-#' temperature(lonlat,
-#'             day.one = dates,
-#'             span = 40,
-#'             timeseries = TRUE,
-#'             intervals = 5)
+#' # return a sf object
+#' temp <- temperature(lonlatsf,
+#'                     day.one = dates,
+#'                     span = 30)
+#' temp
+#' 
+#' # indices with intervals of 7 days and return a sf object 
+#' temp <- temperature(lonlatsf,
+#'                     day.one = dates,
+#'                     span = 30,
+#'                     timeseries = TRUE,
+#'                     intervals = 7)
+#' temp
+#' 
 #' }
 #' @importFrom tibble as_tibble
 #' @export
 temperature <- function(object, day.one, 
-                        span, timeseries = FALSE,
-                        intervals = 5,
-                        ...)
+                        span, ...)
 {
   
   UseMethod("temperature")
@@ -137,6 +143,8 @@ temperature.default <- function(object, day.one,
   
   indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span)
   
+  class(indices) <- union("clima_df", class(indices))
+  
   return(indices)
 }
 
@@ -155,6 +163,8 @@ temperature.array <- function(object, day.one,
   night <- get_timeseries(object[, , 2], day.one, span)[[1]]
   
   indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span)
+  
+  class(indices) <- union("clima_df", class(indices))
   
   return(indices)
   
@@ -199,7 +209,13 @@ temperature.sf <- function(object, day.one,
     
     indices <- suppressWarnings(sf::st_bind_cols(object, indices))
   
-    }
+  }
+  
+  if (isFALSE(as.sf)) {
+    
+    class(indices) <- union("clima_df", class(indices))
+  
+  }
   
   return(indices)
   
@@ -306,7 +322,7 @@ temperature.sf <- function(object, day.one,
     
     ind$date <- dates
     
-    ind <- tibble::as_tibble(ind)
+    ind <- as.data.frame(ind, stringsAsFactors = FALSE)
     
     ind <- ind[, c("id", "date", "index", "value")]
     
@@ -342,7 +358,7 @@ temperature.sf <- function(object, day.one,
     
     dimnames(ind)[[2]] <- index
     
-    ind <- tibble::as_tibble(ind)
+    ind <- as.data.frame(ind, stringsAsFactors = FALSE)
     
     }
   

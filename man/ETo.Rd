@@ -7,11 +7,11 @@
 \alias{ETo.sf}
 \title{Evapotranspiration}
 \usage{
-ETo(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
+ETo(object, day.one, span, Kc = 1, ...)
 
-\method{ETo}{default}(object, day.one, span, lat = NULL, Kc = 1, ...)
+\method{ETo}{default}(object, day.one, span, Kc = 1, lat = NULL, ...)
 
-\method{ETo}{array}(object, day.one, span, lat = NULL, Kc = 1)
+\method{ETo}{array}(object, day.one, span, Kc = 1, lat = NULL)
 
 \method{ETo}{sf}(object, day.one, span, Kc = 1, as.sf = TRUE, ...)
 }
@@ -27,19 +27,13 @@ the climate data}
 \item{span}{an integer or a vector with integers for the duration of the 
 time series to be captured}
 
-\item{timeseries}{logical, \code{FALSE} for a single point time series
-observation or \code{TRUE} for a time series based on \var{intervals}}
-
-\item{intervals}{integer (no lower than 5), for the days intervals when
-\var{timeseries} = \code{TRUE}}
+\item{Kc}{a numeric value for the crop factor for water requirement}
 
 \item{...}{additional arguments passed to methods. See details.}
 
 \item{lat}{a vector for the latitude (in Decimal degrees), used to compute 
 mean daily percentage of annual daytime hours based on the latitude and month.
 This is extracted automatically in the \code{sf} method. See details}
-
-\item{Kc}{a numeric value for the crop factor for water requirement}
 
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
@@ -90,6 +84,8 @@ ETo(modis,
     Kc = 0.92)
     
 \donttest{
+######################################
+
 # Using remote sources 
 # random geographic locations around bbox(11, 12, 55, 58)
 set.seed(123)
@@ -106,6 +102,20 @@ ETo(lonlat,
     day.one = dates,
     span = 50,
     lat = lonlat["lat"])
+    
+#######################################
+
+
+# Objects of class 'sf'
+data("lonlatsf", "climatrends")
+
+dates <- as.Date(16700, origin = "1970-01-01")
+
+ETo(lonlatsf,
+    day.one = dates,
+    span = 30,
+    pars = c("T10M_MAX", "T10M_MIN"))
+
 }
 
 }

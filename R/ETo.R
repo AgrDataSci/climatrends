@@ -56,6 +56,8 @@
 #'     Kc = 0.92)
 #'     
 #' \donttest{
+#' ######################################
+#' 
 #' # Using remote sources 
 #' # random geographic locations around bbox(11, 12, 55, 58)
 #' set.seed(123)
@@ -72,14 +74,25 @@
 #'     day.one = dates,
 #'     span = 50,
 #'     lat = lonlat["lat"])
+#'     
+#' #######################################
+#' 
+#' 
+#' # Objects of class 'sf'
+#' data("lonlatsf", "climatrends")
+#' 
+#' dates <- as.Date(16700, origin = "1970-01-01")
+#' 
+#' ETo(lonlatsf,
+#'     day.one = dates,
+#'     span = 30,
+#'     pars = c("T10M_MAX", "T10M_MIN"))
+#' 
 #' }
 #' 
-#' @importFrom tibble tibble
 #' @importFrom sf st_bind_cols
 #' @export
-ETo <- function(object, day.one, span, 
-                timeseries = FALSE, 
-                intervals = 5, ...){
+ETo <- function(object, day.one, span, Kc = 1, ...){
   
   UseMethod("ETo")
 
@@ -88,7 +101,7 @@ ETo <- function(object, day.one, span,
 #' @rdname ETo
 #' @method ETo default
 #' @export
-ETo.default <- function(object, day.one, span, lat = NULL, Kc = 1, ...){
+ETo.default <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -131,7 +144,7 @@ ETo.default <- function(object, day.one, span, lat = NULL, Kc = 1, ...){
 #' @rdname ETo
 #' @method ETo array
 #' @export
-ETo.array <- function(object, day.one, span, lat = NULL, Kc = 1){
+ETo.array <- function(object, day.one, span, Kc = 1, lat = NULL){
   
   # coerce to data.frame
   day.one <- as.data.frame(day.one)[, 1]
@@ -204,8 +217,12 @@ ETo.sf <- function(object, day.one, span, Kc = 1, as.sf = TRUE, ...){
   # evapotranspiration
   eto <- p * (0.46 * Tmean + 8) * Kc
   
-  result <- tibble::tibble(ETo = eto)
+  result <- data.frame(ETo = eto, stringsAsFactors = FALSE)
+  
+  class(result) <- union("clima_df", class(result))
 
+  return(result)
+  
 }
 
 

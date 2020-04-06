@@ -4,9 +4,10 @@
 \name{modis}
 \alias{modis}
 \alias{chirp}
-\title{Example of input data using local sources}
+\alias{lonlatsf}
+\title{Example of input data using local and remote sources}
 \format{
-an array with two layers (modis) and matrix (chirp)
+an array with two layers (modis) and matrix (chirp), an sf object (lonlatsf)
 }
 \source{
 Funk, C. et al. (2015). The climate hazards infrared precipitation 

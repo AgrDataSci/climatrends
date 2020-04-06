@@ -7,7 +7,7 @@
 \alias{temperature.sf}
 \title{Temperature indices}
 \usage{
-temperature(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
+temperature(object, day.one, span, ...)
 
 \method{temperature}{default}(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
 
@@ -35,13 +35,13 @@ the climate data}
 \item{span}{an integer or a vector with integers for the duration of the 
 time series to be captured}
 
+\item{...}{additional arguments passed to methods. See details.}
+
 \item{timeseries}{logical, \code{FALSE} for a single point time series
 observation or \code{TRUE} for a time series based on \var{intervals}}
 
 \item{intervals}{integer (no lower than 5), for the days intervals when
 \var{timeseries} = \code{TRUE}}
-
-\item{...}{additional arguments passed to methods. See details.}
 
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
@@ -99,29 +99,37 @@ temperature(modis,
 
 \donttest{
 #####################################################
-
+ 
 # Using remote sources of climate data
-# random points within bbox(11, 12, 55, 58)
-set.seed(123)
-lonlat <- data.frame(lon = runif(3, 11, 12),
-                     lat = runif(3, 55, 58))
 
-# random dates within 2018-05-15 and 2018-05-2
-set.seed(321)
-dates <- as.integer(runif(3, 17666, 17670))
+data("lonlatsf", package = "climatrends")
+
+set.seed(123)
+dates <- as.integer(runif(5, 17660, 17675))
 dates <- as.Date(dates, origin = "1970-01-01")
 
-# get temperature indices for 40 days after day.one
-temperature(lonlat,
-            day.one = dates,
-            span = 40)
+# get temperature indices for 30 days after day.one
+# return a data.frame
+temp <- temperature(lonlatsf,
+                    day.one = dates,
+                    span = 30, 
+                    as.sf = FALSE)
+temp
 
-# get temperature indices over a time series
-temperature(lonlat,
-            day.one = dates,
-            span = 40,
-            timeseries = TRUE,
-            intervals = 5)
+# return a sf object
+temp <- temperature(lonlatsf,
+                    day.one = dates,
+                    span = 30)
+temp
+
+# indices with intervals of 7 days and return a sf object 
+temp <- temperature(lonlatsf,
+                    day.one = dates,
+                    span = 30,
+                    timeseries = TRUE,
+                    intervals = 7)
+temp
+
 }
 }
 \references{
