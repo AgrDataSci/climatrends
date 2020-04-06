@@ -77,7 +77,9 @@
 #' @importFrom tibble tibble
 #' @importFrom sf st_bind_cols
 #' @export
-ETo <- function(object, day.one, span, ...){
+ETo <- function(object, day.one, span, 
+                timeseries = FALSE, 
+                intervals = 5, ...){
   
   UseMethod("ETo")
 

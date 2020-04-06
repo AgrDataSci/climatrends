@@ -100,7 +100,7 @@
 #'                      lat = runif(2, 55, 58))
 #' lonlat <- st_as_sf(lonlat, coords = c("lon","lat"))
 #' 
-#' .unnest_sf(lonlat)
+#' .lonlat_from_sf(lonlat)
 #' 
 #' @importFrom sf st_geometry_type st_centroid
 #' @noRd

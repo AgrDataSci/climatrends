@@ -57,7 +57,6 @@
 #' 
 #' g
 #' }
-#' @importFrom methods addNextMethod asMethodDefinition assignClassDef
 #' @importFrom nasapower get_power
 #' @importFrom sf st_centroid st_geometry_type st_as_sf
 #' @export

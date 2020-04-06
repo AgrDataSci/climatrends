@@ -18,9 +18,8 @@ Description: Toolkit for climate variability indices for ecological modelling.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5.0)
-Imports: 
-    methods,
+Depends: R (>= 3.5.0), methods
+Imports:
     nasapower,
     sf,
     stats,

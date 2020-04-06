@@ -7,7 +7,7 @@
 \alias{ETo.sf}
 \title{Evapotranspiration}
 \usage{
-ETo(object, day.one, span, ...)
+ETo(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
 
 \method{ETo}{default}(object, day.one, span, lat = NULL, Kc = 1, ...)
 
@@ -26,6 +26,12 @@ the climate data}
 
 \item{span}{an integer or a vector with integers for the duration of the 
 time series to be captured}
+
+\item{timeseries}{logical, \code{FALSE} for a single point time series
+observation or \code{TRUE} for a time series based on \var{intervals}}
+
+\item{intervals}{integer (no lower than 5), for the days intervals when
+\var{timeseries} = \code{TRUE}}
 
 \item{...}{additional arguments passed to methods. See details.}
 

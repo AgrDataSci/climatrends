@@ -4,7 +4,7 @@
 \name{modis}
 \alias{modis}
 \alias{chirp}
-\title{Example from input data using local sources}
+\title{Example of input data using local sources}
 \format{
 an array with two layers (modis) and matrix (chirp)
 }

@@ -1,5 +1,6 @@
 context("test-temperature")
 library("nasapower")
+library("sf")
 # load("tests/test_data.rda")
 load("../test_data.rda")
 
@@ -51,7 +52,7 @@ test_that("timeseries", {
   expect_equal(dt, TRUE)
 })
 
-test_that("nasapower works", {
+test_that("nasapower works default", {
   skip_on_cran()
   r <- temperature(object = lonlat, 
                    day.one = d,
@@ -65,4 +66,46 @@ test_that("nasapower works", {
 })
 
 
+realv <- c(17.13, 17.43, 17.50)
+test_that("sf method works", {
+  skip_on_cran()
+  
+  xy <- as.data.frame(lonlat[1:3,])
+  xy <- st_as_sf(xy, coords = c("V1","V2"))
+  day <- as.data.frame(d[1:3, ])
+  
+  r <- temperature(object = xy, 
+                   day.one = day,
+                   span = 25,
+                   pars = c("T10M_MAX","T10M_MIN"))
+  
+  r <- round(r$maxDT, 2)
+  
+  r <- all(r == realv)
+  
+  expect_true(r)
+})
+
+
+realv <- c(15.77, 17.13, 10.37, 16.42, 17.43, 10.4, 16.49, 17.5, 10.22)
+test_that("sf method with timeseries", {
+  skip_on_cran()
+  
+  xy <- as.data.frame(lonlat[1:3,])
+  xy <- st_as_sf(xy, coords = c("V1","V2"))
+  day <- as.data.frame(d[1:3, ])
+  
+  r <- temperature(object = xy, 
+                   day.one = day,
+                   span = 25,
+                   timeseries = TRUE,
+                   intervals = 8,
+                   pars = c("T10M_MAX","T10M_MIN"))
+  
+  r <- round(r$value[r$index == "maxDT"], 2)
+  
+  r <- all(r == realv)
+  
+  expect_true(r)
+})
 

@@ -2,9 +2,26 @@
 % Please edit documentation in R/temperature.R
 \name{temperature}
 \alias{temperature}
+\alias{temperature.default}
+\alias{temperature.array}
+\alias{temperature.sf}
 \title{Temperature indices}
 \usage{
 temperature(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
+
+\method{temperature}{default}(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
+
+\method{temperature}{array}(object, day.one, span, timeseries = FALSE, intervals = 5)
+
+\method{temperature}{sf}(
+  object,
+  day.one,
+  span,
+  timeseries = FALSE,
+  intervals = 5,
+  as.sf = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{a data.frame (or object that can be coerced to data.frame) 
@@ -42,9 +59,6 @@ and NT (degree Celsius)) }
 temperature > 25 (degree Celsius)}
 \item{CFD}{consecutive frosty days, number of days with temperature 
 bellow 0 degree Celsius}
-
-When \var{timeseries} = \code{TRUE}, an id is created, 
- which is the index for the rownames of the provided \var{object}.
 }
 \description{
 Methods to compute temperature indices over a time period
@@ -58,6 +72,9 @@ The \code{array} method assumes that \var{object} contains climate data provided
 The default method and the sf method assumes that the climate data will be fetched 
  from an remote (cloud) \var{source}.
 
+When \var{timeseries} = \code{TRUE}, an id is created, 
+ which is the index for the rownames of the inputted \var{object}.
+
 Additional arguments:
 
 \code{source}: character for the source of remote data. Current remote \var{source} 
@@ -69,8 +86,6 @@ Additional arguments:
 
 \code{days.before}: optional, an integer for the number of days before 
  \var{day.one} to be included in the timespan.
- 
-\code{as.sf}: logical, to return a 'sf' object when \var{object} is of class 'sf'
 }
 \examples{
 # Using local sources
@@ -83,9 +98,9 @@ temperature(modis,
             span = 12)
 
 \donttest{
-# Using NASA POWER
-library("nasapower")
+#####################################################
 
+# Using remote sources of climate data
 # random points within bbox(11, 12, 55, 58)
 set.seed(123)
 lonlat <- data.frame(lon = runif(3, 11, 12),

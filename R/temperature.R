@@ -21,6 +21,9 @@
 #' 
 #' The default method and the sf method assumes that the climate data will be fetched 
 #'  from an remote (cloud) \var{source}.
+#'
+#' When \var{timeseries} = \code{TRUE}, an id is created, 
+#'  which is the index for the rownames of the inputted \var{object}.
 #' 
 #' Additional arguments:
 #' 
@@ -33,8 +36,6 @@
 #' 
 #' \code{days.before}: optional, an integer for the number of days before 
 #'  \var{day.one} to be included in the timespan.
-#'  
-#' \code{as.sf}: logical, to return a 'sf' object when \var{object} is of class 'sf'
 #' 
 #' @return A dataframe with temperature indices:
 #' \item{maxDT}{maximun day temperature (degree Celsius)}
@@ -49,9 +50,6 @@
 #' temperature > 25 (degree Celsius)}
 #' \item{CFD}{consecutive frosty days, number of days with temperature 
 #' bellow 0 degree Celsius}
-#' 
-#' When \var{timeseries} = \code{TRUE}, an id is created, 
-#'  which is the index for the rownames of the provided \var{object}.
 #' 
 #' @family temperature functions
 #' @references 
@@ -69,9 +67,9 @@
 #'             span = 12)
 #' 
 #' \donttest{
-#' # Using NASA POWER
-#' library("nasapower")
+#' #####################################################
 #' 
+#' # Using remote sources of climate data
 #' # random points within bbox(11, 12, 55, 58)
 #' set.seed(123)
 #' lonlat <- data.frame(lon = runif(3, 11, 12),
@@ -102,37 +100,123 @@ temperature <- function(object, day.one,
                         ...)
 {
   
+  UseMethod("temperature")
+  
+}
+
+
+#' @rdname temperature
+#' @method temperature default
+#' @export
+temperature.default <- function(object, day.one, 
+                                span, timeseries = FALSE,
+                                intervals = 5,
+                                ...){
+  
+  dots <- list(...)
+  pars <- dots[["pars"]]
+  
+  # coerce inputs to data.frame
+  object <- as.data.frame(object)
+  if(dim(object)[[2]] != 2) {
+    stop("Subscript out of bounds. Only lonlat should be provided ",
+         "in the default method \n.")
+  }
+  
+  day.one <- as.data.frame(day.one)[, 1]
+  
+  if (is.null(pars)) {
+    pars <- c("T2M_MAX", "T2M_MIN")
+  }
+  
+  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  
+  day <- dat[[pars[[1]]]]
+  
+  night <- dat[[pars[[2]]]]
+  
+  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span)
+  
+  return(indices)
+}
+
+#' @rdname temperature
+#' @method temperature array
+#' @export
+temperature.array <- function(object, day.one, 
+                              span, timeseries = FALSE,
+                              intervals = 5){
+  
+  # coerce to data.frame
+  day.one <- as.data.frame(day.one)[, 1]
+  
+  day <- get_timeseries(object[, , 1], day.one, span)[[1]]
+  
+  night <- get_timeseries(object[, , 2], day.one, span)[[1]]
+  
+  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span)
+  
+  return(indices)
+  
+}
+
+#' @rdname temperature
+#' @method temperature sf
+#' @export
+temperature.sf <- function(object, day.one, 
+                           span, timeseries = FALSE,
+                           intervals = 5, as.sf = TRUE, ...){
+  
+  dots <- list(...)
+  pars <- dots[["pars"]]
+  
+  day.one <- as.data.frame(day.one)[, 1]
+  
+  if (is.null(pars)) {
+    pars <- c("T2M_MAX", "T2M_MIN")
+  }
+  
+  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  
+  day <- dat[[pars[[1]]]]
+  
+  night <- dat[[pars[[2]]]]
+  
+  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span)
+  
+  if (all(as.sf, timeseries)) {
+  
+    xy <- .lonlat_from_sf(object)
+    xy <- as.data.frame(xy)
+    xy$id <- 1:dim(xy)[[1]]
+    xy <- merge(xy, indices, by = "id")
+    
+    indices <- st_as_sf(xy, coords = c("lon", "lat"), crs = 4326)
+      
+  }
+  
+  if (isTRUE(as.sf) & isFALSE(timeseries)) {
+    
+    indices <- suppressWarnings(sf::st_bind_cols(object, indices))
+  
+    }
+  
+  return(indices)
+  
+}
+
+#' Compute the temperature indices
+#' @param day a data.frame with the day temperature
+#' @param night a data.frame with the night temperature
+#' @inheritParams temperature
+#' @noRd
+.temperature_indices <- function(day, night, timeseries, intervals, day.one, span){
+  
   index <- c("maxDT","minDT","maxNT","minNT","DTR","SU","TR","CFD")
-  
-  # get timespan for the day temperature
-  if (dim(object)[2] == 2) {
-    day <- get_timeseries(object = object, 
-                           day.one = day.one, 
-                           span = span, 
-                           pars = "T2M_MAX",
-                           ...)
-  } else {
-    day <- get_timeseries(object = object[ , ,1], 
-                           day.one = day.one, 
-                           span = span)
-  }
-  
-  # get timespan for the night temperature
-  if (dim(object)[2] == 2) {
-    night <- get_timeseries(object = object, 
-                             day.one = day.one, 
-                             span = span, 
-                             pars = "T2M_MIN",
-                             ...)
-  } else {
-    night <- get_timeseries(object = object[ , ,2], 
-                             day.one = day.one, 
-                             span = span)
-  }
   
   n <- nrow(day)
   
-  if (timeseries) {
+  if (isTRUE(timeseries)) {
     
     # it might happen that when bins are not well distributed across dates
     # in that case the last values are dropped
@@ -140,7 +224,7 @@ temperature <- function(object, day.one,
     # in that case, the last four observations are dropped to fit in a vector of
     # length == 49 (the maximum integer from dividing days/intervals)
     # organise bins, ids and dates
-    bins <- floor(ncol(day)/intervals)
+    bins <- floor(ncol(day) / intervals)
     
     bins <- rep(1:bins, each = intervals, length.out = NA)
     
@@ -153,7 +237,7 @@ temperature <- function(object, day.one,
     # sequence of days and the first day in each bin
     for (i in seq_along(day.one)) {
       
-      d <- day.one[[i]]:(day.one[[i]] + (span - 1))
+      d <- day.one[i]:(day.one[i] + (span - 1))
       
       d <- d[seq_along(bins)]
       
@@ -229,7 +313,7 @@ temperature <- function(object, day.one,
   } 
   
   
-  if (!timeseries) {
+  if (isFALSE(timeseries)) {
     
     day <- split(day, 1:n)
     
@@ -260,14 +344,10 @@ temperature <- function(object, day.one,
     
     ind <- tibble::as_tibble(ind)
     
-    
-    
-  }
+    }
   
   return(ind)
-  
 }
-
 
 #' Maximum temperature
 #' 

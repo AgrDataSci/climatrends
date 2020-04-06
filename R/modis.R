@@ -1,4 +1,4 @@
-#' Example from input data using local sources
+#' Example of input data using local sources
 #' 
 #' Input example from MODIS and CHIRPS data. See details
 #' 
