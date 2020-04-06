@@ -34,6 +34,7 @@
 #' \cr\url{https://doi.org/10.21105/joss.01035}
 #' 
 #' @examples
+#' \donttest{
 #' # Using local sources
 #' data("chirp", package = "climatrends")
 #' 
@@ -43,7 +44,6 @@
 #'          day.one = day,
 #'          span = 11)
 #' 
-#' \donttest{
 #' # Using NASA POWER
 #' library("nasapower")
 #' 
@@ -77,7 +77,6 @@
 #'          intervals = 7)
 #' }       
 #'          
-#' @importFrom tibble as_tibble
 #' @importFrom stats quantile
 #' @export
 rainfall <- function(object, day.one = NULL, 
@@ -213,7 +212,7 @@ rainfall <- function(object, day.one = NULL,
     
   }
   
-  ind <- tibble::as_tibble(ind)
+  ind <- as.data.frame(ind, stringAsFactor = FALSE)
   
   return(ind)
 }

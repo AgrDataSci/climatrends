@@ -100,7 +100,6 @@
 #' temp
 #' 
 #' }
-#' @importFrom tibble as_tibble
 #' @export
 temperature <- function(object, day.one, 
                         span, ...)
@@ -153,7 +152,7 @@ temperature.default <- function(object, day.one,
 #' @export
 temperature.array <- function(object, day.one, 
                               span, timeseries = FALSE,
-                              intervals = 5){
+                              intervals = 5, ...){
   
   # coerce to data.frame
   day.one <- as.data.frame(day.one)[, 1]
@@ -323,6 +322,8 @@ temperature.sf <- function(object, day.one,
     ind$date <- dates
     
     ind <- as.data.frame(ind, stringsAsFactors = FALSE)
+    
+    rownames(ind) <- seq_along(ind[, 1])
     
     ind <- ind[, c("id", "date", "index", "value")]
     

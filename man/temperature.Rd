@@ -11,7 +11,7 @@ temperature(object, day.one, span, ...)
 
 \method{temperature}{default}(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
 
-\method{temperature}{array}(object, day.one, span, timeseries = FALSE, intervals = 5)
+\method{temperature}{array}(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
 
 \method{temperature}{sf}(
   object,
@@ -138,6 +138,7 @@ Aguilar E., et al. (2005). Journal of Geophysical Research,
 }
 \seealso{
 Other temperature functions: 
-\code{\link{ETo}()}
+\code{\link{ETo}()},
+\code{\link{GDD}()}
 }
 \concept{temperature functions}

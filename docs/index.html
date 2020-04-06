@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Precipitation and Temperature Indices for Climate Variability Analysis">
-<meta property="og:description" content="Toolkit for climate variability indices for ecological modelling. 
+<meta property="og:description" content="Climate variability indices for ecological modelling. 
     The indices produced here can be used as explanatory variables for crop 
     modelling, trends in climate change and to assess the interactions
     of plants and animals with the environment.">
@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>The <strong>climatrends</strong> package provides the toolkit to compute precipitation and temperature indices for climate models in ecology. The indices produced here can be used as explanatory variables for crop modelling, trends in climate change and to assess the interactions of plants and animals with the environment.</p>
+<p>The <strong>climatrends</strong> package provides methods to compute precipitation and temperature indices for climate models in ecology. The indices produced here can be used as explanatory variables for crop modelling, trends in climate change and to assess the interactions of plants and animals with the environment.</p>
 </div>
 <div id="package-website" class="section level2">
 <h2 class="hasAnchor">
@@ -112,7 +112,7 @@
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"climatrends"</span>)</span></code></pre></div>
 <p>The development version can be installed via</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"devtools"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"agrobioinfoservices/climatrends"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"agrobioinfoservices/climatrends"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
@@ -127,21 +127,43 @@
 <span id="cb3-6"><a href="#cb3-6"></a></span>
 <span id="cb3-7"><a href="#cb3-7"></a>temp &lt;-<span class="st"> </span><span class="kw"><a href="reference/temperature.html">temperature</a></span>(lonlat, <span class="dt">day.one =</span> date, <span class="dt">span =</span> <span class="dv">50</span>)</span>
 <span id="cb3-8"><a href="#cb3-8"></a></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(temp)</span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; # A tibble: 5 x 8</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt;   maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; 1  12.8 -0.580  3.61 -10.8   7.36     0     0    13</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; 2  13.4  0.66   3.84  -7.6   7.02     0     0    12</span></span>
-<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; 3  10.7 -1.48   2.43 -11.3   7.12     0     0    40</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; 4  14.1  1.53   3.94  -6.85  8.44     0     0    12</span></span>
-<span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; 5  19.6  5.82   8.24  -2.4   8.23     0     0     1</span></span></code></pre></div>
+<span id="cb3-9"><a href="#cb3-9"></a>temp</span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a>  maxDT minDT maxNT  minNT   DTR    SU    TR   CFD</span>
+<span id="cb3-12"><a href="#cb3-12"></a>  <span class="op">&lt;</span>dbl<span class="op">&gt;</span><span class="st"> </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span><span class="st"> </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span><span class="st">  </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span><span class="st"> </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span><span class="st"> </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span><span class="st"> </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span><span class="st"> </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="dv">1</span> <span class="fl">12.81</span> <span class="fl">-0.58</span>  <span class="fl">3.61</span> <span class="fl">-10.84</span>  <span class="fl">7.36</span>  <span class="fl">0.00</span>  <span class="fl">0.00</span> <span class="fl">13.00</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="dv">2</span> <span class="fl">13.39</span>  <span class="fl">0.66</span>  <span class="fl">3.84</span>  <span class="fl">-7.60</span>  <span class="fl">7.02</span>  <span class="fl">0.00</span>  <span class="fl">0.00</span> <span class="fl">12.00</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="dv">3</span> <span class="fl">10.68</span> <span class="fl">-1.48</span>  <span class="fl">2.43</span> <span class="fl">-11.29</span>  <span class="fl">7.12</span>  <span class="fl">0.00</span>  <span class="fl">0.00</span> <span class="fl">40.00</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="dv">4</span> <span class="fl">14.08</span>  <span class="fl">1.53</span>  <span class="fl">3.94</span>  <span class="fl">-6.85</span>  <span class="fl">8.44</span>  <span class="fl">0.00</span>  <span class="fl">0.00</span> <span class="fl">12.00</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="dv">5</span> <span class="fl">19.64</span>  <span class="fl">5.82</span>  <span class="fl">8.24</span>  <span class="fl">-2.40</span>  <span class="fl">8.23</span>  <span class="fl">0.00</span>  <span class="fl">0.00</span>  <span class="fl">1.00</span></span></code></pre></div>
+<p>The indices can be splitted for timeseries analysis with intervals. Here we get the temperature indices for the same area with intervals of 7 days after <code>day.one</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>temp &lt;-<span class="st"> </span><span class="kw"><a href="reference/temperature.html">temperature</a></span>(lonlat, <span class="dt">day.one =</span> date, <span class="dt">span =</span> <span class="dv">50</span>, </span>
+<span id="cb4-2"><a href="#cb4-2"></a>                    <span class="dt">timeseries =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb4-3"><a href="#cb4-3"></a>                    <span class="dt">intervals =</span> <span class="dv">7</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a></span>
+<span id="cb4-5"><a href="#cb4-5"></a>temp</span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a>       id       date index  value</span>
+<span id="cb4-8"><a href="#cb4-8"></a>    <span class="op">&lt;</span>int<span class="op">&gt;</span><span class="st">     </span><span class="er">&lt;</span>Date<span class="op">&gt;</span><span class="st"> </span><span class="er">&lt;</span>chr<span class="op">&gt;</span><span class="st">  </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="dv">1</span>       <span class="dv">1</span> <span class="dv">2015-05-01</span> maxDT   <span class="fl">9.70</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="dv">2</span>       <span class="dv">1</span> <span class="dv">2015-05-01</span> minDT  <span class="fl">-0.58</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="dv">3</span>       <span class="dv">1</span> <span class="dv">2015-05-01</span> maxNT   <span class="fl">2.42</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="dv">4</span>       <span class="dv">1</span> <span class="dv">2015-05-01</span> minNT <span class="fl">-10.84</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="dv">5</span>       <span class="dv">1</span> <span class="dv">2015-05-01</span>   DTR   <span class="fl">8.19</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="op">---</span><span class="st">                              </span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="dv">276</span>     <span class="dv">5</span> <span class="dv">2015-06-12</span> minNT   <span class="fl">3.25</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="dv">277</span>     <span class="dv">5</span> <span class="dv">2015-06-12</span>   DTR   <span class="fl">9.00</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="dv">278</span>     <span class="dv">5</span> <span class="dv">2015-06-12</span>    SU   <span class="fl">0.00</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="dv">279</span>     <span class="dv">5</span> <span class="dv">2015-06-12</span>    TR   <span class="fl">0.00</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="dv">280</span>     <span class="dv">5</span> <span class="dv">2015-06-12</span>   CFD   <span class="fl">0.00</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a>       id       date index  value</span>
+<span id="cb4-21"><a href="#cb4-21"></a>       </span></code></pre></div>
 </div>
 <div id="going-further" class="section level2">
 <h2 class="hasAnchor">
 <a href="#going-further" class="anchor"></a>Going further</h2>
 <p>The full functionality of <strong>climatrends</strong> is illustrated in the package vignette. The vignette can be found on the <a href="https://agrobioinfoservices.github.io/climatrends/">package website</a> or from within <code>R</code> once the package has been installed, e.g. via</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span>(<span class="st">"Overview"</span>, <span class="dt">package =</span> <span class="st">"climatrends"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span>(<span class="st">"Overview"</span>, <span class="dt">package =</span> <span class="st">"climatrends"</span>)</span></code></pre></div>
 </div>
 <div id="meta" class="section level2">
 <h2 class="hasAnchor">
@@ -162,6 +184,8 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=climatrends">https://​cloud.r-project.org/​package=climatrends</a>
+</li>
 <li>Report a bug at <br><a href="https://github.com/agrobioinfoservices/climatrends/issues">https://​github.com/​agrobioinfoservices/​climatrends/​issues</a>
 </li>
 </ul>

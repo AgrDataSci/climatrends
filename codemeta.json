@@ -142,18 +142,6 @@
       "@type": "SoftwareApplication",
       "identifier": "stats",
       "name": "stats"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "tibble",
-      "name": "tibble",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=tibble"
     }
   ],
   "releaseNotes": "https://github.com/agrobioinfoservices/climatrends/blob/master/NEWS.md",

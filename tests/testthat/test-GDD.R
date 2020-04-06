@@ -3,62 +3,30 @@ library("nasapower")
 # load("tests/test_data.rda")
 load("../test_data.rda")
 
-g <- c(5,4,5,11,5,7,5,6,6,8)
-
-test_that("equal", {
-  skip_on_cran()
+realv <- c(5,4,5,11,5,7,5,6,6,8)
+test_that("right values array method", {
   dg <- GDD(object = temp,
             day.one = d, 
             degree.days = 45,
-            base = 10, 
+            base = 10,
             span = 12)
   
+  dg <- all.equal(realv, dg[, 1])
   
-  dg <- all.equal(g, dg[[1]])
+  expect_true(dg)
   
-  expect_equal(dg, TRUE)
 })
 
-
+realv <- c(7,6,6)
 test_that("nasapower works", {
   skip_on_cran()
-  dg <- suppressWarnings(
-    GDD(object = lonlat,
-        day.one = d, 
-        degree.days = 45, 
-        span = 12)
-  )
+  dg <- GDD(object = lonlat[1:3, ],
+            day.one = d[1:3, ],
+            degree.days = 30, 
+            base = 5,
+            span = 20)
   
-  dg <- as.vector(apply(dg, 1, is.na))
+  dg <- all(dg == realv)
   
-  dg <- sum(dg) == 0
-  
-  expect_equal(dg, TRUE)
-})
-
-
-test_that("missing day.one", {
-  skip_on_cran()
-  expect_error(
-    GDD(object = temp)
-  )
-})
-
-
-test_that("missing degree.days", {
-  skip_on_cran()
-  expect_error(
-    GDD(object = temp, 
-        day.one = d)
-  )
-})
-
-
-test_that("missing span", {
-  skip_on_cran()
-  expect_error(
-    GDD(object = temp, 
-        day.one = d, 
-        degree.days = 10)
-  )
+  expect_true(dg)
 })

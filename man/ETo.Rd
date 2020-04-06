@@ -11,7 +11,7 @@ ETo(object, day.one, span, Kc = 1, ...)
 
 \method{ETo}{default}(object, day.one, span, Kc = 1, lat = NULL, ...)
 
-\method{ETo}{array}(object, day.one, span, Kc = 1, lat = NULL)
+\method{ETo}{array}(object, day.one, span, Kc = 1, lat = NULL, ...)
 
 \method{ETo}{sf}(object, day.one, span, Kc = 1, as.sf = TRUE, ...)
 }
@@ -107,7 +107,7 @@ ETo(lonlat,
 
 
 # Objects of class 'sf'
-data("lonlatsf", "climatrends")
+data("lonlatsf", package = "climatrends")
 
 dates <- as.Date(16700, origin = "1970-01-01")
 
@@ -127,6 +127,7 @@ United Nations, Rome, Italy.
 }
 \seealso{
 Other temperature functions: 
+\code{\link{GDD}()},
 \code{\link{temperature}()}
 }
 \concept{temperature functions}

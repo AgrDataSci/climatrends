@@ -56,6 +56,7 @@ A dataframe with rainfall indices:
 Compute rainfall indices over a timespan
 }
 \examples{
+\donttest{
 # Using local sources
 data("chirp", package = "climatrends")
 
@@ -65,7 +66,6 @@ rainfall(chirp,
          day.one = day,
          span = 11)
 
-\donttest{
 # Using NASA POWER
 library("nasapower")
 
@@ -106,9 +106,5 @@ Aguilar E., et al. (2005). Journal of Geophysical Research,
 
 Sparks A. H. (2018). Journal of Open Source Software, 3(30), 1035. 
 \cr\url{https://doi.org/10.21105/joss.01035}
-}
-\seealso{
-Other climatology functions: 
-\code{\link{GDD}()}
 }
 \concept{climatology functions}

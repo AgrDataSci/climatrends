@@ -15,7 +15,7 @@
 
 ## Overview
 
-The **climatrends** package provides the toolkit to compute precipitation and temperature indices for climate models in ecology. The indices produced here can be used as explanatory variables for crop modelling, trends in climate change and to assess the interactions of plants and animals with the environment.
+The **climatrends** package provides methods to compute precipitation and temperature indices for climate models in ecology. The indices produced here can be used as explanatory variables for crop modelling, trends in climate change and to assess the interactions of plants and animals with the environment.
 
 ## Package website
 
@@ -52,16 +52,44 @@ date <- as.Date("2015-05-01", format = "%Y-%m-%d")
 
 temp <- temperature(lonlat, day.one = date, span = 50)
 
-head(temp)
-#> # A tibble: 5 x 8
-#>   maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD
-#>   <dbl>  <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1  12.8 -0.580  3.61 -10.8   7.36     0     0    13
-#> 2  13.4  0.66   3.84  -7.6   7.02     0     0    12
-#> 3  10.7 -1.48   2.43 -11.3   7.12     0     0    40
-#> 4  14.1  1.53   3.94  -6.85  8.44     0     0    12
-#> 5  19.6  5.82   8.24  -2.4   8.23     0     0     1
+temp
+
+  maxDT minDT maxNT  minNT   DTR    SU    TR   CFD
+  <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
+1 12.81 -0.58  3.61 -10.84  7.36  0.00  0.00 13.00
+2 13.39  0.66  3.84  -7.60  7.02  0.00  0.00 12.00
+3 10.68 -1.48  2.43 -11.29  7.12  0.00  0.00 40.00
+4 14.08  1.53  3.94  -6.85  8.44  0.00  0.00 12.00
+5 19.64  5.82  8.24  -2.40  8.23  0.00  0.00  1.00
+
 ```
+
+The indices can be splitted for timeseries analysis with intervals. Here we get the temperature indices for the same area with intervals of 7 days after `day.one`.
+
+```r
+temp <- temperature(lonlat, day.one = date, span = 50, 
+                    timeseries = TRUE, 
+                    intervals = 7)
+
+temp
+
+       id       date index  value
+    <int>     <Date> <chr>  <dbl>
+1       1 2015-05-01 maxDT   9.70
+2       1 2015-05-01 minDT  -0.58
+3       1 2015-05-01 maxNT   2.42
+4       1 2015-05-01 minNT -10.84
+5       1 2015-05-01   DTR   8.19
+---                              
+276     5 2015-06-12 minNT   3.25
+277     5 2015-06-12   DTR   9.00
+278     5 2015-06-12    SU   0.00
+279     5 2015-06-12    TR   0.00
+280     5 2015-06-12   CFD   0.00
+       id       date index  value
+       
+```
+
 
 ## Going further
 

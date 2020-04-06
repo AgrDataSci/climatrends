@@ -79,7 +79,7 @@
 #' 
 #' 
 #' # Objects of class 'sf'
-#' data("lonlatsf", "climatrends")
+#' data("lonlatsf", package = "climatrends")
 #' 
 #' dates <- as.Date(16700, origin = "1970-01-01")
 #' 
@@ -144,7 +144,7 @@ ETo.default <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
 #' @rdname ETo
 #' @method ETo array
 #' @export
-ETo.array <- function(object, day.one, span, Kc = 1, lat = NULL){
+ETo.array <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
   
   # coerce to data.frame
   day.one <- as.data.frame(day.one)[, 1]

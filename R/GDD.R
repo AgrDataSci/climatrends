@@ -6,12 +6,30 @@
 #' rates. Growing degree-days are calculated by taking the 
 #' integral of warmth above a base temperature.
 #' 
+#' @inheritParams temperature
 #' @param degree.days an integer for the degree-days required by the 
 #'  organism (look for the physiology of the focal organism)
 #' @param base an integer for the base temperature
-#' @inheritParams temperature
 #' @return The number of days required to reach the growing degree-days.
-#' @family climatology functions
+#' @family temperature functions
+#' @details 
+#' The \code{array} method assumes that \var{object} contains climate data provided 
+#'  from a local source; this requires a array with two dimensions, 1st dimension 
+#'  contains the day temperature and 2nd dimension the night temperature, 
+#'  see help("modis", "climatrends") for an example on input structure.
+#' 
+#' The default method and the sf method assumes that the climate data will be fetched 
+#'  from an remote (cloud) \var{source}.
+#'
+#' Additional arguments:
+#' 
+#' \code{source}: character for the source of remote data. Current remote \var{source} 
+#'  is: 'nasapower'
+#' 
+#' \code{pars}: character vector for the temperature data to be fetched. If 
+#'  \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+#'  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
+#' 
 #' @references 
 #' Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 
 #' \cr\url{https://doi.org/10.2307/2845499}
@@ -25,13 +43,12 @@
 #' GDD(modis, 
 #'     day.one = day,
 #'     degree.days = 100, 
-#'     base = 5,
-#'     span = 13)
+#'     base = 5)
 #' 
 #' \donttest{
-#' # Using NASA POWER
-#' library("nasapower")
+#' ######################################
 #' 
+#' # Using remote sources 
 #' set.seed(123)
 #' # random geographic locations around bbox(11, 12, 55, 58)
 #' lonlat <- data.frame(lon = runif(3, 11, 12),
@@ -48,34 +65,118 @@
 #'     day.one = dates,
 #'     degree.days = 1300,
 #'     base = 5)
-#'}
 #'
-#' @importFrom tibble tibble
+#' ######################################
+#'  
+#' # Objects of class 'sf'
+#' data("lonlatsf", package = "climatrends")
+#' 
+#' dates <- as.Date(16150, origin = "1970-01-01")
+#' 
+#' GDD(lonlatsf,
+#'     day.one = dates,
+#'     degree.days = 200,
+#'     base = 5)
+#'}
 #' @export
-GDD <- function(object, day.one = NULL, degree.days = NULL,
-                base = 10, span = 150, ...)
+GDD <- function(object, day.one, degree.days,
+                base = 10, ...)
 {
-  
-  # validate parameters
-  if (is.null(degree.days)) {
-    stop("degree.days is missing with no default \n")
-  }
-  
+  UseMethod("GDD")
+}
 
-  # get timespan for the day temperature
-  if (dim(object)[2] == 2) {
-    day <- get_timeseries(object, day.one, span, pars = "T2M_MAX", ...)
-  } else {
-    day <- get_timeseries(object[, , 1], day.one, span, ...)
+#' @rdname GDD
+#' @method GDD default
+#' @export
+GDD.default <- function(object, day.one, degree.days,
+                        base = 10, span = 150, ...){
+  
+  dots <- list(...)
+  pars <- dots[["pars"]]
+  
+  # coerce inputs to data.frame
+  object <- as.data.frame(object)
+  if(dim(object)[[2]] != 2) {
+    stop("Subscript out of bounds. Only lonlat should be provided ",
+         "in the default method \n.")
   }
   
-  # get timespan for the night temperature
-  if (dim(object)[2] == 2) {
-    night <- get_timeseries(object, day.one, span, pars = "T2M_MIN", ...)
-  } else {
-    night <- get_timeseries(object[,,2], day.one, span, ...)
+  day.one <- as.data.frame(day.one)[, 1]
+  
+  if (is.null(pars)) {
+    pars <- c("T2M_MAX", "T2M_MIN")
   }
   
+  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  
+  day <- dat[[pars[[1]]]]
+  
+  night <- dat[[pars[[2]]]]
+  
+  result <- .gdd(day, night, base, degree.days)
+  
+  return(result)
+}
+
+
+#' @rdname GDD
+#' @method GDD array
+#' @export
+GDD.array <- function(object, day.one, degree.days,
+                      base = 10, ...){
+  
+  dots <- list(...)
+  span <- dots[["span"]]
+  
+  if (is.null(span)) {
+    span <- (dim(object)[[2]] - 2)
+  }
+  
+  # coerce to data.frame
+  day.one <- as.data.frame(day.one)[, 1]
+  
+  day <- get_timeseries(object[, , 1], day.one, span)[[1]]
+  
+  night <- get_timeseries(object[, , 2], day.one, span)[[1]]
+  
+  result <- .gdd(day, night, base, degree.days)
+  
+  return(result)
+}
+
+
+#' @rdname GDD
+#' @method GDD sf
+#' @export
+GDD.sf <- function(object, day.one, degree.days,
+                   base = 10, span = 150, as.sf = TRUE, ...){
+  
+  dots <- list(...)
+  pars <- dots[["pars"]]
+  
+  day.one <- as.data.frame(day.one)[, 1]
+  
+  if (is.null(pars)) {
+    pars <- c("T2M_MAX", "T2M_MIN")
+  }
+  
+  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  
+  day <- dat[[pars[[1]]]]
+  
+  night <- dat[[pars[[2]]]]
+  
+  result <- .gdd(day, night, base, degree.days)
+  
+  if (isTRUE(as.sf)) {
+    result <- suppressWarnings(sf::st_bind_cols(object, result))
+  }
+  
+  return(result)
+}
+
+
+.gdd <- function(day, night, base, degree.days){
   # get the difference between day and night temperature
   Y <- (((day + night) / 2) - base)
   
@@ -91,8 +192,10 @@ GDD <- function(object, day.one = NULL, degree.days = NULL,
     return(i)
   })
   
-  result <- tibble::tibble(GDD = Y)
+  result <- data.frame(GDD = Y, stringsAsFactors = FALSE)
+  
+  class(result) <- union("clima_df", class(result))
   
   return(result)
+  
 }
-

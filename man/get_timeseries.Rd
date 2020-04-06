@@ -67,16 +67,15 @@ get_timeseries(chirp, day, span = c(10,11))
 ########################################################
 \donttest{
 # Fetch data from NASA POWER using 'sf' method
-library("sf")
-set.seed(123)
-lonlat <- data.frame(lon = runif(2, 11, 12),
-                     lat = runif(2, 55, 58))
 
-lonlat <- st_as_sf(lonlat, coords = c("lon","lat"), crs = 4326)
+data("lonlatsf", package = "climatrends")
 
 do <- as.Date(17667, origin = "1970-01-01")
 
-g <- get_timeseries(lonlat, day.one = do, span = 10, pars = c("PRECTOT", "T2M", "T10M"))
+g <- get_timeseries(lonlatsf, 
+                    day.one = do, 
+                    span = 10,
+                    pars = c("PRECTOT", "T2M", "T10M"))
 
 g
 }

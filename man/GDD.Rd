@@ -2,9 +2,18 @@
 % Please edit documentation in R/GDD.R
 \name{GDD}
 \alias{GDD}
+\alias{GDD.default}
+\alias{GDD.array}
+\alias{GDD.sf}
 \title{Growing degree-days}
 \usage{
-GDD(object, day.one = NULL, degree.days = NULL, base = 10, span = 150, ...)
+GDD(object, day.one, degree.days, base = 10, ...)
+
+\method{GDD}{default}(object, day.one, degree.days, base = 10, span = 150, ...)
+
+\method{GDD}{array}(object, day.one, degree.days, base = 10, ...)
+
+\method{GDD}{sf}(object, day.one, degree.days, base = 10, span = 150, as.sf = TRUE, ...)
 }
 \arguments{
 \item{object}{a data.frame (or object that can be coerced to data.frame) 
@@ -20,10 +29,12 @@ organism (look for the physiology of the focal organism)}
 
 \item{base}{an integer for the base temperature}
 
+\item{...}{additional arguments passed to methods. See details.}
+
 \item{span}{an integer or a vector with integers for the duration of the 
 time series to be captured}
 
-\item{...}{additional arguments passed to methods. See details.}
+\item{as.sf}{logical, to return an object of class 'sf'}
 }
 \value{
 The number of days required to reach the growing degree-days.
@@ -35,6 +46,24 @@ accumulation and is used to predict plant and animal development
 rates. Growing degree-days are calculated by taking the 
 integral of warmth above a base temperature.
 }
+\details{
+The \code{array} method assumes that \var{object} contains climate data provided 
+ from a local source; this requires a array with two dimensions, 1st dimension 
+ contains the day temperature and 2nd dimension the night temperature, 
+ see help("modis", "climatrends") for an example on input structure.
+
+The default method and the sf method assumes that the climate data will be fetched 
+ from an remote (cloud) \var{source}.
+
+Additional arguments:
+
+\code{source}: character for the source of remote data. Current remote \var{source} 
+ is: 'nasapower'
+
+\code{pars}: character vector for the temperature data to be fetched. If 
+ \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+ c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN")
+}
 \examples{
 # Using local sources
 data("modis", package = "climatrends")
@@ -44,13 +73,12 @@ day <- as.Date("2013-10-28", format = "\%Y-\%m-\%d")
 GDD(modis, 
     day.one = day,
     degree.days = 100, 
-    base = 5,
-    span = 13)
+    base = 5)
 
 \donttest{
-# Using NASA POWER
-library("nasapower")
+######################################
 
+# Using remote sources 
 set.seed(123)
 # random geographic locations around bbox(11, 12, 55, 58)
 lonlat <- data.frame(lon = runif(3, 11, 12),
@@ -67,15 +95,27 @@ GDD(lonlat,
     day.one = dates,
     degree.days = 1300,
     base = 5)
-}
 
+######################################
+ 
+# Objects of class 'sf'
+data("lonlatsf", package = "climatrends")
+
+dates <- as.Date(16150, origin = "1970-01-01")
+
+GDD(lonlatsf,
+    day.one = dates,
+    degree.days = 200,
+    base = 5)
+}
 }
 \references{
 Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 
 \cr\url{https://doi.org/10.2307/2845499}
 }
 \seealso{
-Other climatology functions: 
-\code{\link{rainfall}()}
+Other temperature functions: 
+\code{\link{ETo}()},
+\code{\link{temperature}()}
 }
-\concept{climatology functions}
+\concept{temperature functions}

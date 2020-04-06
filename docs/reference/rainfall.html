@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -155,13 +155,13 @@ for the parameter PRECTOT (precipitation)</p></td>
     </tr>
     <tr>
       <th>day.one</th>
-      <td><p>a vector of class <code>Date</code> for the starting date to 
-capture the environmental data (YYYY-MM-DD)</p></td>
+      <td><p>a vector of class <code>Date</code> for the starting date to capture 
+the climate data</p></td>
     </tr>
     <tr>
       <th>span</th>
-      <td><p>an integer or a vector with integers for the duration 
-of the timespan to be captured</p></td>
+      <td><p>an integer or a vector with integers for the duration of the 
+time series to be captured</p></td>
     </tr>
     <tr>
       <th>timeseries</th>
@@ -170,13 +170,12 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
     </tr>
     <tr>
       <th>intervals</th>
-      <td><p>integer no lower than 5, for the days intervals when
+      <td><p>integer (no lower than 5), for the days intervals when
 <var>timeseries</var> = <code>TRUE</code></p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments passed to 
-<code><a href='https://docs.ropensci.org/nasapower/reference/get_power.html'>get_power</a></code> methods</p></td>
+      <td><p>additional arguments passed to methods. See details.</p></td>
     </tr>
     </table>
 
@@ -204,15 +203,10 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
 110(D23), D23107. <br /><a href='https://doi.org/10.1029/2005JD006119'>https://doi.org/10.1029/2005JD006119</a></p>
 <p>Sparks A. H. (2018). Journal of Open Source Software, 3(30), 1035. 
 <br /><a href='https://doi.org/10.21105/joss.01035'>https://doi.org/10.21105/joss.01035</a></p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other climatology functions: 
-<code><a href='ETo.html'>ETo</a>()</code>,
-<code><a href='GDD.html'>GDD</a>()</code>,
-<code><a href='temperature.html'>temperature</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># Using local sources</span>
+    <pre class="examples"><span class='co'># \donttest{</span>
+<span class='co'># Using local sources</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"chirp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='no'>day</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='st'>"2013-10-28"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"%Y-%m-%d"</span>)
@@ -221,7 +215,6 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
          <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>day</span>,
          <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>11</span>)
 
-<span class='co'># \donttest{</span>
 <span class='co'># Using NASA POWER</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
 
@@ -261,7 +254,6 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#references">References</a></li>
-      <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 
