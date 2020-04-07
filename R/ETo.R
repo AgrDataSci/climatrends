@@ -146,6 +146,10 @@ ETo.default <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
 #' @export
 ETo.array <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
   
+  if(dim(object)[[2]] == 2) {
+    UseMethod("ETo", "default")
+  }
+  
   # coerce to data.frame
   day.one <- as.data.frame(day.one)[, 1]
 

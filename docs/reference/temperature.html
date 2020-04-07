@@ -212,7 +212,7 @@ bellow 0 degree Celsius</p></dd>
     <p>The <code>array</code> method assumes that <var>object</var> contains climate data provided 
  from a local source; this requires a array with two dimensions, 1st dimension 
  contains the day temperature and 2nd dimension the night temperature, 
- see help("modis", "climatrends") for an example on input structure.</p>
+ see help("modis", package = "climatrends") for an example on input structure.</p>
 <p>The default method and the sf method assumes that the climate data will be fetched 
  from an remote (cloud) <var>source</var>.</p>
 <p>When <var>timeseries</var> = <code>TRUE</code>, an id is created, 
@@ -221,7 +221,7 @@ bellow 0 degree Celsius</p></dd>
 <p><code>source</code>: character for the source of remote data. Current remote <var>source</var> 
  is: 'nasapower'</p>
 <p><code>pars</code>: character vector for the temperature data to be fetched. If 
- <code>source</code> is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+ <code>source</code> is 'nasapower', the temperature can be adjusted to 2 m, the default,
  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN")</p>
 <p><code>days.before</code>: optional, an integer for the number of days before 
  <var>day.one</var> to be included in the timespan.</p>
@@ -258,25 +258,25 @@ bellow 0 degree Celsius</p></dd>
 
 <span class='co'># get temperature indices for 30 days after day.one</span>
 <span class='co'># return a data.frame</span>
-<span class='no'>temp</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
+<span class='no'>temp1</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
                     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
                     <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>,
                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='no'>temp</span>
+<span class='no'>temp1</span>
 
 <span class='co'># return a sf object</span>
-<span class='no'>temp</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
+<span class='no'>temp2</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
                     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
                     <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>)
-<span class='no'>temp</span>
+<span class='no'>temp2</span>
 
 <span class='co'># indices with intervals of 7 days and return a sf object </span>
-<span class='no'>temp</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
+<span class='no'>temp3</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
                     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
                     <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>,
                     <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
                     <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>7</span>)
-<span class='no'>temp</span>
+<span class='no'>temp3</span>
 
 <span class='co'># }</span></pre>
   </div>

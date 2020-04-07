@@ -125,6 +125,10 @@ GDD.default <- function(object, day.one, degree.days,
 GDD.array <- function(object, day.one, degree.days,
                       base = 10, ...){
   
+  if(dim(object)[[2]] == 2) {
+    UseMethod("GDD", "default")
+  }
+  
   dots <- list(...)
   span <- dots[["span"]]
   

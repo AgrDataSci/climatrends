@@ -17,7 +17,7 @@
 #' The \code{array} method assumes that \var{object} contains climate data provided 
 #'  from a local source; this requires a array with two dimensions, 1st dimension 
 #'  contains the day temperature and 2nd dimension the night temperature, 
-#'  see help("modis", "climatrends") for an example on input structure.
+#'  see help("modis", package = "climatrends") for an example on input structure.
 #' 
 #' The default method and the sf method assumes that the climate data will be fetched 
 #'  from an remote (cloud) \var{source}.
@@ -31,7 +31,7 @@
 #'  is: 'nasapower'
 #' 
 #' \code{pars}: character vector for the temperature data to be fetched. If 
-#'  \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+#'  \code{source} is 'nasapower', the temperature can be adjusted to 2 m, the default,
 #'  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
 #' 
 #' \code{days.before}: optional, an integer for the number of days before 
@@ -79,25 +79,25 @@
 #' 
 #' # get temperature indices for 30 days after day.one
 #' # return a data.frame
-#' temp <- temperature(lonlatsf,
+#' temp1 <- temperature(lonlatsf,
 #'                     day.one = dates,
 #'                     span = 30, 
 #'                     as.sf = FALSE)
-#' temp
+#' temp1
 #' 
 #' # return a sf object
-#' temp <- temperature(lonlatsf,
+#' temp2 <- temperature(lonlatsf,
 #'                     day.one = dates,
 #'                     span = 30)
-#' temp
+#' temp2
 #' 
 #' # indices with intervals of 7 days and return a sf object 
-#' temp <- temperature(lonlatsf,
+#' temp3 <- temperature(lonlatsf,
 #'                     day.one = dates,
 #'                     span = 30,
 #'                     timeseries = TRUE,
 #'                     intervals = 7)
-#' temp
+#' temp3
 #' 
 #' }
 #' @export
@@ -153,6 +153,11 @@ temperature.default <- function(object, day.one,
 temperature.array <- function(object, day.one, 
                               span, timeseries = FALSE,
                               intervals = 5, ...){
+  
+  
+  if(dim(object)[[2]] == 2) {
+    UseMethod("temperature", "default")
+  }
   
   # coerce to data.frame
   day.one <- as.data.frame(day.one)[, 1]

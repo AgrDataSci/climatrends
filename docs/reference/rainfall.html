@@ -43,7 +43,7 @@
 
 
 <meta property="og:title" content="Rainfall indices — rainfall" />
-<meta property="og:description" content="Compute rainfall indices over a timespan" />
+<meta property="og:description" content="Rainfall indices over a timespan" />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -129,15 +129,25 @@
     </div>
 
     <div class="ref-description">
-    <p>Compute rainfall indices over a timespan</p>
+    <p>Rainfall indices over a timespan</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rainfall</span>(
+    <pre class="usage"><span class='fu'>rainfall</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>span</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>rainfall</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>span</span>, <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for matrix</span>
+<span class='fu'>rainfall</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>span</span>, <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for sf</span>
+<span class='fu'>rainfall</span>(
   <span class='no'>object</span>,
-  <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>150</span>,
+  <span class='no'>day.one</span>,
+  <span class='no'>span</span>,
   <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -146,12 +156,10 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>a numeric vector of geographic coordinates (lonlat) or
-a matrix containing the precipitation data.
-When lonlat is used, the function makes a call to
-<code><a href='https://docs.ropensci.org/nasapower/reference/get_power.html'>nasapower::get_power</a></code> to fetch and concatenate environmental 
-data from NASA POWER (<a href='https://power.larc.nasa.gov/'>https://power.larc.nasa.gov/</a>)
-for the parameter PRECTOT (precipitation)</p></td>
+      <td><p>a <code>data.frame</code> (or object that can be coerced to data.frame) 
+with geographical coordinates (lonlat), or an object of class <code>sf</code> with 
+geometry 'POINT' or 'POLYGON', or a named <code>matrix</code> with climate data.
+See details.</p></td>
     </tr>
     <tr>
       <th>day.one</th>
@@ -164,6 +172,10 @@ the climate data</p></td>
 time series to be captured</p></td>
     </tr>
     <tr>
+      <th>...</th>
+      <td><p>additional arguments passed to methods. See details.</p></td>
+    </tr>
+    <tr>
       <th>timeseries</th>
       <td><p>logical, <code>FALSE</code> for a single point time series
 observation or <code>TRUE</code> for a time series based on <var>intervals</var></p></td>
@@ -174,8 +186,8 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
 <var>timeseries</var> = <code>TRUE</code></p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>additional arguments passed to methods. See details.</p></td>
+      <th>as.sf</th>
+      <td><p>logical, to return an object of class 'sf'</p></td>
     </tr>
     </table>
 
@@ -193,20 +205,32 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
 <dt>Rtotal</dt><dd><p>total precipitation (mm) in wet days, rain &gt;= 1 (mm)</p></dd>
 <dt>SDII</dt><dd><p>simple daily intensity index, total precipitation divided by the
  number of wet days (mm/days)</p></dd>
- 
- When timeseries = TRUE, an id is created, 
- which is the index for the rownames of the provided object.
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The <code>matrix</code> method assumes that <var>object</var> contains climate data provided 
+ from a local source; see help("chirp", package = "climatrends") for an example on input 
+ structure.</p>
+<p>The default method and the sf method assumes that the climate data will be fetched 
+ from an remote (cloud) <var>source</var>.</p>
+<p>When <var>timeseries</var> = <code>TRUE</code>, an id is created, 
+ which is the index for the rownames of the inputted <var>object</var>.</p>
+<p>Additional arguments:</p>
+<p><code>source</code>: character for the source of remote data. Current remote <var>source</var> 
+ is: 'nasapower'</p>
+<p><code>pars</code>: character vector for the precipitation data to be fetched. If 
+ <code>source</code> is 'nasapower', the default precipitation parameter is "PRECTOT".</p>
+<p><code>days.before</code>: optional, an integer for the number of days before 
+ <var>day.one</var> to be included in the timespan.</p> 
+<p>When <var>timeseries</var> = <code>TRUE</code>, an id is created, 
+ which is the index for the rownames of the inputted <var>object</var>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Aguilar E., et al. (2005). Journal of Geophysical Research, 
 110(D23), D23107. <br /><a href='https://doi.org/10.1029/2005JD006119'>https://doi.org/10.1029/2005JD006119</a></p>
-<p>Sparks A. H. (2018). Journal of Open Source Software, 3(30), 1035. 
-<br /><a href='https://doi.org/10.21105/joss.01035'>https://doi.org/10.21105/joss.01035</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># \donttest{</span>
-<span class='co'># Using local sources</span>
+    <pre class="examples"><span class='co'># Using local sources</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"chirp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='no'>day</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='st'>"2013-10-28"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"%Y-%m-%d"</span>)
@@ -215,37 +239,42 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
          <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>day</span>,
          <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>11</span>)
 
-<span class='co'># Using NASA POWER</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
+<span class='co'>###################################</span>
+<span class='co'># \donttest{</span>
+<span class='co'>########################################</span>
 
-<span class='co'># random points within bbox(11, 12, 55, 58)</span>
+<span class='co'># Using remote sources of climate data</span>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"lonlatsf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>123</span>)
-<span class='no'>lonlat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>3</span>, <span class='fl'>11</span>, <span class='fl'>12</span>),
-                     <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>3</span>, <span class='fl'>55</span>, <span class='fl'>58</span>))
-
-<span class='co'># random dates within 2018-05-15 and 2018-05-20</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>321</span>)
-<span class='no'>dates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>3</span>, <span class='fl'>17666</span>, <span class='fl'>17670</span>))
+<span class='no'>dates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>5</span>, <span class='fl'>17660</span>, <span class='fl'>17675</span>))
 <span class='no'>dates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='no'>dates</span>, <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"1970-01-01"</span>)
 
-<span class='co'># calculate rainfall for the first 50 days after day.one</span>
-<span class='fu'>rainfall</span>(<span class='no'>lonlat</span>,
-         <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
-         <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>50</span>)
+<span class='co'># get rainfall indices for 30 days after day.one</span>
+<span class='co'># return a data.frame</span>
+<span class='no'>rain1</span> <span class='kw'>&lt;-</span> <span class='fu'>rainfall</span>(<span class='no'>lonlatsf</span>,
+                  <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
+                  <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>,
+                  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>rain1</span>
 
+<span class='co'># return a sf object</span>
+<span class='no'>rain2</span> <span class='kw'>&lt;-</span> <span class='fu'>rainfall</span>(<span class='no'>lonlatsf</span>,
+                  <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
+                  <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>)
 
-<span class='co'># include the first 15 days before day.one (residual precipitation)</span>
-<span class='fu'>rainfall</span>(<span class='no'>lonlat</span>,
-         <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
-         <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-         <span class='kw'>days.before</span> <span class='kw'>=</span> <span class='fl'>15</span>)
+<span class='no'>rain2</span>
 
-<span class='co'># rainfall indices over a time series          </span>
-<span class='fu'>rainfall</span>(<span class='no'>lonlat</span>,
-         <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
-         <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-         <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-         <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>7</span>)
+<span class='co'># indices with intervals of 7 days and return a sf object </span>
+<span class='no'>rain3</span> <span class='kw'>&lt;-</span> <span class='fu'>rainfall</span>(<span class='no'>lonlatsf</span>,
+                  <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
+                  <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>,
+                  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+                  <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+                  <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>7</span>)
+<span class='no'>rain3</span>
+
 <span class='co'># }       </span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -253,6 +282,7 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
       <li><a href="#references">References</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

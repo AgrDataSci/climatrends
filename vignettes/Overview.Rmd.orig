@@ -3,9 +3,9 @@ title: "climatrends: Precipitation and Temperature Indices for Climate Variabili
 package: climatrends
 author:
 - name: Kauê de Sousa
-  affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway; and The Alliance of Bioversity International and CIAT, Rome, Italy
+  affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway; and Bioversity International, Rome, Italy
 - name: Jacob van Etten 
-  affiliation: The Alliance of Bioversity International and CIAT, Rome, Italy
+  affiliation: Bioversity International, Rome, Italy
 - name: Svein Ø. Solberg 
   affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway
 output: html_document
