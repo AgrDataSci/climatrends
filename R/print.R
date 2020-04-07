@@ -10,7 +10,7 @@ print.clima_df <- function(x, ...){
   
   classes <- as.vector(unlist(classes))
   class_abb = c(list = "<list>", integer = "<int>", numeric = "<dbl>", 
-                character = "<chr>", Date = "<Date>", complex = "<cpl>", 
+                character = "<chr>", Date = "<date>", complex = "<cpl>", 
                 factor = "<fct>", POSIXct = "<POSc>", logical = "<lgl>", 
                 IDate = "<IDat>", integer64 = "<i64>", raw = "<raw>", 
                 expression = "<expr>", ordered = "<ord>")
@@ -53,7 +53,6 @@ print.clima_df <- function(x, ...){
                            "---",
                            rownames(ta),
                            " ")
-    
     
   }
   
