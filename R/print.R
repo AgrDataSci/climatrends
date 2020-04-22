@@ -45,14 +45,12 @@ print.clima_df <- function(x, ...){
     toprint <- rbind(abbs, 
                      he, 
                      rep("", dim(x)[[2]]), 
-                     ta, 
-                     names(x))
+                     ta)
     
     rownames(toprint) <- c("",
                            row.names(he),
                            "---",
-                           rownames(ta),
-                           " ")
+                           rownames(ta))
     
   }
   

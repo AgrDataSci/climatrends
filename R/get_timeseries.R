@@ -307,10 +307,39 @@ get_timeseries.matrix <- function(object,
 #' .nasapower(dates = c("2010-01-01", "2010-01-30"),
 #'            lonlat = lonlat,
 #'            pars = c("T2M_MAX"))
+#' 
+#' 
+#' lonlat <- data.frame(lon = c(-4.96, 11.09),
+#'                      lat = c(37.82, 60.80))
+#'                      
 #' @noRd
-.nasapower <- function(dates, lonlat, pars){
+.nasapower <- function(dates, lonlat, pars, community = NULL, temporal_average = NULL){
   
   message("Getting climate data from NASA POWER \n")
+  
+  if (is.null(community)) {
+    community <- "AG"
+  }
+  
+  if (is.null(temporal_average)) {
+    temporal_average <- "DAILY"
+  }
+  
+  nr <- dim(lonlat)[[1]]
+  
+  # check if data from multiple regions is required
+  xy <- split(lonlat, seq_len(nr))
+  
+  xy <- lapply(xy, function(x){
+    x <- as.vector(unlist(x))
+    .nearest(x, wcentroid)
+  })
+  
+  regions <- unlist(xy)
+  nregions <- length(unique(regions))
+  if (nregions > 1) {
+    message("Fetching data for ", nregions, " regions with 5 x 5 \n")
+  }
   
   # define geographic boundaries for lonlat
   lims <- with(lonlat, c(floor(min(lonlat[,1])), 
@@ -319,10 +348,10 @@ get_timeseries.matrix <- function(object,
                          ceiling(max(lonlat[,2]))))
   
   # get NASA POWER
-  info <- nasapower::get_power(community = "AG",
+  info <- nasapower::get_power(community = community,
                                lonlat = lims,
                                dates = dates,
-                               temporal_average = "DAILY", 
+                               temporal_average = temporal_average, 
                                pars = pars)
   
   info <- as.data.frame(info)
