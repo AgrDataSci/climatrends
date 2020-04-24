@@ -32,7 +32,7 @@ install.packages("climatrends")
 The development version can be installed via
 
 ``` r
-library("devtools")
+library("remotes")
 install_github("agrobioinfoservices/climatrends", build_vignettes = TRUE)
 ```
 

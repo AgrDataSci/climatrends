@@ -1,3 +1,12 @@
+climatrends 0.1.2 (2020-04-24)
+=========================
+* Export function `get_timeseries()`
+* Enable modular expansion of data sources using API clients by creating specific functions that a called with the argument `source` in all functions
+* Enable data retrieve from large areas in 'nasapower' by clustering the lonlat points
+* Methods for objects of classes 'sf', 'matrix', 'array' and 'data.frame' (default) in all functions
+* Remove dependency from 'tibble'
+* Implement a `print()` method for objects that inherits the class 'clima_df'
+
 climatrends 0.1.0 (2020-02-20)
 =========================
 * Add examples of data set from local sources `modis()` and `chirp()`

@@ -58,6 +58,7 @@
 #' }
 #' @importFrom nasapower get_power
 #' @importFrom sf st_centroid st_geometry_type st_as_sf
+#' @importFrom stats dist hclust cutree
 #' @export
 get_timeseries <- function(object, day.one, span, ...) {
   
@@ -300,17 +301,15 @@ get_timeseries.matrix <- function(object,
 #' @param pars character vector of solar, meteorological or climatology parameters 
 #' to download. See help("parameters", "nasapower") for details.
 #' @examples 
-#' set.seed(123)
-#' lonlat <- data.frame(lon = runif(3, 11, 12),
-#'                      lat = runif(3, 55, 58))
+#'  
+#' lonlat <- data.frame(lon = c(-66.48, -83.08, -66.45, -66.4),
+#'                      lat = c(-4.60, 9.85, -5.19, -0.15))
 #' 
-#' .nasapower(dates = c("2010-01-01", "2010-01-30"),
-#'            lonlat = lonlat,
-#'            pars = c("T2M_MAX"))
+#' climatrends:::.nasapower(dates = c("2010-01-01", "2010-01-30"),
+#'                          lonlat = lonlat,
+#'                          pars = c("T2M_MAX","T2M_MIN"))
 #' 
 #' 
-#' lonlat <- data.frame(lon = c(-4.96, 11.09),
-#'                      lat = c(37.82, 60.80))
 #'                      
 #' @noRd
 .nasapower <- function(dates, lonlat, pars, community = NULL, temporal_average = NULL){
@@ -328,72 +327,95 @@ get_timeseries.matrix <- function(object,
   nr <- dim(lonlat)[[1]]
   
   # check if data from multiple regions is required
-  xy <- split(lonlat, seq_len(nr))
+  h <- stats::dist(lonlat)
+  h <- stats::hclust(h)
+  regions <- stats::cutree(h, h = 5)
   
-  xy <- lapply(xy, function(x){
-    x <- as.vector(unlist(x))
-    .nearest(x, wcentroid)
-  })
+  nregions <- max(regions)
   
-  regions <- unlist(xy)
-  nregions <- length(unique(regions))
   if (nregions > 1) {
-    message("Fetching data for ", nregions, " regions with 5 x 5 \n")
+    message("Fetching data for ", nregions, " regions with 5 x 5 arc-degree \n")
   }
   
-  # define geographic boundaries for lonlat
-  lims <- with(lonlat, c(floor(min(lonlat[,1])), 
-                         floor(min(lonlat[,2])),
-                         ceiling(max(lonlat[,1])), 
-                         ceiling(max(lonlat[,2]))))
+  sp <- as.Date(dates, format = "%Y-%m-%d")
+  sp <- length(sp[1]:sp[2])
+  npars <- length(pars)
   
-  # get NASA POWER
-  info <- nasapower::get_power(community = community,
-                               lonlat = lims,
-                               dates = dates,
-                               temporal_average = temporal_average, 
-                               pars = pars)
+  dat <- matrix(NA,
+                nrow = nr,
+                ncol = (sp * npars),
+                dimnames = list(1:nr))
+
   
-  info <- as.data.frame(info)
+  for (i in seq_len(nregions)) {
+    
+    r_i <- which(regions == i)
+    lonlat_i <- lonlat[r_i, ]
+    
+    # define geographic boundaries for lonlat
+    lims <- with(lonlat, c(floor(min(lonlat_i[,1])), 
+                           floor(min(lonlat_i[,2])),
+                           ceiling(max(lonlat_i[,1])), 
+                           ceiling(max(lonlat_i[,2]))))
+    
+    # get NASA POWER
+    info <- nasapower::get_power(community = community,
+                                 lonlat = lims,
+                                 dates = dates,
+                                 temporal_average = temporal_average, 
+                                 pars = pars)
+    
+    info <- as.data.frame(info)
+    
+    # split by YYYYMMDD to create a list of data frames
+    info <- split(info, info$YYYYMMDD)
+    
+    # keep only coordinates and the variable fetched
+    info <- lapply(info, function(x) {
+      x[(!names(x) %in% c("YEAR", "MM", "DD", "DOY"))]
+    })
+    
+    # put this information in its right lonlat as provided in the input
+    xy2 <- info[[1]][,c("LON","LAT")]
+    
+    n <- dim(lonlat_i)[[1]]
+    
+    # split lonlat into a list by its rows
+    xy1 <- split(lonlat_i, seq_len(n))
+    
+    # get the index for lonlat in info
+    nn <- lapply(xy1, function(n) {
+      n <- as.vector(t(n))
+      .nearest(xy1 = n, xy2 = xy2)
+    })
+    
+    # unlist to get the vector
+    nn <- unlist(nn)
+    
+    # force the vector to be in the right order, from 1 to n 
+    nn <- nn[ sort(as.numeric(names(nn))) ]
+    
+    # retrieve the data from info using nn
+    d <- lapply(info, function(n) {
+      n <- n[nn, pars]
+      n
+    })
+    
+    namedays <- names(d)
+    
+    # combine vectors in this list
+    d <- do.call("cbind", d)
+    d <- as.matrix(d)
+    
+    namesdat <- dimnames(d)[[2]]
+    
+    dat[r_i, ] <- d
+    
+  }
   
-  # split by YYYYMMDD to create a list of data frames
-  info <- split(info, info$YYYYMMDD)
+  dimnames(dat)[[2]] <- namesdat
   
-  # keep only coordinates and the variable fetched
-  info <- lapply(info, function(x) {
-    x[(!names(x) %in% c("YEAR", "MM", "DD", "DOY"))]
-  })
-  
-  # put this information in its right lonlat as provided in the input
-  xy2 <- info[[1]][,c("LON","LAT")]
-  
-  n <- dim(lonlat)[[1]]
-  
-  # split lonlat into a list by its rows
-  xy1 <- split(lonlat, seq_len(n))
-  
-  # get the index for lonlat in info
-  nn <- lapply(xy1, function(n) {
-    n <- as.vector(t(n))
-    .nearest(xy1 = n, xy2 = xy2)
-  })
-  
-  # unlist to get the vector
-  nn <- unlist(nn)
-  
-  # force the vector to be in the right order, from 1 to n 
-  nn <- nn[ sort(as.numeric(names(nn))) ]
-  
-  # retrieve the data from info using nn
-  dat <- lapply(info, function(n) {
-    n <- n[nn, pars]
-    n
-  })
-  
-  namedays <- names(dat)
-  
-  # combine vectors in this list
-  dat <- do.call("cbind", dat)
+  dat <- as.data.frame(dat)
   
   result <- list()
   if (length(pars) > 1) {
