@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -111,13 +111,13 @@
 <p>The package may be installed from CRAN via</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"climatrends"</span>)</span></code></pre></div>
 <p>The development version can be installed via</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"devtools"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"agrobioinfoservices/climatrends"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"remotes"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"agrobioinfoservices/climatrends"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<p>The function <code><a href="reference/temperature.html">temperature()</a></code> has as the basic input data an <code>object</code> of class <code>data.frame</code> with geographic information (lonlat) or an <code>array</code> with day and night temperature (when provided locally) and a vector of class <code>Date</code> for the first day that will be taken into account for the indices. The duration from where the environmental indices will be computed is defined by the argument <code>span</code> which can be a single integer that takes into account a single timespan for all tricot experiments or a vector indicating the timespan for each point.</p>
+<p>The default method for the function <code><a href="reference/temperature.html">temperature()</a></code> has as the basic input an <code>object</code> of class <code>data.frame</code> (or any other that can be coerced to <code><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame()</a></code>) with the longitude and latitude in geographic coordinates and a vector of class <code>Date</code> for the first day that will be taken into account for the indices. The duration from where the environmental indices will be computed is defined by the argument <code>span</code> which can be a single integer that takes into account a single timespan for all points or a vector indicating the timespan for each point.</p>
 <p>Here we generate some random points within the Innlandet county in Norway from May-2015:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">6</span>)</span>
 <span id="cb3-2"><a href="#cb3-2"></a>lonlat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">lon =</span> <span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="dv">5</span>, <span class="fl">8.3</span>, <span class="dv">12</span>),</span>
@@ -144,7 +144,7 @@
 <span id="cb4-5"><a href="#cb4-5"></a>temp</span>
 <span id="cb4-6"><a href="#cb4-6"></a></span>
 <span id="cb4-7"><a href="#cb4-7"></a>       id       date index  value</span>
-<span id="cb4-8"><a href="#cb4-8"></a>    <span class="op">&lt;</span>int<span class="op">&gt;</span><span class="st">     </span><span class="er">&lt;</span>Date<span class="op">&gt;</span><span class="st"> </span><span class="er">&lt;</span>chr<span class="op">&gt;</span><span class="st">  </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>    <span class="op">&lt;</span>int<span class="op">&gt;</span><span class="st">     </span><span class="er">&lt;</span>date<span class="op">&gt;</span><span class="st"> </span><span class="er">&lt;</span>chr<span class="op">&gt;</span><span class="st">  </span><span class="er">&lt;</span>dbl<span class="op">&gt;</span></span>
 <span id="cb4-9"><a href="#cb4-9"></a><span class="dv">1</span>       <span class="dv">1</span> <span class="dv">2015-05-01</span> maxDT   <span class="fl">9.70</span></span>
 <span id="cb4-10"><a href="#cb4-10"></a><span class="dv">2</span>       <span class="dv">1</span> <span class="dv">2015-05-01</span> minDT  <span class="fl">-0.58</span></span>
 <span id="cb4-11"><a href="#cb4-11"></a><span class="dv">3</span>       <span class="dv">1</span> <span class="dv">2015-05-01</span> maxNT   <span class="fl">2.42</span></span>
@@ -156,8 +156,7 @@
 <span id="cb4-17"><a href="#cb4-17"></a><span class="dv">278</span>     <span class="dv">5</span> <span class="dv">2015-06-12</span>    SU   <span class="fl">0.00</span></span>
 <span id="cb4-18"><a href="#cb4-18"></a><span class="dv">279</span>     <span class="dv">5</span> <span class="dv">2015-06-12</span>    TR   <span class="fl">0.00</span></span>
 <span id="cb4-19"><a href="#cb4-19"></a><span class="dv">280</span>     <span class="dv">5</span> <span class="dv">2015-06-12</span>   CFD   <span class="fl">0.00</span></span>
-<span id="cb4-20"><a href="#cb4-20"></a>       id       date index  value</span>
-<span id="cb4-21"><a href="#cb4-21"></a>       </span></code></pre></div>
+<span id="cb4-20"><a href="#cb4-20"></a>       </span></code></pre></div>
 </div>
 <div id="going-further" class="section level2">
 <h2 class="hasAnchor">
@@ -169,8 +168,9 @@
 <h2 class="hasAnchor">
 <a href="#meta" class="anchor"></a>Meta</h2>
 <ul>
+<li><p>Package <a href="https://agrobioinfoservices.github.io/climatrends/">website</a></p></li>
 <li><p>Please <a href="https://github.com/agrobioinfoservices/climatrends/issues">report any issues or bugs</a>.</p></li>
-<li><p>License: MIT</p></li>
+<li><p>License: <a href="https://opensource.org/licenses/MIT">MIT</a></p></li>
 <li><p>Get citation information for <em>climatrends</em> in R by typing <code><a href="https://rdrr.io/r/utils/citation.html">citation(package = "climatrends")</a></code>.</p></li>
 <li><p>You are welcome to contribute to the <em>climatrends</em> project. Please read our <a href="CONTRIBUTING.html">contribution guide lines</a>.</p></li>
 <li><p>Please note that the <em>climatrends</em> project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in the <em>climatrends</em> project you agree to abide by its terms.</p></li>

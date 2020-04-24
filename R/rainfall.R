@@ -502,6 +502,12 @@ rainfall.sf <- function(object, day.one, span,
   # consecutive 5 days
   l <- length(object)
   
+  if (l < 5) {
+    
+    return(0L)
+  
+  }
+  
   r5day <- NULL
   
   for (i in 1:(l-4)){

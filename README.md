@@ -38,7 +38,7 @@ install_github("agrobioinfoservices/climatrends", build_vignettes = TRUE)
 
 ## Example
 
-The function `temperature()` has as the basic input data an `object` of class `data.frame` with geographic information (lonlat) or an `array` with day and night temperature (when provided locally) and a vector of class `Date` for the first day that will be taken into account for the indices. The duration from where the environmental indices will be computed is defined by the argument `span` which can be a single integer that takes into account a single timespan for all tricot experiments or a vector indicating the timespan for each point.
+The default method for the function `temperature()` has as the basic input an `object` of class `data.frame` (or any other that can be coerced to a data.frame) with the longitude and latitude in geographic coordinates and a vector of class `Date` for the first day that will be taken into account for the indices. The duration from where the temperature indices will be computed is defined by the argument `span` which can be a single integer that takes into account a single timespan for all points or a vector indicating the timespan for each point.
 
 Here we generate some random points within the Innlandet county in Norway from May-2015:
 
@@ -74,7 +74,7 @@ temp <- temperature(lonlat, day.one = date, span = 50,
 temp
 
        id       date index  value
-    <int>     <Date> <chr>  <dbl>
+    <int>     <date> <chr>  <dbl>
 1       1 2015-05-01 maxDT   9.70
 2       1 2015-05-01 minDT  -0.58
 3       1 2015-05-01 maxNT   2.42
@@ -86,7 +86,6 @@ temp
 278     5 2015-06-12    SU   0.00
 279     5 2015-06-12    TR   0.00
 280     5 2015-06-12   CFD   0.00
-       id       date index  value
        
 ```
 
@@ -101,9 +100,11 @@ vignette("Overview", package = "climatrends")
 
 ## Meta
 
+  - Package [website](https://agrobioinfoservices.github.io/climatrends/)
+  
   - Please [report any issues or bugs](https://github.com/agrobioinfoservices/climatrends/issues).
 
-  - License: MIT
+  - License: [MIT](https://opensource.org/licenses/MIT)
 
   - Get citation information for *climatrends* in R by typing `citation(package = "climatrends")`.
 

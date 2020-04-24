@@ -50,6 +50,10 @@
 #' temperature > 25 (degree Celsius)}
 #' \item{CFD}{consecutive frosty days, number of days with temperature 
 #' bellow 0 degree Celsius}
+#' \item{maxWSD}{maximum warm spell duration, consecutive days with 
+#' temperature > 90th percentile}
+#' \item{maxCSD}{maximum cold spell duration, consecutive nights with 
+#' temperature < 10th percentile}
 #' 
 #' @family temperature functions
 #' @references 
@@ -81,7 +85,7 @@
 #' # return a data.frame
 #' temp1 <- temperature(lonlatsf,
 #'                     day.one = dates,
-#'                     span = 30, 
+#'                     span = 30,
 #'                     as.sf = FALSE)
 #' temp1
 #' 
@@ -232,7 +236,9 @@ temperature.sf <- function(object, day.one,
 #' @noRd
 .temperature_indices <- function(day, night, timeseries, intervals, day.one, span){
   
-  index <- c("maxDT","minDT","maxNT","minNT","DTR","SU","TR","CFD")
+  index <- c("maxDT", "minDT", "maxNT", "minNT",
+             "DTR", "SU", "TR", "CFD",
+             "maxWSD", "maxCSD", "DT90p", "NT10p")
   
   n <- nrow(day)
   
@@ -298,14 +304,18 @@ temperature.sf <- function(object, day.one,
         
         YY <- z[((l / 2) + 1):l]
         
-        c(maxDT = .max_temperature(XX),
-          minDT = .min_temperature(XX),
-          maxNT = .max_temperature(YY),
-          minNT = .min_temperature(YY),
-          DTR   = .temperature_range(XX, YY),
-          SU    = .summer_days(XX),
-          TR    = .tropical_nights(YY),
-          CFD   = .frosty_days(YY))
+        c(maxDT  = .max_temperature(XX),
+          minDT  = .min_temperature(XX),
+          maxNT  = .max_temperature(YY),
+          minNT  = .min_temperature(YY),
+          DTR    = .temperature_range(XX, YY),
+          SU     = .summer_days(XX),
+          TR     = .tropical_nights(YY),
+          CFD    = .frosty_days(YY),
+          maxWSD = .max_wsdi(XX),
+          maxCSD = .max_csdi(YY),
+          DT90p  = .t90p(XX),
+          NT10p  = .t10p(YY))
         
       })
       
@@ -346,14 +356,18 @@ temperature.sf <- function(object, day.one,
       x <- as.vector(as.matrix(X))
       y <- as.vector(as.matrix(Y))
       
-      x <- data.frame(maxDT = .max_temperature(x),
-                      minDT = .min_temperature(x),
-                      maxNT = .max_temperature(y),
-                      minNT = .min_temperature(y),
-                      DTR   = .temperature_range(x, y),
-                      SU    = .summer_days(x),
-                      TR    = .tropical_nights(y),
-                      CFD   = .frosty_days(y))
+      x <- data.frame(maxDT  = .max_temperature(x),
+                      minDT  = .min_temperature(x),
+                      maxNT  = .max_temperature(y),
+                      minNT  = .min_temperature(y),
+                      DTR    = .temperature_range(x, y),
+                      SU     = .summer_days(x),
+                      TR     = .tropical_nights(y),
+                      CFD    = .frosty_days(y),
+                      maxWSD = .max_wsdi(x),
+                      maxCSD = .max_csdi(y),
+                      DT90p  = .t90p(x),
+                      NT10p  = .t10p(y))
       
     }, X = day, Y = night)
     
@@ -366,9 +380,96 @@ temperature.sf <- function(object, day.one,
     
     ind <- as.data.frame(ind, stringsAsFactors = FALSE)
     
+    integ <- c("DTR","SU","TR","CFD","maxWSD","maxCSD")
+    
+    ind[integ] <- lapply(ind[integ] , as.integer)
+    
     }
   
   return(ind)
+}
+
+
+#' Maximum warm spell duration
+#' 
+#' Maximum number of days with consecutive days
+#'  when temp > 90th percentile
+#' 
+#' @param x a numeric vector
+#' @return the maximum warm spell duration index
+#' 
+#' set.seed(871)
+#' x <- rnorm(30, 34)
+#' 
+#' .max_wsdi(x)
+#' @noRd
+.max_wsdi <- function(x) {
+  
+  q90 <- stats::quantile(x, probs = 0.9)
+  # days above q90 should be returned as 0s
+  ws <- as.integer(x < q90)
+  
+  # get the lengths of each sequency of zeros (0)
+  keep <- rle(ws)$values
+  
+  keep <- keep == 0
+  
+  ws <- rle(ws)$lengths[keep]
+  
+  # if there is no value (empty()) then set as zero
+  if (length(ws) == 0) {
+    ws <- 0L
+  }
+  # if there is values, take the maximum sequecy
+  if (length(ws) != 0) {
+    ws <- max(ws, na.rm = TRUE)
+    ws <- as.integer(ws)
+  }
+  
+  return(ws)
+  
+}
+
+
+#' Maximum cool spell duration
+#' 
+#' Maximum number of days with consecutive days
+#'  when temp < 10th percentile
+#' 
+#' @param x a numeric vector
+#' @return the maximum cool spell duration index
+#' 
+#' set.seed(871)
+#' x <- runif(14, 6, 34)
+#' 
+#' .max_csdi(x)
+#' 
+#' @noRd
+.max_csdi <- function(x) {
+  
+  q10 <- stats::quantile(x, probs = 0.1)
+  # days below q10 should be returned as 0s
+  cs <- as.integer(x > q10)
+  
+  # get the lengths of each sequency of zeros (0)
+  keep <- rle(cs)$values
+  
+  keep <- keep == 0
+  
+  cs <- rle(cs)$lengths[keep]
+  
+  # if there is no value (empty()) then set as zero
+  if (length(cs) == 0) {
+    cs <- 0L
+  }
+  # if there is values, take the maximum sequecy
+  if (length(cs) != 0) {
+    cs <- max(cs, na.rm = TRUE)
+    cs <- as.integer(cs)
+  }
+  
+  return(cs)
+  
 }
 
 #' Maximum temperature
@@ -431,7 +532,9 @@ temperature.sf <- function(object, day.one,
 #' @noRd
 .summer_days <- function(x) {
   x <- x > 30
-  sum(x, na.rm = TRUE)
+  x <- sum(x, na.rm = TRUE)
+  x <- as.integer(x)
+  return(x)
 }
 
 #' Tropical days
@@ -446,7 +549,9 @@ temperature.sf <- function(object, day.one,
 #' @noRd
 .tropical_nights <- function(x) {
   x <- x > 25
-  sum(x, na.rm = TRUE)
+  x <- sum(x, na.rm = TRUE)
+  x <- as.integer(x)
+  return(x)
 }
 
 #' Consecutive frosty days 
@@ -481,14 +586,47 @@ temperature.sf <- function(object, day.one,
   # if there is no value (empty()) then set as zero
   # which means there is no frosty days
   if (length(fd) == 0) {
-    fd <- 0
+    fd <- 0L
   }
   
   # if there is values, take the maximum sequency
   if (length(fd) != 0) {
     fd <- max(fd, na.rm = TRUE)
+    fd <- as.integer(fd)
   }
   
   return(fd)
   
+}
+
+#' Day temp 90p
+#' 
+#' the value for the 90th percentile of temperature
+#' 
+#' #' @param x numeric vector
+#' #' @examples 
+#' set.seed(12)
+#' r <- runif(20, 0, 9)
+#' .t90p(r)
+#' @noRd
+.t90p <- function(x){
+  x <- stats::quantile(x, probs = 0.9)
+  x <- as.numeric(x)
+  return(x)
+}
+
+#' Temp 90p
+#' 
+#' the value for the 10th percentile of temperature
+#' 
+#' @param x numeric vector
+#' @examples 
+#' set.seed(12)
+#' r <- runif(20, 0, 9)
+#' .t10p(r)
+#' @noRd
+.t10p <- function(x){
+  x <- stats::quantile(x, probs = 0.1)
+  x <- as.numeric(x)
+  return(x)
 }

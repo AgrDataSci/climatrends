@@ -59,6 +59,10 @@ and NT (degree Celsius)) }
 temperature > 25 (degree Celsius)}
 \item{CFD}{consecutive frosty days, number of days with temperature 
 bellow 0 degree Celsius}
+\item{maxWSD}{maximum warm spell duration, consecutive days with 
+temperature > 90th percentile}
+\item{maxCSD}{maximum cold spell duration, consecutive nights with 
+temperature < 10th percentile}
 }
 \description{
 Methods to compute temperature indices over a time period
@@ -112,7 +116,7 @@ dates <- as.Date(dates, origin = "1970-01-01")
 # return a data.frame
 temp1 <- temperature(lonlatsf,
                     day.one = dates,
-                    span = 30, 
+                    span = 30,
                     as.sf = FALSE)
 temp1
 
