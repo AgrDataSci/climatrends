@@ -50,10 +50,12 @@
 #' temperature > 25 (degree Celsius)}
 #' \item{CFD}{consecutive frosty days, number of days with temperature 
 #' bellow 0 degree Celsius}
-#' \item{maxWSD}{maximum warm spell duration, consecutive days with 
+#' \item{WSDI}{maximum warm spell duration, consecutive days with 
 #' temperature > 90th percentile}
-#' \item{maxCSD}{maximum cold spell duration, consecutive nights with 
+#' \item{CSDI}{maximum cold spell duration, consecutive nights with 
 #' temperature < 10th percentile}
+#' \item{T10p}{the 10th percentile of night tempeture (degree Celsius)}
+#' \item{T90p}{the 90th percentile of day tempeture (degree Celsius)}
 #' 
 #' @family temperature functions
 #' @references 
@@ -238,7 +240,7 @@ temperature.sf <- function(object, day.one,
   
   index <- c("maxDT", "minDT", "maxNT", "minNT",
              "DTR", "SU", "TR", "CFD",
-             "maxWSD", "maxCSD", "DT90p", "NT10p")
+             "WSDI", "CSDI", "T10p", "T90p")
   
   n <- nrow(day)
   
@@ -312,10 +314,10 @@ temperature.sf <- function(object, day.one,
           SU     = .summer_days(XX),
           TR     = .tropical_nights(YY),
           CFD    = .frosty_days(YY),
-          maxWSD = .max_wsdi(XX),
-          maxCSD = .max_csdi(YY),
-          DT90p  = .t90p(XX),
-          NT10p  = .t10p(YY))
+          WSDI = .max_wsdi(XX),
+          CSDI = .max_csdi(YY),
+          T10p  = .t10p(XX),
+          T90p  = .t90p(YY))
         
       })
       
@@ -356,18 +358,18 @@ temperature.sf <- function(object, day.one,
       x <- as.vector(as.matrix(X))
       y <- as.vector(as.matrix(Y))
       
-      x <- data.frame(maxDT  = .max_temperature(x),
-                      minDT  = .min_temperature(x),
-                      maxNT  = .max_temperature(y),
-                      minNT  = .min_temperature(y),
-                      DTR    = .temperature_range(x, y),
-                      SU     = .summer_days(x),
-                      TR     = .tropical_nights(y),
-                      CFD    = .frosty_days(y),
-                      maxWSD = .max_wsdi(x),
-                      maxCSD = .max_csdi(y),
-                      DT90p  = .t90p(x),
-                      NT10p  = .t10p(y))
+      x <- data.frame(maxDT = .max_temperature(x),
+                      minDT = .min_temperature(x),
+                      maxNT = .max_temperature(y),
+                      minNT = .min_temperature(y),
+                      DTR   = .temperature_range(x, y),
+                      SU    = .summer_days(x),
+                      TR    = .tropical_nights(y),
+                      CFD   = .frosty_days(y),
+                      WSDI  = .max_wsdi(x),
+                      CSDI  = .max_csdi(y),
+                      T10p  = .t10p(x),
+                      T90p  = .t90p(y))
       
     }, X = day, Y = night)
     
@@ -380,7 +382,7 @@ temperature.sf <- function(object, day.one,
     
     ind <- as.data.frame(ind, stringsAsFactors = FALSE)
     
-    integ <- c("DTR","SU","TR","CFD","maxWSD","maxCSD")
+    integ <- c("DTR","SU","TR","CFD","WSDI","CSDI")
     
     ind[integ] <- lapply(ind[integ] , as.integer)
     
@@ -396,6 +398,8 @@ temperature.sf <- function(object, day.one,
 #'  when temp > 90th percentile
 #' 
 #' @param x a numeric vector
+#' @param reorder logical, if a combination of day and night is provided
+#'  reorder the vector
 #' @return the maximum warm spell duration index
 #' 
 #' set.seed(871)
@@ -403,7 +407,21 @@ temperature.sf <- function(object, day.one,
 #' 
 #' .max_wsdi(x)
 #' @noRd
-.max_wsdi <- function(x) {
+.max_wsdi <- function(x, reorder = FALSE) {
+  
+  if (isTRUE(reorder)) {
+    
+    nv <- length(x)
+    
+    n <- seq(from = 1, to = nv, by = 2)
+    
+    d <- seq(from = 2, to = nv, by = 2)
+    
+    names(x) <- c(n, d)
+    
+    x <- x[order(as.integer(names(x)))]
+    
+  }
   
   q90 <- stats::quantile(x, probs = 0.9)
   # days above q90 should be returned as 0s
@@ -437,6 +455,8 @@ temperature.sf <- function(object, day.one,
 #'  when temp < 10th percentile
 #' 
 #' @param x a numeric vector
+#' @param reorder logical, if a combination of day and night is provided
+#'  reorder the vector
 #' @return the maximum cool spell duration index
 #' 
 #' set.seed(871)
@@ -445,7 +465,21 @@ temperature.sf <- function(object, day.one,
 #' .max_csdi(x)
 #' 
 #' @noRd
-.max_csdi <- function(x) {
+.max_csdi <- function(x, reorder = FALSE) {
+  
+  if (isTRUE(reorder)) {
+    
+    nv <- length(x)
+    
+    n <- seq(from = 1, to = nv, by = 2)
+    
+    d <- seq(from = 2, to = nv, by = 2)
+    
+    names(x) <- c(n, d)
+    
+    x <- x[order(as.integer(names(x)))]
+    
+  }
   
   q10 <- stats::quantile(x, probs = 0.1)
   # days below q10 should be returned as 0s

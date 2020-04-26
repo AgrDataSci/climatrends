@@ -25,7 +25,7 @@ affiliations:
   - name: Bioversity International, Rome, Italy
     index: 2
 citation_author: de Sousa et. al.
-date: "19 April 2020"
+date: "25 April 2020"
 year: 2020
 bibliography: paper.bib
 output: rticles::joss_article
@@ -34,7 +34,7 @@ journal: JOSS
 
 # Summary
 
-Understand how climate variability drives ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the toolkit to compute extreme precipitation and temperature indices that serves as input for climate models, crop modelling, trends in climate change and ecology. The climate variables available in **climatrends** were previously used to identify climate patterns in crop growing cycles [@Kehel2016], regional climate change assessment [@Aguilar2005], the effects of agroclimatic indices on the performance of crop varieties [@vanEtten2019] and to validate self reported perceptions to climate change [@DeSousa2018].
+Understand how climate variability drives ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the toolkit to compute extreme precipitation and temperature indices that serves as input for climate models, crop modelling, trends in climate change and ecology. The climate variables available in **climatrends** were previously used to identify climate patterns in crop growing cycles [@Kehel2016], regional climate change assessment [@Aguilar2005], the effects of agroclimatic indices on the performance of crop varieties [@vanEtten2019] and compare perceptions to climate change with observed data [@DeSousa2018].
 
 # Implementation
 

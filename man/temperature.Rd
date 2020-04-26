@@ -59,10 +59,12 @@ and NT (degree Celsius)) }
 temperature > 25 (degree Celsius)}
 \item{CFD}{consecutive frosty days, number of days with temperature 
 bellow 0 degree Celsius}
-\item{maxWSD}{maximum warm spell duration, consecutive days with 
+\item{WSDI}{maximum warm spell duration, consecutive days with 
 temperature > 90th percentile}
-\item{maxCSD}{maximum cold spell duration, consecutive nights with 
+\item{CSDI}{maximum cold spell duration, consecutive nights with 
 temperature < 10th percentile}
+\item{T10p}{the 10th percentile of night tempeture (degree Celsius)}
+\item{T90p}{the 90th percentile of day tempeture (degree Celsius)}
 }
 \description{
 Methods to compute temperature indices over a time period

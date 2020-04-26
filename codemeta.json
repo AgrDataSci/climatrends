@@ -14,10 +14,10 @@
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.6.2",
+    "version": "4.0.0",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.2 (2019-12-12)",
+  "runtimePlatform": "R version 4.0.0 (2020-04-24)",
   "author": [
     {
       "@type": "Person",

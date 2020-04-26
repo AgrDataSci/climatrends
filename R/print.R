@@ -32,7 +32,7 @@ print.clima_df <- function(x, ...){
     
     toprint <- rbind(abbs, x)
     
-    rownames(toprint) <- c("", rownames(x))
+    rownames(toprint) <- c("", paste0(row.names(x), ":"))
     
   }
   
@@ -48,9 +48,9 @@ print.clima_df <- function(x, ...){
                      ta)
     
     rownames(toprint) <- c("",
-                           row.names(he),
+                           paste0(row.names(he), ":"),
                            "---",
-                           rownames(ta))
+                           paste0(row.names(ta), ":"))
     
   }
   

@@ -179,7 +179,7 @@ temperature(mod,
 
 # Indices
 
-**climatrends** computes 20 temperature and precipitation indices:
+**climatrends** computes 22 temperature and precipitation indices:
 
 ```{r echo=FALSE, results="asis"}
 index <- as.data.frame(matrix(c("maxDT", "maximun day temperature", "°C",
@@ -190,8 +190,10 @@ index <- as.data.frame(matrix(c("maxDT", "maximun day temperature", "°C",
                                 "SU", "summer days, number of days with maximum temperature > 30 °C", "days", 
                                 "TR", "tropical nights, number of nights with maximum temperature > 25 °C", "days",
                                 "CFD", "consecutive frosty days, number of days with temperature < 0 °C", "days",
-                                "maxWSD","maximum warm spell duration, consecutive days with temperature > 90th percentile", "days",
-                                "maxCSD","maximum cold spell duration, consecutive nights with temperature < 10th percentile","days",
+                                "WSDI","maximum warm spell duration, consecutive days with temperature > 90th percentile", "days",
+                                "CSDI","maximum cold spell duration, consecutive nights with temperature < 10th percentile","days",
+                                "T10p","the 10th percentile of night tempeture","°C",
+                                "T90p","the 90th percentile of day tempeture","°C",
                                 "MLDS", "maximum length of consecutive dry day, rain < 1 mm", "days",
                                 "MLWS", "maximum length of consecutive wet day, rain >= 1 mm", "days",
                                 "R10mm", "heavy precipitation days 10 >= rain < 20 mm", "days",
@@ -202,7 +204,7 @@ index <- as.data.frame(matrix(c("maxDT", "maximun day temperature", "°C",
                                 "R99p", "total precipitation when rain > 99th percentile", "mm",
                                 "Rtotal", "total precipitation in wet days, rain >= 1 mm", "mm",
                                 "SDII", "simple daily intensity index, total precipitation divided by the number of wet days", "mm/days"),
-                              nrow = 20, ncol = 3, byrow = TRUE))
+                              nrow = 22, ncol = 3, byrow = TRUE))
 
 names(index) <- c("Index", "Definition", "Unit")
 
