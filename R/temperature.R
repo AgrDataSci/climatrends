@@ -1,6 +1,6 @@
 #' Temperature indices
 #'
-#' Methods to compute temperature indices over a time period
+#' Methods to compute temperature indices over a time series
 #'
 #' @param object a data.frame (or object that can be coerced to data.frame) 
 #'  with geographical coordinates (lonlat), or an object of class \code{sf}
@@ -91,7 +91,7 @@
 #'                     as.sf = FALSE)
 #' temp1
 #' 
-#' # return a sf object
+#' # same as above but return a sf object
 #' temp2 <- temperature(lonlatsf,
 #'                     day.one = dates,
 #'                     span = 30)
@@ -221,7 +221,12 @@ temperature.sf <- function(object, day.one,
   
   }
   
-  if (isFALSE(as.sf)) {
+  if (isFALSE(as.sf) & isTRUE(timeseries)) {
+    
+    xy <- .lonlat_from_sf(object)
+    xy <- as.data.frame(xy)
+    xy$id <- 1:dim(xy)[[1]]
+    indices <- merge(xy, indices, by = "id", all.y = TRUE)
     
     class(indices) <- union("clima_df", class(indices))
   

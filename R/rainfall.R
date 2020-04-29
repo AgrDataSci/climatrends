@@ -1,6 +1,6 @@
 #' Rainfall indices
 #'
-#' Rainfall indices over a timespan
+#' Methods to compute rainfall indices over a time series
 #'
 #' @family precipitation functions
 #' @inheritParams get_timeseries
@@ -62,7 +62,6 @@
 #'          day.one = day,
 #'          span = 11)
 #' 
-#' ###################################
 #' \donttest{
 #' ########################################
 #' 
@@ -82,7 +81,7 @@
 #'                   as.sf = FALSE)
 #' rain1
 #' 
-#' # return a sf object
+#' # same as above but return a sf object
 #' rain2 <- rainfall(lonlatsf,
 #'                   day.one = dates,
 #'                   span = 30)
@@ -93,7 +92,6 @@
 #' rain3 <- rainfall(lonlatsf,
 #'                   day.one = dates,
 #'                   span = 30,
-#'                   as.sf = FALSE,
 #'                   timeseries = TRUE,
 #'                   intervals = 7)
 #' rain3
@@ -197,6 +195,17 @@ rainfall.sf <- function(object, day.one, span,
   if (isTRUE(as.sf) & isFALSE(timeseries)) {
     
     indices <- suppressWarnings(sf::st_bind_cols(object, indices))
+    
+  }
+  
+  if (isFALSE(as.sf) & isTRUE(timeseries)) {
+    
+    xy <- .lonlat_from_sf(object)
+    xy <- as.data.frame(xy)
+    xy$id <- 1:dim(xy)[[1]]
+    indices <- merge(xy, indices, by = "id", all.y = TRUE)
+    
+    class(indices) <- union("clima_df", class(indices))
     
   }
   

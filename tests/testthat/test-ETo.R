@@ -69,24 +69,6 @@ test_that("accept and return a sf", {
   
 })
 
-test_that("accept a tibble", {
-  
-  coord <- as.data.frame(lonlat)
-  coord <- tibble::as_tibble(coord)
-  
-  ev <- ETo(temp,
-           day.one = d,
-           span = 10,
-           lat = rep(0, 10))
-  
-  ev <- round(ev[[1]], 3)
-  
-  ev <- all(e == ev)
-  
-  expect_true(ev)
-  
-})
-
 
 test_that("error, non Date object in day.one", {
   expect_error(

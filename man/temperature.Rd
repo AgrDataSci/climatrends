@@ -67,7 +67,7 @@ temperature < 10th percentile}
 \item{T90p}{the 90th percentile of day tempeture (degree Celsius)}
 }
 \description{
-Methods to compute temperature indices over a time period
+Methods to compute temperature indices over a time series
 }
 \details{
 The \code{array} method assumes that \var{object} contains climate data provided 
@@ -122,7 +122,7 @@ temp1 <- temperature(lonlatsf,
                     as.sf = FALSE)
 temp1
 
-# return a sf object
+# same as above but return a sf object
 temp2 <- temperature(lonlatsf,
                     day.one = dates,
                     span = 30)

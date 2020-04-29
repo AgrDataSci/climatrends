@@ -60,7 +60,7 @@ A dataframe with rainfall indices:
  number of wet days (mm/days)}
 }
 \description{
-Rainfall indices over a timespan
+Methods to compute rainfall indices over a time series
 }
 \details{
 The \code{matrix} method assumes that \var{object} contains climate data provided 
@@ -97,7 +97,6 @@ rainfall(chirp,
          day.one = day,
          span = 11)
 
-###################################
 \donttest{
 ########################################
 
@@ -117,7 +116,7 @@ rain1 <- rainfall(lonlatsf,
                   as.sf = FALSE)
 rain1
 
-# return a sf object
+# same as above but return a sf object
 rain2 <- rainfall(lonlatsf,
                   day.one = dates,
                   span = 30)
@@ -128,7 +127,6 @@ rain2
 rain3 <- rainfall(lonlatsf,
                   day.one = dates,
                   span = 30,
-                  as.sf = FALSE,
                   timeseries = TRUE,
                   intervals = 7)
 rain3
