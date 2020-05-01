@@ -7,13 +7,13 @@
 \alias{ETo.sf}
 \title{Evapotranspiration}
 \usage{
-ETo(object, day.one, span, Kc = 1, ...)
+ETo(object, day.one, span = NULL, Kc = 1, ...)
 
-\method{ETo}{default}(object, day.one, span, Kc = 1, lat = NULL, ...)
+\method{ETo}{default}(object, day.one, span = NULL, Kc = 1, lat = NULL, ...)
 
-\method{ETo}{array}(object, day.one, span, Kc = 1, lat = NULL, ...)
+\method{ETo}{array}(object, day.one, span = NULL, Kc = 1, lat = NULL, ...)
 
-\method{ETo}{sf}(object, day.one, span, Kc = 1, as.sf = TRUE, ...)
+\method{ETo}{sf}(object, day.one, span = NULL, Kc = 1, as.sf = TRUE, ...)
 }
 \arguments{
 \item{object}{a data.frame (or object that can be coerced to data.frame) 
@@ -21,11 +21,12 @@ with geographical coordinates (lonlat), or an object of class \code{sf}
 with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
 containing the temperature data, see details.}
 
-\item{day.one}{a vector of class \code{Date} for the starting date to capture 
-the climate data}
+\item{day.one}{a vector of class \code{Date} or any other object that can be 
+coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
+day to capture the climate data}
 
-\item{span}{an integer or a vector with integers for the duration of the 
-time series to be captured}
+\item{span}{an integer or a vector with integers (optional if \var{last.day} is 
+given) for the length of the time series to be captured}
 
 \item{Kc}{a numeric value for the crop factor for water requirement}
 
@@ -62,6 +63,10 @@ The \code{default} method and the \code{sf} method assumes that the climate data
 
 Additional arguments:
 
+\code{last.day}: optional to \var{span}, an object of class \code{Date} or
+ any other object that can be coerced to \code{Date} (e.g. integer, character 
+ YYYY-MM-DD)  for the last day of the time series
+
 \code{source}: character for the source of climate data. Current remote \var{source} 
  is: 'nasapower'
 
@@ -76,26 +81,23 @@ Additional arguments:
 # Using local sources
 data("modis", package = "climatrends")
 
-day <- as.Date("2013-10-28", format = "\%Y-\%m-\%d")
-
 ETo(modis, 
-    day.one = day,
+    day.one = "2013-10-28",
     span = 10,
     Kc = 0.92)
     
 \donttest{
 ######################################
-
-# Using remote sources 
+ 
+# Using remote sources
 # random geographic locations around bbox(11, 12, 55, 58)
-set.seed(123)
+set.seed(826128)
 lonlat <- data.frame(lon = runif(2, 11, 12),
                      lat = runif(2, 55, 58))
 
 # random dates around 2018-05-15 and 2018-05-20
-set.seed(321)
+set.seed(826128)
 dates <- as.integer(runif(2, 17666, 17670))
-dates <- as.Date(dates, origin = "1970-01-01")
 
 # the evapotranspiration in the first 50 days after day.one
 ETo(lonlat,
@@ -104,16 +106,13 @@ ETo(lonlat,
     lat = lonlat["lat"])
     
 #######################################
-
-
+ 
 # Objects of class 'sf'
 data("lonlatsf", package = "climatrends")
 
-dates <- as.Date(16700, origin = "1970-01-01")
-
 ETo(lonlatsf,
-    day.one = dates,
-    span = 30,
+    day.one = "2015-09-22",
+    last.day = "2015-10-15",
     pars = c("T10M_MAX", "T10M_MIN"))
 
 }

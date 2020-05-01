@@ -2,14 +2,18 @@
 #' 
 #' General functions and methods to concatenate climate data across a time series.
 #' 
-#' @param object a \code{data.frame} (or object that can be coerced to data.frame) 
-#'  with geographical coordinates (lonlat), or an object of class \code{sf} with 
-#'  geometry 'POINT' or 'POLYGON', or a named \code{matrix} with climate data.
-#'  See details.   
-#' @param day.one a vector of class \code{Date} for the starting date to capture 
-#'  the climate data
-#' @param span an integer or a vector with integers for the duration of the 
-#'  time series to be captured
+#' @param object a \code{data.frame} (or any othwer object that can be coerced to 
+#'  data.frame) with geographical coordinates (lonlat), or an object of class 
+#'  \code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
+#'  climate data. See details.   
+#' @param day.one a vector of class \code{Date} or any other object that can be 
+#'  coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
+#'  day to capture the climate data
+#' @param span an integer or a vector with integers (optional if \var{last.day} is 
+#'  given) for the length of the time series to be captured
+#' @param last.day optional to \var{span}, an object of class \code{Date} or
+#'  any other object that can be coerced to \code{Date} (e.g. integer, character 
+#'  YYYY-MM-DD)  for the last day of the time series
 #' @param source character, for the source of climate data. See details.
 #' @param ... additional arguments passed to methods. See details.
 #' @details 
@@ -60,7 +64,7 @@
 #' @importFrom sf st_centroid st_geometry_type st_as_sf
 #' @importFrom stats dist hclust cutree
 #' @export
-get_timeseries <- function(object, day.one, span, ...) {
+get_timeseries <- function(object, day.one, span = NULL, last.day = NULL, ...) {
   
   UseMethod("get_timeseries")
   
@@ -68,11 +72,8 @@ get_timeseries <- function(object, day.one, span, ...) {
 
 #' @rdname get_timeseries
 #' @export
-get_timeseries.default <- function(object, 
-                                   day.one,
-                                   span,  
-                                   source = "nasapower",
-                                   ...){
+get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL,
+                                   source = "nasapower", ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -81,7 +82,7 @@ get_timeseries.default <- function(object,
     days.before <- 0
   }
   
-  sts <- .set_span_length(day.one, span, days.before)
+  sts <- .set_span_length(day.one, span, last.day, days.before)
 
   object <- as.data.frame(object)
   
@@ -108,9 +109,7 @@ get_timeseries.default <- function(object,
 #' @rdname get_timeseries
 #' @method get_timeseries sf
 #' @export
-get_timeseries.sf <- function(object, 
-                              day.one,
-                              span,  
+get_timeseries.sf <- function(object, day.one, span = NULL, last.day = NULL, 
                               source = "nasapower",
                               ...){
   
@@ -125,7 +124,7 @@ get_timeseries.sf <- function(object,
   
   object <- as.data.frame(object)
   
-  sts <- .set_span_length(day.one, span, days.before)
+  sts <- .set_span_length(day.one, span, last.day, days.before)
   
   makecall <- paste0(".", source)
   
@@ -152,9 +151,7 @@ get_timeseries.sf <- function(object,
 #' @rdname get_timeseries
 #' @method get_timeseries matrix
 #' @export
-get_timeseries.matrix <- function(object, 
-                                  day.one,
-                                  span, 
+get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL, 
                                   ...){
   
   dots <- list(...)
@@ -163,7 +160,20 @@ get_timeseries.matrix <- function(object,
     days.before <- 0
   }
   
-  sts <- .set_span_length(day.one, span, days.before)
+  dmo <- dim(object)[[2]]
+  
+  if (!is.null(span)) {
+    mspan <- max(span)
+  }else{
+    mspan <- dmo
+  }
+  
+  if (all(!is.null(span), (mspan > dmo))) {
+    stop("subscript out of bounds,",
+         "'span' is larger than the dim[2] of provided 'object' \n")
+  }
+  
+  sts <- .set_span_length(day.one, span, last.day, days.before)
   
   object <- as.data.frame(object)
   
@@ -183,37 +193,80 @@ get_timeseries.matrix <- function(object,
 #' @param span the span
 #' @param days.before the number of days before day.one
 #' @examples 
-#' .set_span_length(day.one = as.Date(c(17667,17789, 17665), origin = "1970-01-01"),
-#'                  span = c(10, 15, 12))
+#' .set_span_length(day.one = "2013-10-27",
+#'                  span = 15)
 #'
 #' @noRd
-.set_span_length <- function(day.one, span, days.before = 0){
+.set_span_length <- function(day.one, 
+                             span = NULL, 
+                             last.day = NULL, 
+                             days.before = 0){
   
-  if (.is_tibble(day.one)) {
-    day.one <- day.one[[1]]
+  day.one <- as.vector(t(day.one))
+  
+  if (all(is.null(span), is.null(last.day))) {
+    stop("No visible timespan observed, 
+         either argument 'span' or 'last.day' should be provided \n")
   }
   
+  if (all(!is.null(span), !is.null(last.day))) {
+    stop("No visible bound for confliting arguments, 
+         please provide either 'span' or 'last.day'\n")
+  }
+  
+  # check if day.one is a 'Date' else try to coerce to Date
   if (!.is_Date(day.one)) {
-    stop("'day.one' should be a vector of class 'Date' \n")
+    
+    day.one <- .coerce2Date(day.one)
+  
   }
-
+  
   # the timespan
-  span <- as.vector(t(span))
+  if (!is.null(span)) {
+    
+    span <- as.vector(t(span)) 
+  
+  }
+  
+  # or from last.day
+  if (!is.null(last.day)) {
+    
+    if (length(last.day) > 1) {
+      
+      warning("argument 'last.day' has length > 1 and only the first element will be used")
+      
+    }
+    
+    if (length(day.one) > 1) {
+      
+      warning("argument 'day.one' has length > 1 and only the first element will be used")
+      
+    }
+    
+    if (!.is_Date(last.day)) {
+      
+      last.day <- .coerce2Date(last.day)
+      
+    }
+    
+    span <- as.integer(last.day[[1]] - day.one[[1]]) + 1
+    
+  }
   
   # the begin date
   b <- day.one - days.before
   
   # the end date
-  e <- day.one + span
+  e <- day.one + (span - 1)
   
   # the refreshed timespan
-  span <- as.integer(e - b)
+  span <- as.integer(e - b) + 1
   
   # the maximum timespan
   maxspan <- max(span)
   
   # the maximum end date
-  maxend <- max(b) + max(span)
+  maxend <- max(b) + max(span - 1)
   
   # the first and last date to fetch
   dates <- c(min(b), maxend)
@@ -232,16 +285,11 @@ get_timeseries.matrix <- function(object,
 #' Timeseries
 #' 
 #' @examples
-#' set.seed(123)
-#' ll <- data.frame(lon = runif(2, 11, 12),
-#'                  lat = runif(2, 55, 58))
-#' 
-#' sts <- .set_span_length(day.one = as.Date(c(17667,17789), origin = "1970-01-01"),
-#'                         span = c(10, 15))
-#' 
-#' object <- .nasapower(dates = sts$dates,
-#'                      lonlat = ll,
-#'                      pars = "PRECTOT")
+#'  
+#' sts <- climatrends:::.set_span_length(day.one = "2013-10-27",
+#'                                       last.day = "2013-11-10")
+#'  
+#' object <- as.data.frame(chirp)
 #' 
 #' .setup_timeseries(object,
 #'                   days = sts$b,
@@ -255,28 +303,31 @@ get_timeseries.matrix <- function(object,
   rownames(object) <- seq_len(n)
   date <- names(object)
   
-  # find the index for specified dates within the start.dates provided
+  # find the index for the specified dates within the start.dates provided
   date <- match(as.character(days), date)
   
   Y <- NULL
   
-  for (i in 0:maxspan) {
+  for (i in 0:(maxspan-1)) {
     Y <- cbind(Y, object[cbind(seq_len(n), date + i)])
   }
   
   # if ts is variable then add NA's
   Y <- t(apply(cbind(span, Y), 1, function(x) {
-    x1 <- x[1]
+    
+    s <- x[1]
     
     x <- x[2:length(x)]
     
-    x[(x1 + 1):length(x)] <- NA
+    if (length(x) > s) {
+      x[(s + 1):length(x)] <- NA
+    }
     
     return(x)
     
   }))
   
-  # make a tibble
+  # make a data.frame
   if (n != 1) {
     
     dimnames(Y)[[2]] <- paste0("day", 1:ncol(Y))

@@ -23,6 +23,10 @@
 #'
 #' Additional arguments:
 #' 
+#' \code{last.day}: optional to \var{span}, an object of class \code{Date} or
+#'  any other object that can be coerced to \code{Date} (e.g. integer, character 
+#'  YYYY-MM-DD)  for the last day of the time series
+#' 
 #' \code{source}: character for the source of remote data. Current remote \var{source} 
 #'  is: 'nasapower'
 #' 
@@ -38,17 +42,14 @@
 #' # Using local sources
 #' data("modis", package = "climatrends")
 #' 
-#' day <- as.Date("2013-10-28", format = "%Y-%m-%d")
-#' 
-#' GDD(modis, 
-#'     day.one = day,
-#'     degree.days = 100, 
+#' GDD(modis,
+#'     day.one = "2013-10-28",
+#'     degree.days = 100,
 #'     base = 5)
 #' 
-#' \donttest{
 #' ######################################
-#' 
-#' # Using remote sources 
+#' \donttest{
+#' # Using remote sources
 #' set.seed(123)
 #' # random geographic locations around bbox(11, 12, 55, 58)
 #' lonlat <- data.frame(lon = runif(3, 11, 12),
@@ -57,26 +58,28 @@
 #' set.seed(321)
 #' # random dates around 2018-05-15 and 2018-05-20
 #' dates <- as.integer(runif(3, 17666, 17670))
-#' dates <- as.Date(dates, origin = "1970-01-01")
 #' 
 #' # Calculate the days required for the plants in these plots to reach the
 #' # maturity. Here the plant species requires ~1300 degree days for it.
-#' GDD(lonlat, 
+#' GDD(lonlat,
 #'     day.one = dates,
 #'     degree.days = 1300,
+#'     span = 150,
 #'     base = 5)
-#'
+#' 
 #' ######################################
-#'  
+#' 
 #' # Objects of class 'sf'
 #' data("lonlatsf", package = "climatrends")
 #' 
 #' dates <- as.Date(16150, origin = "1970-01-01")
 #' 
 #' GDD(lonlatsf,
-#'     day.one = dates,
+#'     day.one = "2014-03-21",
+#'     last.day = "2014-06-30",
 #'     degree.days = 200,
 #'     base = 5)
+#' 
 #'}
 #' @export
 GDD <- function(object, day.one, degree.days,
@@ -89,7 +92,7 @@ GDD <- function(object, day.one, degree.days,
 #' @method GDD default
 #' @export
 GDD.default <- function(object, day.one, degree.days,
-                        base = 10, span = 150, ...){
+                        base = 10, span = NULL, ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -131,17 +134,18 @@ GDD.array <- function(object, day.one, degree.days,
   
   dots <- list(...)
   span <- dots[["span"]]
+  last.day <- dots[["last.day"]]
   
-  if (is.null(span)) {
+  if (all(is.null(span), is.null(last.day))) {
     span <- (dim(object)[[2]] - 2)
   }
   
   # coerce to data.frame
   day.one <- as.data.frame(day.one)[, 1]
   
-  day <- get_timeseries(object[, , 1], day.one, span)[[1]]
+  day <- get_timeseries(object[, , 1], day.one, span, ...)[[1]]
   
-  night <- get_timeseries(object[, , 2], day.one, span)[[1]]
+  night <- get_timeseries(object[, , 2], day.one, span, ...)[[1]]
   
   result <- .gdd(day, night, base, degree.days)
   
@@ -153,7 +157,7 @@ GDD.array <- function(object, day.one, degree.days,
 #' @method GDD sf
 #' @export
 GDD.sf <- function(object, day.one, degree.days,
-                   base = 10, span = 150, as.sf = TRUE, ...){
+                   base = 10, span = NULL, as.sf = TRUE, ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]

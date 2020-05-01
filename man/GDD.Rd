@@ -9,11 +9,11 @@
 \usage{
 GDD(object, day.one, degree.days, base = 10, ...)
 
-\method{GDD}{default}(object, day.one, degree.days, base = 10, span = 150, ...)
+\method{GDD}{default}(object, day.one, degree.days, base = 10, span = NULL, ...)
 
 \method{GDD}{array}(object, day.one, degree.days, base = 10, ...)
 
-\method{GDD}{sf}(object, day.one, degree.days, base = 10, span = 150, as.sf = TRUE, ...)
+\method{GDD}{sf}(object, day.one, degree.days, base = 10, span = NULL, as.sf = TRUE, ...)
 }
 \arguments{
 \item{object}{a data.frame (or object that can be coerced to data.frame) 
@@ -21,8 +21,9 @@ with geographical coordinates (lonlat), or an object of class \code{sf}
 with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
 containing the temperature data, see details.}
 
-\item{day.one}{a vector of class \code{Date} for the starting date to capture 
-the climate data}
+\item{day.one}{a vector of class \code{Date} or any other object that can be 
+coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
+day to capture the climate data}
 
 \item{degree.days}{an integer for the degree-days required by the 
 organism (look for the physiology of the focal organism)}
@@ -31,8 +32,8 @@ organism (look for the physiology of the focal organism)}
 
 \item{...}{additional arguments passed to methods. See details.}
 
-\item{span}{an integer or a vector with integers for the duration of the 
-time series to be captured}
+\item{span}{an integer or a vector with integers (optional if \var{last.day} is 
+given) for the length of the time series to be captured}
 
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
@@ -57,6 +58,10 @@ The default method and the sf method assumes that the climate data will be fetch
 
 Additional arguments:
 
+\code{last.day}: optional to \var{span}, an object of class \code{Date} or
+ any other object that can be coerced to \code{Date} (e.g. integer, character 
+ YYYY-MM-DD)  for the last day of the time series
+
 \code{source}: character for the source of remote data. Current remote \var{source} 
  is: 'nasapower'
 
@@ -68,17 +73,14 @@ Additional arguments:
 # Using local sources
 data("modis", package = "climatrends")
 
-day <- as.Date("2013-10-28", format = "\%Y-\%m-\%d")
-
-GDD(modis, 
-    day.one = day,
-    degree.days = 100, 
+GDD(modis,
+    day.one = "2013-10-28",
+    degree.days = 100,
     base = 5)
 
-\donttest{
 ######################################
-
-# Using remote sources 
+\donttest{
+# Using remote sources
 set.seed(123)
 # random geographic locations around bbox(11, 12, 55, 58)
 lonlat <- data.frame(lon = runif(3, 11, 12),
@@ -87,26 +89,28 @@ lonlat <- data.frame(lon = runif(3, 11, 12),
 set.seed(321)
 # random dates around 2018-05-15 and 2018-05-20
 dates <- as.integer(runif(3, 17666, 17670))
-dates <- as.Date(dates, origin = "1970-01-01")
 
 # Calculate the days required for the plants in these plots to reach the
 # maturity. Here the plant species requires ~1300 degree days for it.
-GDD(lonlat, 
+GDD(lonlat,
     day.one = dates,
     degree.days = 1300,
+    span = 150,
     base = 5)
 
 ######################################
- 
+
 # Objects of class 'sf'
 data("lonlatsf", package = "climatrends")
 
 dates <- as.Date(16150, origin = "1970-01-01")
 
 GDD(lonlatsf,
-    day.one = dates,
+    day.one = "2014-03-21",
+    last.day = "2014-06-30",
     degree.days = 200,
     base = 5)
+
 }
 }
 \references{

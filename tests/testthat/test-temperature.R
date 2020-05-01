@@ -5,64 +5,35 @@ library("sf")
 load("../test_data.rda")
 
 
-maxDT <- c(33.5, 34.9, 32, 27.5, 32.8, 27.4, 32.6, 31.6, 32.3, 28.5)
-minNT <- c(8.2, 9.1, 8.2, 1.5, 5.7, 6, 5.7, 4.6, 4.3, 2.8)
+#save(rain, rain_local_ok, d, lonlat, temp, rain_nasapower_ok, temp_local_ok, temp_local_ts_ok, file = "tests/test_data.rda")
+
 
 # Test if the function is computing the right values
 # for maximum day temperature
-test_that("day equal", {
-  x <- temperature(object = temp, 
-                   day.one = d,
-                   span = 8)
+test_that("local ok", {
   
-  dt <- all.equal(maxDT, x$maxDT)
+  x <- temperature(temp, day.one = "2013-10-27", span = 15)
   
-  expect_equal(dt, TRUE)
-})
+  istrue <- all(x == temp_local_ok)
+  
+  expect_true(istrue)
 
-# and for minimum day temperature
-test_that("night equal", {
-  x <- temperature(object = temp, 
-                   day.one = d,
-                   span = 8)
-  
-  nt <- all.equal(minNT, x$minNT)
-  
-  expect_equal(nt, TRUE)
 })
 
 # also test if timeseries is working
 # and for minimum day temperature
 test_that("timeseries", {
   
-  x <- temperature(object = temp, 
-                   day.one = d[1,],
-                   span = 10,
-                   timeseries = TRUE,
-                   intervals = 5)
+  x <- temperature(temp, 
+                   day.one = "2013-10-27", 
+                   last.day = "2013-11-10", 
+                   timeseries = TRUE, 
+                   intervals = 7)
   
-  maxDT <- c(33.5, 33.5, 34.9, 34.9, 32, 32, 27.5, 
-             27.1, 32.8, 32.3, 27.6, 27.1, 32.8, 
-             32.3, 31.9, 31.1, 32.6, 31.7, 28.7, 28.2)
+  istrue <- all(x == temp_local_ts_ok)
   
-  x <- as.vector(t(x[x$index=="maxDT", "value"]))
-  
-  dt <- all.equal(maxDT, x)
-  
-  expect_equal(dt, TRUE)
-})
+  expect_true(istrue)
 
-test_that("nasapower works default", {
-  skip_on_cran()
-  r <- temperature(object = lonlat, 
-                   day.one = d,
-                   span = 25)
-  
-  r <- as.vector(apply(r, 1, is.na))
-  
-  r <- sum(r) == 0
-  
-  expect_equal(r, TRUE)
 })
 
 

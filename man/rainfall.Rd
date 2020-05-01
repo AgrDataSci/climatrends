@@ -9,14 +9,14 @@
 \usage{
 rainfall(object, day.one, span, ...)
 
-\method{rainfall}{default}(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
+\method{rainfall}{default}(object, day.one, span = NULL, timeseries = FALSE, intervals = 5, ...)
 
-\method{rainfall}{matrix}(object, day.one, span, timeseries = FALSE, intervals = 5, ...)
+\method{rainfall}{matrix}(object, day.one, span = NULL, timeseries = FALSE, intervals = 5, ...)
 
 \method{rainfall}{sf}(
   object,
   day.one,
-  span,
+  span = NULL,
   timeseries = FALSE,
   intervals = 5,
   as.sf = TRUE,
@@ -24,16 +24,17 @@ rainfall(object, day.one, span, ...)
 )
 }
 \arguments{
-\item{object}{a \code{data.frame} (or object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf} with 
-geometry 'POINT' or 'POLYGON', or a named \code{matrix} with climate data.
-See details.}
+\item{object}{a \code{data.frame} (or any othwer object that can be coerced to 
+data.frame) with geographical coordinates (lonlat), or an object of class 
+\code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
+climate data. See details.}
 
-\item{day.one}{a vector of class \code{Date} for the starting date to capture 
-the climate data}
+\item{day.one}{a vector of class \code{Date} or any other object that can be 
+coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
+day to capture the climate data}
 
-\item{span}{an integer or a vector with integers for the duration of the 
-time series to be captured}
+\item{span}{an integer or a vector with integers (optional if \var{last.day} is 
+given) for the length of the time series to be captured}
 
 \item{...}{additional arguments passed to methods. See details.}
 
@@ -75,6 +76,10 @@ When \var{timeseries} = \code{TRUE}, an id is created,
 
 Additional arguments:
 
+\code{last.day}: optional to \var{span}, an object of class \code{Date} or
+ any other object that can be coerced to \code{Date} (e.g. integer, character 
+ YYYY-MM-DD)  for the last day of the time series
+
 \code{source}: character for the source of remote data. Current remote \var{source} 
  is: 'nasapower'
 
@@ -91,44 +96,42 @@ When \var{timeseries} = \code{TRUE}, an id is created,
 # Using local sources
 data("chirp", package = "climatrends")
 
-day <- as.Date("2013-10-28", format = "\%Y-\%m-\%d")
-
 rainfall(chirp,
-         day.one = day,
-         span = 11)
+         day.one = "2013-10-28",
+         span = 12)
 
+#####################################################
 \donttest{
-########################################
-
 # Using remote sources of climate data
 
 data("lonlatsf", package = "climatrends")
 
-set.seed(123)
+# some random dates provided as integers and coerced to Dates internally
+set.seed(2718279)
 dates <- as.integer(runif(5, 17660, 17675))
-dates <- as.Date(dates, origin = "1970-01-01")
 
-# get rainfall indices for 30 days after day.one
+# get precipitation indices for 30 days after day.one
 # return a data.frame
 rain1 <- rainfall(lonlatsf,
                   day.one = dates,
-                  span = 30, 
+                  span = 30,
                   as.sf = FALSE)
 rain1
 
-# same as above but return a sf object
+# get precipitation indices from "2010-12-01" to "2011-01-31"
 rain2 <- rainfall(lonlatsf,
-                  day.one = dates,
-                  span = 30)
-
+                  day.one = "2010-12-01",
+                  last.day = "2011-01-31",
+                  as.sf = FALSE)
 rain2
 
-# indices with intervals of 7 days and return a sf object 
+# indices from "2010-12-01" to "2011-01-31" with intervals of 7 days
 rain3 <- rainfall(lonlatsf,
-                  day.one = dates,
-                  span = 30,
+                  day.one = "2010-12-01",
+                  last.day = "2011-01-31",
                   timeseries = TRUE,
-                  intervals = 7)
+                  intervals = 7,
+                  as.sf = FALSE)
 rain3
 
 }       

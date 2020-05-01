@@ -27,6 +27,10 @@
 #' 
 #' Additional arguments:
 #' 
+#' \code{last.day}: optional to \var{span}, an object of class \code{Date} or
+#'  any other object that can be coerced to \code{Date} (e.g. integer, character 
+#'  YYYY-MM-DD)  for the last day of the time series
+#' 
 #' \code{source}: character for the source of remote data. Current remote \var{source} 
 #'  is: 'nasapower'
 #' 
@@ -66,43 +70,43 @@
 #' # Using local sources
 #' data("modis", package = "climatrends")
 #' 
-#' day <- as.Date("2013-10-28", format = "%Y-%m-%d")
-#' 
-#' temperature(modis, 
-#'             day.one = day,
+#' temperature(modis,
+#'             day.one = "2013-10-28",
 #'             span = 12)
 #' 
 #' \donttest{
 #' #####################################################
-#'  
+#' 
 #' # Using remote sources of climate data
 #' 
 #' data("lonlatsf", package = "climatrends")
 #' 
-#' set.seed(123)
+#' # some random dates provided as integers and coerced to Dates internally
+#' set.seed(2718279)
 #' dates <- as.integer(runif(5, 17660, 17675))
-#' dates <- as.Date(dates, origin = "1970-01-01")
 #' 
 #' # get temperature indices for 30 days after day.one
 #' # return a data.frame
 #' temp1 <- temperature(lonlatsf,
-#'                     day.one = dates,
-#'                     span = 30,
-#'                     as.sf = FALSE)
+#'                      day.one = dates,
+#'                      span = 30,
+#'                      as.sf = FALSE)
 #' temp1
 #' 
-#' # same as above but return a sf object
+#' # get temperature indices from "2010-12-01" to "2011-01-31"
 #' temp2 <- temperature(lonlatsf,
-#'                     day.one = dates,
-#'                     span = 30)
+#'                      day.one = "2010-12-01",
+#'                      last.day = "2011-01-31",
+#'                      as.sf = FALSE)
 #' temp2
 #' 
-#' # indices with intervals of 7 days and return a sf object 
+#' # indices from "2010-12-01" to "2011-01-31" with intervals of 7 days
 #' temp3 <- temperature(lonlatsf,
-#'                     day.one = dates,
-#'                     span = 30,
-#'                     timeseries = TRUE,
-#'                     intervals = 7)
+#'                      day.one = "2010-12-01",
+#'                      last.day = "2011-01-31",
+#'                      timeseries = TRUE,
+#'                      intervals = 7,
+#'                      as.sf = FALSE)
 #' temp3
 #' 
 #' }
@@ -120,7 +124,7 @@ temperature <- function(object, day.one,
 #' @method temperature default
 #' @export
 temperature.default <- function(object, day.one, 
-                                span, timeseries = FALSE,
+                                span = NULL, timeseries = FALSE,
                                 intervals = 5,
                                 ...){
   
@@ -146,7 +150,7 @@ temperature.default <- function(object, day.one,
   
   night <- dat[[pars[[2]]]]
   
-  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span)
+  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, ...)
   
   class(indices) <- union("clima_df", class(indices))
   
@@ -157,24 +161,22 @@ temperature.default <- function(object, day.one,
 #' @method temperature array
 #' @export
 temperature.array <- function(object, day.one, 
-                              span, timeseries = FALSE,
+                              span = NULL, timeseries = FALSE,
                               intervals = 5, ...){
   
   
-  if(dim(object)[[2]] == 2) {
+  if (dim(object)[[2]] == 2) {
     UseMethod("temperature", "default")
   }
   
   # coerce to data.frame
-  day.one <- as.data.frame(day.one)[, 1]
+  day.one <- as.vector(t(day.one))
   
-  day <- get_timeseries(object[, , 1], day.one, span)[[1]]
+  day <- get_timeseries(object[, , 1], day.one, span, ...)[[1]]
   
-  night <- get_timeseries(object[, , 2], day.one, span)[[1]]
+  night <- get_timeseries(object[, , 2], day.one, span, ...)[[1]]
   
-  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span)
-  
-  class(indices) <- union("clima_df", class(indices))
+  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, ...)
   
   return(indices)
   
@@ -184,7 +186,7 @@ temperature.array <- function(object, day.one,
 #' @method temperature sf
 #' @export
 temperature.sf <- function(object, day.one, 
-                           span, timeseries = FALSE,
+                           span = NULL, timeseries = FALSE,
                            intervals = 5, as.sf = TRUE, ...){
   
   dots <- list(...)
@@ -202,7 +204,7 @@ temperature.sf <- function(object, day.one,
   
   night <- dat[[pars[[2]]]]
   
-  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span)
+  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, ...)
   
   if (all(as.sf, timeseries)) {
   
@@ -241,7 +243,7 @@ temperature.sf <- function(object, day.one,
 #' @param night a data.frame with the night temperature
 #' @inheritParams temperature
 #' @noRd
-.temperature_indices <- function(day, night, timeseries, intervals, day.one, span){
+.temperature_indices <- function(day, night, timeseries, intervals, day.one, span = NULL, last.day = NULL){
   
   index <- c("maxDT", "minDT", "maxNT", "minNT",
              "DTR", "SU", "TR", "CFD",
@@ -250,6 +252,31 @@ temperature.sf <- function(object, day.one,
   n <- nrow(day)
   
   if (isTRUE(timeseries)) {
+    
+    # check if day.one is a 'Date' else try to coerce to Date
+    if (!.is_Date(day.one)) {
+      
+      day.one <- .coerce2Date(day.one)
+      
+    }
+    
+    # the timespan
+    if (!is.null(span)) {
+      span <- as.vector(t(span)) 
+    }
+    
+    # or from last.day
+    if (!is.null(last.day)) {
+      
+      if (!.is_Date(last.day)) {
+        
+        last.day <- .coerce2Date(last.day)
+        
+      }
+      
+      span <- as.integer(last.day[[1]] - day.one[[1]])
+      
+    }
     
     # it might happen that when bins are not well distributed across dates
     # in that case the last values are dropped
@@ -307,8 +334,10 @@ temperature.sf <- function(object, day.one,
       i <- apply(Z, 2, function(z) {
         l <- length(z)
         
+        # day
         XX <- z[1:(l / 2)]
         
+        # night
         YY <- z[((l / 2) + 1):l]
         
         c(maxDT  = .max_temperature(XX),
@@ -321,8 +350,8 @@ temperature.sf <- function(object, day.one,
           CFD    = .frosty_days(YY),
           WSDI = .max_wsdi(XX),
           CSDI = .max_csdi(YY),
-          T10p  = .t10p(XX),
-          T90p  = .t90p(YY))
+          T10p  = .t10p(YY),
+          T90p  = .t90p(XX))
         
       })
       
@@ -373,8 +402,8 @@ temperature.sf <- function(object, day.one,
                       CFD   = .frosty_days(y),
                       WSDI  = .max_wsdi(x),
                       CSDI  = .max_csdi(y),
-                      T10p  = .t10p(x),
-                      T90p  = .t90p(y))
+                      T10p  = .t10p(y),
+                      T90p  = .t90p(x))
       
     }, X = day, Y = night)
     
@@ -392,6 +421,8 @@ temperature.sf <- function(object, day.one,
     ind[integ] <- lapply(ind[integ] , as.integer)
     
     }
+  
+  class(ind) <- union("clima_df", class(ind))
   
   return(ind)
 }
@@ -428,7 +459,7 @@ temperature.sf <- function(object, day.one,
     
   }
   
-  q90 <- stats::quantile(x, probs = 0.9)
+  q90 <- stats::quantile(x, probs = 0.9, na.rm = TRUE)
   # days above q90 should be returned as 0s
   ws <- as.integer(x < q90)
   
@@ -486,7 +517,7 @@ temperature.sf <- function(object, day.one,
     
   }
   
-  q10 <- stats::quantile(x, probs = 0.1)
+  q10 <- stats::quantile(x, probs = 0.1, na.rm = TRUE)
   # days below q10 should be returned as 0s
   cs <- as.integer(x > q10)
   
@@ -612,8 +643,12 @@ temperature.sf <- function(object, day.one,
   # which looks for the sequencies of numbers
   # in this case, zeros (0)
   # take the maximum sequency
-  # first all values <= 0 are converted to zero (0)
-  fd <- ifelse(x <= 0, 0, x)
+  # first all values x <= 0 are converted to zero (0)
+  
+  x <- x[!is.na(x)]
+  
+  fd <- ifelse(x <= 0, 0, 
+               ifelse(x > 0, 2, x))
   
   # get the lengths of each sequency of zeros (0)
   keep <- rle(fd)$values
@@ -649,7 +684,7 @@ temperature.sf <- function(object, day.one,
 #' .t90p(r)
 #' @noRd
 .t90p <- function(x){
-  x <- stats::quantile(x, probs = 0.9)
+  x <- stats::quantile(x, probs = 0.9, na.rm = TRUE)
   x <- as.numeric(x)
   return(x)
 }
@@ -665,7 +700,7 @@ temperature.sf <- function(object, day.one,
 #' .t10p(r)
 #' @noRd
 .t10p <- function(x){
-  x <- stats::quantile(x, probs = 0.1)
+  x <- stats::quantile(x, probs = 0.1, na.rm = TRUE)
   x <- as.numeric(x)
   return(x)
 }

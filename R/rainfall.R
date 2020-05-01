@@ -22,6 +22,10 @@
 #' 
 #' Additional arguments:
 #' 
+#' \code{last.day}: optional to \var{span}, an object of class \code{Date} or
+#'  any other object that can be coerced to \code{Date} (e.g. integer, character 
+#'  YYYY-MM-DD)  for the last day of the time series
+#' 
 #' \code{source}: character for the source of remote data. Current remote \var{source} 
 #'  is: 'nasapower'
 #' 
@@ -56,44 +60,42 @@
 #' # Using local sources
 #' data("chirp", package = "climatrends")
 #' 
-#' day <- as.Date("2013-10-28", format = "%Y-%m-%d")
-#' 
 #' rainfall(chirp,
-#'          day.one = day,
-#'          span = 11)
+#'          day.one = "2013-10-28",
+#'          span = 12)
 #' 
+#' #####################################################
 #' \donttest{
-#' ########################################
-#' 
 #' # Using remote sources of climate data
 #' 
 #' data("lonlatsf", package = "climatrends")
 #' 
-#' set.seed(123)
+#' # some random dates provided as integers and coerced to Dates internally
+#' set.seed(2718279)
 #' dates <- as.integer(runif(5, 17660, 17675))
-#' dates <- as.Date(dates, origin = "1970-01-01")
 #' 
-#' # get rainfall indices for 30 days after day.one
+#' # get precipitation indices for 30 days after day.one
 #' # return a data.frame
 #' rain1 <- rainfall(lonlatsf,
 #'                   day.one = dates,
-#'                   span = 30, 
+#'                   span = 30,
 #'                   as.sf = FALSE)
 #' rain1
 #' 
-#' # same as above but return a sf object
+#' # get precipitation indices from "2010-12-01" to "2011-01-31"
 #' rain2 <- rainfall(lonlatsf,
-#'                   day.one = dates,
-#'                   span = 30)
-#' 
+#'                   day.one = "2010-12-01",
+#'                   last.day = "2011-01-31",
+#'                   as.sf = FALSE)
 #' rain2
 #' 
-#' # indices with intervals of 7 days and return a sf object 
+#' # indices from "2010-12-01" to "2011-01-31" with intervals of 7 days
 #' rain3 <- rainfall(lonlatsf,
-#'                   day.one = dates,
-#'                   span = 30,
+#'                   day.one = "2010-12-01",
+#'                   last.day = "2011-01-31",
 #'                   timeseries = TRUE,
-#'                   intervals = 7)
+#'                   intervals = 7,
+#'                   as.sf = FALSE)
 #' rain3
 #' 
 #'}       
@@ -109,7 +111,7 @@ rainfall <- function(object, day.one, span, ...)
 #' @rdname rainfall
 #' @method rainfall default
 #' @export
-rainfall.default <- function(object, day.one, span, 
+rainfall.default <- function(object, day.one, span = NULL, 
                              timeseries = FALSE,
                              intervals = 5,
                              ...){
@@ -132,7 +134,7 @@ rainfall.default <- function(object, day.one, span,
   
   rain <- get_timeseries(object, day.one, span, pars = pars, ...)[[1]]
   
-  indices <- .rainfall_indices(rain, timeseries, intervals, day.one, span)
+  indices <- .rainfall_indices(rain, timeseries, intervals, day.one, span, ...)
   
   return(indices)
   
@@ -141,7 +143,7 @@ rainfall.default <- function(object, day.one, span,
 #' @rdname rainfall
 #' @method rainfall matrix
 #' @export
-rainfall.matrix <- function(object, day.one, span,
+rainfall.matrix <- function(object, day.one, span = NULL,
                             timeseries = FALSE,
                             intervals = 5, ...){
   
@@ -152,9 +154,9 @@ rainfall.matrix <- function(object, day.one, span,
   # coerce to data.frame
   day.one <- as.data.frame(day.one)[, 1]
   
-  rain <- get_timeseries(object, day.one, span)[[1]]
+  rain <- get_timeseries(object, day.one, span, ...)[[1]]
   
-  indices <- .rainfall_indices(rain, timeseries, intervals, day.one, span)
+  indices <- .rainfall_indices(rain, timeseries, intervals, day.one, span, ...)
   
   return(indices)
   
@@ -164,7 +166,7 @@ rainfall.matrix <- function(object, day.one, span,
 #' @rdname rainfall
 #' @method rainfall sf
 #' @export
-rainfall.sf <- function(object, day.one, span, 
+rainfall.sf <- function(object, day.one, span = NULL, 
                         timeseries = FALSE,
                         intervals = 5, as.sf = TRUE, ...){
   
@@ -179,7 +181,7 @@ rainfall.sf <- function(object, day.one, span,
   
   rain <- get_timeseries(object, day.one, span, pars = pars, ...)[[1]]
   
-  indices <- .rainfall_indices(rain, timeseries, intervals, day.one, span)
+  indices <- .rainfall_indices(rain, timeseries, intervals, day.one, span, ...)
   
   if (all(as.sf, timeseries)) {
     
@@ -214,7 +216,7 @@ rainfall.sf <- function(object, day.one, span,
 }
 
 
-.rainfall_indices <- function(rain, timeseries, intervals, day.one, span){
+.rainfall_indices <- function(rain, timeseries, intervals, day.one, span = NULL, last.day = NULL){
   
   index <- c("MLDS","MLWS","R10mm","R20mm","Rx1day",
              "Rx5day","R95p","R99p","Rtotal","SDII")
@@ -224,6 +226,31 @@ rainfall.sf <- function(object, day.one, span,
   nc <- dim(rain)[[2]]
   
   if (isTRUE(timeseries)) {
+    
+    # check if day.one is a 'Date' else try to coerce to Date
+    if (!.is_Date(day.one)) {
+      
+      day.one <- .coerce2Date(day.one)
+      
+    }
+    
+    # the timespan
+    if (!is.null(span)) {
+      span <- as.vector(t(span)) 
+    }
+    
+    # or from last.day
+    if (!is.null(last.day)) {
+      
+      if (!.is_Date(last.day)) {
+        
+        last.day <- .coerce2Date(last.day)
+        
+      }
+      
+      span <- as.integer(last.day[[1]] - day.one[[1]])
+      
+    }
     
     # it might happen that when bins are not well distributed across dates
     # in that case the last values are dropped
@@ -364,7 +391,9 @@ rainfall.sf <- function(object, day.one, span,
   # in this case, zeros (0)
   # take the maximum sequency
   # first all values < 1 are converted to zero (0)
-  ds <- ifelse(object < 1, 0, object)
+  ds <- object[!is.na(object)]
+  
+  ds <- ifelse(ds < 1, 0, ds)
   
   # get the lengths of each sequency of zeros (0)
   keep <- rle(ds)$values
@@ -405,7 +434,9 @@ rainfall.sf <- function(object, day.one, span,
   # take the maximum sequency
   # first all values >= 1 are converted to zero (0)
   # no precipitation (r < 1) is converted to two (2)
-  ws <- ifelse(object >= 1, 0, 2)
+  ws <- object[!is.na(object)]
+  
+  ws <- ifelse(ws >= 1, 0, 2)
   
   # get the lengths of each sequency of zeros (0)
   keep <- rle(ws)$values
@@ -507,6 +538,7 @@ rainfall.sf <- function(object, day.one, span,
 #' @noRd
 .r_five_day <- function(object)
 {
+  
   # this look for the maximum sum of rain in
   # consecutive 5 days
   l <- length(object)

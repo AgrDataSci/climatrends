@@ -1,39 +1,49 @@
 context("test-rainfall")
 library("nasapower")
+library("sf")
 # load("tests/test_data.rda")
 load("../test_data.rda")
 
-MLDS <- c(rep(9, 2), rep(10, 8))
-MLWS <- c(rep(1, 2), rep(0, 8))
+test_that("rain local ok", {
+  
+  r <- rainfall(rain, day.one = "2013-10-27", span = 15)
 
-test_that("dry equal", {
-  r <- rainfall(object = rain,
-                day.one = d,
-                span = 10)
+  istrue <- all(r == rain_local_ok)
+  
+  expect_true(istrue)
 
-  ds <- all.equal(MLDS, r$MLDS)
-  ws <- all.equal(MLWS, r$MLWS)
-  true <- all(ds, ws)
-  expect_true(true)
 })
 
-realv <- c(7, 7, 4, 10, 10, 10, 1, 1, 1, 0, 0, 0, 11.24, 12.14,
-           11.39, 33.86, 34.79, 32.83, 20.35, 20.91, 21.28, 11.24, 
-           12.14, 11.39, 84.17, 82.24, 79.53, 6.01, 5.87, 5.3)
-test_that("nasapower works", {
+
+ll <- data.frame(lon = lonlat[,1],
+                 lat = lonlat[,2])
+
+ll <- st_as_sf(ll, coords = c("lon","lat"))
+
+test_that("nasapower and sf ok", {
+  
   skip_on_cran()
+
+  r <- rainfall(ll,
+                day.one = "2013-01-01",
+                last.day = "2013-01-10",
+                as.sf = FALSE)
+
+  istrue <- all(r == rain_nasapower_ok)
+
+  expect_true(istrue)
   
-  xy <- as.data.frame(lonlat[1:3, ])
+})
+
+
+test_that("larger span", {
   
-  r <- rainfall(object = xy,
-                day.one = d[1:3,],
-                span = 25)
-
-  r <- round(unlist(r), 2)
-
-  true <- all(r == realv)
-
-  expect_true(true)
+  expect_error(
+    rainfall(chirp,
+             day.one = "2013-10-27",
+             span = 16)
+  )
+  
 })
 
 

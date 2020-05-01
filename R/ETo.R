@@ -27,6 +27,10 @@
 #' 
 #' Additional arguments:
 #' 
+#' \code{last.day}: optional to \var{span}, an object of class \code{Date} or
+#'  any other object that can be coerced to \code{Date} (e.g. integer, character 
+#'  YYYY-MM-DD)  for the last day of the time series
+#' 
 #' \code{source}: character for the source of climate data. Current remote \var{source} 
 #'  is: 'nasapower'
 #' 
@@ -48,26 +52,23 @@
 #' # Using local sources
 #' data("modis", package = "climatrends")
 #' 
-#' day <- as.Date("2013-10-28", format = "%Y-%m-%d")
-#' 
 #' ETo(modis, 
-#'     day.one = day,
+#'     day.one = "2013-10-28",
 #'     span = 10,
 #'     Kc = 0.92)
 #'     
 #' \donttest{
 #' ######################################
-#' 
-#' # Using remote sources 
+#'  
+#' # Using remote sources
 #' # random geographic locations around bbox(11, 12, 55, 58)
-#' set.seed(123)
+#' set.seed(826128)
 #' lonlat <- data.frame(lon = runif(2, 11, 12),
 #'                      lat = runif(2, 55, 58))
 #' 
 #' # random dates around 2018-05-15 and 2018-05-20
-#' set.seed(321)
+#' set.seed(826128)
 #' dates <- as.integer(runif(2, 17666, 17670))
-#' dates <- as.Date(dates, origin = "1970-01-01")
 #' 
 #' # the evapotranspiration in the first 50 days after day.one
 #' ETo(lonlat,
@@ -76,23 +77,20 @@
 #'     lat = lonlat["lat"])
 #'     
 #' #######################################
-#' 
-#' 
+#'  
 #' # Objects of class 'sf'
 #' data("lonlatsf", package = "climatrends")
 #' 
-#' dates <- as.Date(16700, origin = "1970-01-01")
-#' 
 #' ETo(lonlatsf,
-#'     day.one = dates,
-#'     span = 30,
+#'     day.one = "2015-09-22",
+#'     last.day = "2015-10-15",
 #'     pars = c("T10M_MAX", "T10M_MIN"))
 #' 
 #' }
 #' 
 #' @importFrom sf st_bind_cols
 #' @export
-ETo <- function(object, day.one, span, Kc = 1, ...){
+ETo <- function(object, day.one, span = NULL, Kc = 1, ...){
   
   UseMethod("ETo")
 
@@ -101,7 +99,7 @@ ETo <- function(object, day.one, span, Kc = 1, ...){
 #' @rdname ETo
 #' @method ETo default
 #' @export
-ETo.default <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
+ETo.default <- function(object, day.one, span = NULL, Kc = 1, lat = NULL, ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -113,7 +111,14 @@ ETo.default <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
          "in the default method \n.")
   }
   
-  day.one <- as.data.frame(day.one)[, 1]
+  day.one <- as.vector(t(day.one))
+  
+  # check if day.one is a 'Date' else try to coerce to Date
+  if (!.is_Date(day.one)) {
+    
+    day.one <- .coerce2Date(day.one)
+    
+  }
   
   # get p if lat is provided
   if (!is.null(lat)) {
@@ -144,14 +149,20 @@ ETo.default <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
 #' @rdname ETo
 #' @method ETo array
 #' @export
-ETo.array <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
+ETo.array <- function(object, day.one, span = NULL, Kc = 1, lat = NULL, ...){
   
   if(dim(object)[[2]] == 2) {
     UseMethod("ETo", "default")
   }
   
-  # coerce to data.frame
-  day.one <- as.data.frame(day.one)[, 1]
+  day.one <- as.vector(t(day.one))
+  
+  # check if day.one is a 'Date' else try to coerce to Date
+  if (!.is_Date(day.one)) {
+    
+    day.one <- .coerce2Date(day.one)
+    
+  }
 
   # get p if lat is provided
   if (!is.null(lat)) {
@@ -177,7 +188,7 @@ ETo.array <- function(object, day.one, span, Kc = 1, lat = NULL, ...){
 #' @rdname ETo
 #' @method ETo sf
 #' @export
-ETo.sf <- function(object, day.one, span, Kc = 1, as.sf = TRUE, ...){
+ETo.sf <- function(object, day.one, span = NULL, Kc = 1, as.sf = TRUE, ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -186,7 +197,14 @@ ETo.sf <- function(object, day.one, span, Kc = 1, as.sf = TRUE, ...){
   lat <- .lonlat_from_sf(object)
   lat <- lat[, 2]
   
-  day.one <- as.data.frame(day.one)[, 1]
+  day.one <- as.vector(t(day.one))
+  
+  # check if day.one is a 'Date' else try to coerce to Date
+  if (!.is_Date(day.one)) {
+    
+    day.one <- .coerce2Date(day.one)
+    
+  }
   
   # get p
   m <- as.integer(format(day.one, "%m"))

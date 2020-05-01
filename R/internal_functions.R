@@ -155,3 +155,81 @@
 }
 
 
+#' Coerce to 'Date'
+#' Coerce a vector of characters or integers into class 'Date'
+#' @param x a vector
+#' @examples 
+#' x <- c("1970-01-01", "2020-90-01")
+#' .coerce2Date(x)
+#' 
+#' x <- c(819, 9811)
+#' .coerce2Date(x)
+#' 
+#' x <- letters[1:10]
+#' .coerce2Date(x)
+#' @noRd
+.coerce2Date <- function(x) {
+  
+  if (is.character(x)) {
+    x <- as.Date(x, format = "%Y-%m-%d")
+  }
+  
+  if (any(is.integer(x), is.numeric(x))) {
+    x <- as.Date(x, origin = "1970-01-01")
+  }
+  
+  if (!.is_Date(x)) {
+      stop("No visible method to coerce given dates to as.Date \n")
+  }
+  
+  if (any(is.na(x))) {
+    stop("Visible methods to coerce given dates to as.Date returning NAs \n")
+  }
+  
+  return(x)
+  
+}
+
+
+
+.set_long <- function(object, id) {
+  
+  object <- split(object, object[, id])
+  
+  object <- lapply(object, function(x){
+    
+    x <- t(x)
+    
+    x <- cbind(row.names(x), x)
+    
+    i <- x[id, 2]
+    
+    x <- cbind(x, id = i)
+    
+    x <- x[ x[,1] != id , ]
+    
+    x <- as.data.frame(x, stringsAsFactors = FALSE)
+    
+    names(x) <- c("variable", "value", "id")
+    
+    x <- x[ ,c("id", "variable", "value")]
+    
+    return(x)
+    
+  })
+  
+  object <- do.call("rbind", object)
+  
+  object <- as.data.frame(object, stringsAsFactors = FALSE)
+  
+  object <- with(object, object[order(as.integer(id)), ])
+  
+  object <- with(object, object[variable != "id", ])
+  
+  object <- with(object, object[!is.na(value), ])
+  
+  rownames(object) <- 1:nrow(object)
+  
+  return(object)
+  
+}

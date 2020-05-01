@@ -7,25 +7,44 @@
 \alias{get_timeseries.matrix}
 \title{Time series climate data}
 \usage{
-get_timeseries(object, day.one, span, ...)
+get_timeseries(object, day.one, span = NULL, last.day = NULL, ...)
 
-\method{get_timeseries}{default}(object, day.one, span, source = "nasapower", ...)
+\method{get_timeseries}{default}(
+  object,
+  day.one,
+  span = NULL,
+  last.day = NULL,
+  source = "nasapower",
+  ...
+)
 
-\method{get_timeseries}{sf}(object, day.one, span, source = "nasapower", ...)
+\method{get_timeseries}{sf}(
+  object,
+  day.one,
+  span = NULL,
+  last.day = NULL,
+  source = "nasapower",
+  ...
+)
 
-\method{get_timeseries}{matrix}(object, day.one, span, ...)
+\method{get_timeseries}{matrix}(object, day.one, span = NULL, last.day = NULL, ...)
 }
 \arguments{
-\item{object}{a \code{data.frame} (or object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf} with 
-geometry 'POINT' or 'POLYGON', or a named \code{matrix} with climate data.
-See details.}
+\item{object}{a \code{data.frame} (or any othwer object that can be coerced to 
+data.frame) with geographical coordinates (lonlat), or an object of class 
+\code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
+climate data. See details.}
 
-\item{day.one}{a vector of class \code{Date} for the starting date to capture 
-the climate data}
+\item{day.one}{a vector of class \code{Date} or any other object that can be 
+coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
+day to capture the climate data}
 
-\item{span}{an integer or a vector with integers for the duration of the 
-time series to be captured}
+\item{span}{an integer or a vector with integers (optional if \var{last.day} is 
+given) for the length of the time series to be captured}
+
+\item{last.day}{optional to \var{span}, an object of class \code{Date} or
+any other object that can be coerced to \code{Date} (e.g. integer, character 
+YYYY-MM-DD)  for the last day of the time series}
 
 \item{...}{additional arguments passed to methods. See details.}
 
