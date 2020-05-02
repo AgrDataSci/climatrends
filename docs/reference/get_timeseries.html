@@ -140,36 +140,57 @@
     <p>General functions and methods to concatenate climate data across a time series.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_timeseries</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>span</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>get_timeseries</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>get_timeseries</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>span</span>, <span class='kw'>source</span> <span class='kw'>=</span> <span class='st'>"nasapower"</span>, <span class='no'>...</span>)
+<span class='fu'>get_timeseries</span>(
+  <span class='no'>object</span>,
+  <span class='no'>day.one</span>,
+  <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>source</span> <span class='kw'>=</span> <span class='st'>"nasapower"</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for sf</span>
-<span class='fu'>get_timeseries</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>span</span>, <span class='kw'>source</span> <span class='kw'>=</span> <span class='st'>"nasapower"</span>, <span class='no'>...</span>)
+<span class='fu'>get_timeseries</span>(
+  <span class='no'>object</span>,
+  <span class='no'>day.one</span>,
+  <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>source</span> <span class='kw'>=</span> <span class='st'>"nasapower"</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for matrix</span>
-<span class='fu'>get_timeseries</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>span</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>get_timeseries</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>a <code>data.frame</code> (or object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class <code>sf</code> with 
-geometry 'POINT' or 'POLYGON', or a named <code>matrix</code> with climate data.
-See details.</p></td>
+      <td><p>a <code>data.frame</code> (or any othwer object that can be coerced to 
+data.frame) with geographical coordinates (lonlat), or an object of class 
+<code>sf</code> with geometry 'POINT' or 'POLYGON', or a named <code>matrix</code> with 
+climate data. See details.</p></td>
     </tr>
     <tr>
       <th>day.one</th>
-      <td><p>a vector of class <code>Date</code> for the starting date to capture 
-the climate data</p></td>
+      <td><p>a vector of class <code>Date</code> or any other object that can be 
+coerced to <code>Date</code> (e.g. integer, character YYYY-MM-DD) for the starting 
+day to capture the climate data</p></td>
     </tr>
     <tr>
       <th>span</th>
-      <td><p>an integer or a vector with integers for the duration of the 
-time series to be captured</p></td>
+      <td><p>an integer or a vector with integers (optional if <var>last.day</var> is 
+given) for the length of the time series to be captured</p></td>
+    </tr>
+    <tr>
+      <th>last.day</th>
+      <td><p>optional to <var>span</var>, an object of class <code>Date</code> or
+any other object that can be coerced to <code>Date</code> (e.g. integer, character 
+YYYY-MM-DD)  for the last day of the time series</p></td>
     </tr>
     <tr>
       <th>...</th>

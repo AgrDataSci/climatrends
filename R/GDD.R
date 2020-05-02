@@ -10,11 +10,11 @@
 #' @param degree.days an integer for the degree-days required by the 
 #'  organism (look for the physiology of the focal organism)
 #' @param base an integer for the base temperature
-#' @return The number of days required to reach the growing degree-days.
+#' @return The number of days which were required to reach the growing degree-days.
 #' @family temperature functions
 #' @details 
 #' The \code{array} method assumes that \var{object} contains climate data provided 
-#'  from a local source; this requires a array with two dimensions, 1st dimension 
+#'  from a local source; this requires an array with two dimensions, 1st dimension 
 #'  contains the day temperature and 2nd dimension the night temperature, 
 #'  see help("modis", "climatrends") for an example on input structure.
 #' 
@@ -100,8 +100,8 @@ GDD.default <- function(object, day.one, degree.days,
   # coerce inputs to data.frame
   object <- as.data.frame(object)
   if(dim(object)[[2]] != 2) {
-    stop("Subscript out of bounds. Only lonlat should be provided ",
-         "in the default method \n.")
+    stop("Subscript out of bounds. In GDD.default(),",
+         " only lonlat should be provided. \n")
   }
   
   day.one <- as.data.frame(day.one)[, 1]
@@ -136,16 +136,24 @@ GDD.array <- function(object, day.one, degree.days,
   span <- dots[["span"]]
   last.day <- dots[["last.day"]]
   
+  # coerce to vector
+  day.one <- as.vector(t(day.one))
+  
   if (all(is.null(span), is.null(last.day))) {
-    span <- (dim(object)[[2]] - 2)
+    
+    if (isFALSE(.is_Date(day.one))){
+      day.one <- .coerce2Date(day.one)
+    }
+    do <- as.character(max(day.one))
+    do <- match(do, dimnames(object[,,1])[[2]])
+    span <- dim(object)[[2]] - do
   }
   
-  # coerce to data.frame
-  day.one <- as.data.frame(day.one)[, 1]
   
-  day <- get_timeseries(object[, , 1], day.one, span, ...)[[1]]
   
-  night <- get_timeseries(object[, , 2], day.one, span, ...)[[1]]
+  day <- get_timeseries(object[, , 1], day.one, span, last.day)[[1]]
+  
+  night <- get_timeseries(object[, , 2], day.one, span, last.day)[[1]]
   
   result <- .gdd(day, night, base, degree.days)
   

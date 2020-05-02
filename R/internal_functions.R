@@ -170,6 +170,12 @@
 #' @noRd
 .coerce2Date <- function(x) {
   
+  if (isTRUE(.is_Date(x))) {
+    
+    return(x)
+  
+  }
+  
   if (is.character(x)) {
     x <- as.Date(x, format = "%Y-%m-%d")
   }
@@ -178,7 +184,7 @@
     x <- as.Date(x, origin = "1970-01-01")
   }
   
-  if (!.is_Date(x)) {
+  if (isFALSE(.is_Date(x))) {
       stop("No visible method to coerce given dates to as.Date \n")
   }
   

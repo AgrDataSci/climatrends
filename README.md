@@ -38,57 +38,55 @@ install_github("agrobioinfoservices/climatrends", build_vignettes = TRUE)
 
 ## Example
 
-The default method for the function `temperature()` has as the basic input an `object` of class `data.frame` (or any other that can be coerced to a data.frame) with the longitude and latitude in geographic coordinates and a vector of class `Date` for the first day that will be taken into account for the indices. The duration from where the temperature indices will be computed is defined by the argument `span` which can be a single integer that takes into account a single timespan for all points or a vector indicating the timespan for each point.
+The default method for the function `temperature()` has as the basic input an `object` of class `data.frame` (or any other that can be coerced to a data.frame) with the longitude and latitude in geographic coordinates and a vector of class `Date` (or any other that can be coerced to `Date`) for the first day that will be taken into account for the indices. The duration from where the temperature indices will be computed is defined either by the argument `last.day` or `span`.
 
 Here we generate some random points within the Innlandet county in Norway from May-2015:
 
 
 ```r
-set.seed(6)
+library("climatrends")
+
+set.seed(7291)
 lonlat <- data.frame(lon = runif(5, 8.3, 12),
                      lat = runif(5, 60, 62.3))
 
-date <- as.Date("2015-05-01", format = "%Y-%m-%d")
-
-temp <- temperature(lonlat, day.one = date, span = 50)
+temp <- temperature(lonlat, day.one = "2015-05-01", last.day = "2015-06-30")
 
 temp
 
-  maxDT minDT maxNT  minNT   DTR    SU    TR   CFD
-  <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
-1 12.81 -0.58  3.61 -10.84  7.36  0.00  0.00 13.00
-2 13.39  0.66  3.84  -7.60  7.02  0.00  0.00 12.00
-3 10.68 -1.48  2.43 -11.29  7.12  0.00  0.00 40.00
-4 14.08  1.53  3.94  -6.85  8.44  0.00  0.00 12.00
-5 19.64  5.82  8.24  -2.40  8.23  0.00  0.00  1.00
+   maxDT minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI  T10p  T90p
+   <dbl> <dbl> <dbl>  <dbl> <int> <int> <int> <int> <int> <int> <dbl> <dbl>
+1: 18.28  2.33  6.79  -5.46     8     0     0    12     5     3 -3.45 15.20
+2: 17.49  2.45  6.79  -4.76     8     0     0    12     5     2 -3.18 14.69
+3: 19.03  3.58 10.70  -4.58     8     0     0     4     4     4 -1.29 15.71
+4: 18.22 -1.69  6.55 -12.42     7     0     0    28     4     4 -4.75 12.59
+5: 19.81  4.78 11.48  -3.01     8     0     0     3     4     3  0.73 17.26
 
 ```
 
-The indices can be splitted for timeseries analysis with intervals. Here we get the temperature indices for the same area with intervals of 7 days after `day.one`.
+The indices can be splitted for in intervals for series analysis. Here we get the temperature indices for the same area with intervals of 7 days after `day.one`.
 
 ```r
-temp <- temperature(lonlat, day.one = date, span = 50, 
-                    timeseries = TRUE, 
-                    intervals = 7)
+temp2 <- temperature(lonlat,
+                     day.one = "2015-05-01", 
+                     last.day = "2015-06-30", 
+                     timeseries = TRUE, 
+                     intervals = 7)
 
-temp
-
-       id       date index  value
-    <int>     <date> <chr>  <dbl>
-1       1 2015-05-01 maxDT   9.70
-2       1 2015-05-01 minDT  -0.58
-3       1 2015-05-01 maxNT   2.42
-4       1 2015-05-01 minNT -10.84
-5       1 2015-05-01   DTR   8.19
----                              
-276     5 2015-06-12 minNT   3.25
-277     5 2015-06-12   DTR   9.00
-278     5 2015-06-12    SU   0.00
-279     5 2015-06-12    TR   0.00
-280     5 2015-06-12   CFD   0.00
-       
+        id       date index  value
+     <int>     <date> <chr>  <dbl>
+1:       1 2015-05-01 maxDT   7.60
+2:       1 2015-05-01 minDT   3.01
+3:       1 2015-05-01 maxNT   1.47
+4:       1 2015-05-01 minNT  -4.18
+5:       1 2015-05-01   DTR   5.85
+---                               
+476:     5 2015-06-19   CFD   0.00
+477:     5 2015-06-19  WSDI   1.00
+478:     5 2015-06-19  CSDI   1.00
+479:     5 2015-06-19  T10p   6.07
+480:     5 2015-06-19  T90p  17.93
 ```
-
 
 ## Going further
 

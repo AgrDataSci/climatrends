@@ -122,8 +122,8 @@ rainfall.default <- function(object, day.one, span = NULL,
   # coerce inputs to data.frame
   object <- as.data.frame(object)
   if(dim(object)[[2]] != 2) {
-    stop("Subscript out of bounds. Only lonlat should be provided ",
-         "in the default method \n.")
+    stop("Subscript out of bounds. In rainfall.default(),",
+         " only lonlat should be provided. \n")
   }
   
   day.one <- as.data.frame(day.one)[, 1]

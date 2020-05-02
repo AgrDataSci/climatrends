@@ -38,7 +38,7 @@ given) for the length of the time series to be captured}
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
 \value{
-The number of days required to reach the growing degree-days.
+The number of days which were required to reach the growing degree-days.
 }
 \description{
 Compute number of days required to reach Growing degree-days.
@@ -49,7 +49,7 @@ integral of warmth above a base temperature.
 }
 \details{
 The \code{array} method assumes that \var{object} contains climate data provided 
- from a local source; this requires a array with two dimensions, 1st dimension 
+ from a local source; this requires an array with two dimensions, 1st dimension 
  contains the day temperature and 2nd dimension the night temperature, 
  see help("modis", "climatrends") for an example on input structure.
 

@@ -18,7 +18,7 @@
 #'  to 0.27 as default.
 #'  
 #' The \code{array} method assumes that \var{object} contains climate data provided 
-#'  from a local source; this requires a array with two dimensions, 1st dimension 
+#'  from a local source; this requires an array with two dimensions, 1st dimension 
 #'  contains the day temperature and 2nd dimension the night temperature, 
 #'  see help("modis", "climatrends") for an example on input structure.
 #' 
@@ -107,8 +107,8 @@ ETo.default <- function(object, day.one, span = NULL, Kc = 1, lat = NULL, ...){
   # coerce inputs to data.frame
   object <- as.data.frame(object)
   if(dim(object)[[2]] != 2) {
-    stop("Subscript out of bounds. Only lonlat should be provided ",
-         "in the default method \n.")
+    stop("Subscript out of bounds. In ETo.default(),",
+         " only lonlat should be provided. \n")
   }
   
   day.one <- as.vector(t(day.one))

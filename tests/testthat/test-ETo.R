@@ -23,20 +23,18 @@ test_that("give correct values", {
   
 })
 
-rv <- c(2.892, 2.921, 2.907)
+rv <- c(2.861, 2.891, 2.879)
 test_that("nasapower with default method", {
   skip_on_cran()
   
   ll <- as.data.frame(lonlat[1:3, ])
   
-  dd <- d[1,]
-  
   r <- ETo(object = ll,
-           day.one = dd,
-           span = 20,
+           day.one = "2013-10-28",
+           last.day = "2013-11-17",
            lat = ll[,2])
   
-  r <- round(r[[1]], 3)
+  r <- round(r$ETo, 3)
   
   r <- all(r == rv)
   
@@ -51,10 +49,8 @@ test_that("accept and return a sf", {
   ll <- as.data.frame(lonlat[1:2, ])
   ll <- st_as_sf(ll, coords = c("V1","V2"))
   
-  dd <- d[1,]
-  
   r <- ETo(object = ll,
-           day.one = dd,
+           day.one = "2013-10-28",
            span = 20, 
            as.sf = TRUE,
            pars = c("T10M_MAX", "T10M_MIN"))
@@ -67,16 +63,6 @@ test_that("accept and return a sf", {
 
   expect_equal(r, is_sf)
   
-})
-
-
-test_that("error, non Date object in day.one", {
-  expect_error(
-    ETo(temp,
-        day.one = c(1:10), 
-        span = 10,
-        lat = rep(0, 10))
-  )
 })
 
 

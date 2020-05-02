@@ -86,7 +86,7 @@ Methods to compute temperature indices over a time series
 }
 \details{
 The \code{array} method assumes that \var{object} contains climate data provided 
- from a local source; this requires a array with two dimensions, 1st dimension 
+ from a local source; this requires an array with two dimensions, 1st dimension 
  contains the day temperature and 2nd dimension the night temperature, 
  see help("modis", package = "climatrends") for an example on input structure.
 

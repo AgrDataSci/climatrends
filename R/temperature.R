@@ -15,7 +15,7 @@
 #' @param ... additional arguments passed to methods. See details.
 #' @details 
 #' The \code{array} method assumes that \var{object} contains climate data provided 
-#'  from a local source; this requires a array with two dimensions, 1st dimension 
+#'  from a local source; this requires an array with two dimensions, 1st dimension 
 #'  contains the day temperature and 2nd dimension the night temperature, 
 #'  see help("modis", package = "climatrends") for an example on input structure.
 #' 
@@ -130,15 +130,16 @@ temperature.default <- function(object, day.one,
   
   dots <- list(...)
   pars <- dots[["pars"]]
+  last.day <- dots[["last.day"]]
   
   # coerce inputs to data.frame
   object <- as.data.frame(object)
   if(dim(object)[[2]] != 2) {
-    stop("Subscript out of bounds. Only lonlat should be provided ",
-         "in the default method \n.")
+    stop("Subscript out of bounds. In temperature.default(),",
+         " only lonlat should be provided. \n")
   }
   
-  day.one <- as.data.frame(day.one)[, 1]
+  day.one <- as.vector(t(day.one))
   
   if (is.null(pars)) {
     pars <- c("T2M_MAX", "T2M_MIN")
@@ -150,7 +151,7 @@ temperature.default <- function(object, day.one,
   
   night <- dat[[pars[[2]]]]
   
-  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, ...)
+  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, last.day)
   
   class(indices) <- union("clima_df", class(indices))
   
@@ -169,6 +170,9 @@ temperature.array <- function(object, day.one,
     UseMethod("temperature", "default")
   }
   
+  dots <- list(...)
+  last.day <- dots[["last.day"]]
+  
   # coerce to data.frame
   day.one <- as.vector(t(day.one))
   
@@ -176,7 +180,7 @@ temperature.array <- function(object, day.one,
   
   night <- get_timeseries(object[, , 2], day.one, span, ...)[[1]]
   
-  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, ...)
+  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, last.day)
   
   return(indices)
   
@@ -191,8 +195,9 @@ temperature.sf <- function(object, day.one,
   
   dots <- list(...)
   pars <- dots[["pars"]]
+  last.day <- dots[["last.day"]]
   
-  day.one <- as.data.frame(day.one)[, 1]
+  day.one <- as.vector(t(day.one))
   
   if (is.null(pars)) {
     pars <- c("T2M_MAX", "T2M_MIN")
@@ -204,7 +209,7 @@ temperature.sf <- function(object, day.one,
   
   night <- dat[[pars[[2]]]]
   
-  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, ...)
+  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, last.day)
   
   if (all(as.sf, timeseries)) {
   

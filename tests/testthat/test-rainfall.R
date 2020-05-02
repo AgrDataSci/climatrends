@@ -15,15 +15,15 @@ test_that("rain local ok", {
 })
 
 
-ll <- data.frame(lon = lonlat[,1],
-                 lat = lonlat[,2])
-
-ll <- st_as_sf(ll, coords = c("lon","lat"))
-
 test_that("nasapower and sf ok", {
   
   skip_on_cran()
 
+  ll <- data.frame(lon = lonlat[,1],
+                   lat = lonlat[,2])
+  
+  ll <- st_as_sf(ll, coords = c("lon","lat"))
+  
   r <- rainfall(ll,
                 day.one = "2013-01-01",
                 last.day = "2013-01-10",

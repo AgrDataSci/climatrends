@@ -141,14 +141,17 @@
 <ul>
 <li>Export function <code><a href="../reference/get_timeseries.html">get_timeseries()</a></code>
 </li>
-<li>Enable modular expansion of data sources using API clients by creating specific functions that are called with the argument <code>source</code> in all functions</li>
+<li>Enable future modular expansion of data sources using API clients by creating specific functions that are called with the argument <code>source</code> in all functions</li>
+<li>Enable argument <code>last.day</code>, optional to <code>span</code>, when indices are retrieved with focus on timeseries</li>
 <li>Enable data retrieve from large areas in ‘nasapower’ by clustering the lonlat points with <code><a href="https://rdrr.io/r/stats/hclust.html">stats::hclust()</a></code>
 </li>
 <li>Methods for objects of classes ‘sf’, ‘matrix’, ‘array’ and ‘data.frame’ (default) in all functions</li>
 <li>Remove dependency from ‘tibble’ which was basically to provide a ‘cool’ printing method</li>
 <li>Implement a <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> method for objects that inherits the class ‘clima_df’</li>
 <li>Calls from “nasapower” can be adjusted with argument <code>pars</code>, mainly for <code><a href="../reference/temperature.html">temperature()</a></code>, <code><a href="../reference/GDD.html">GDD()</a></code> and <code><a href="../reference/ETo.html">ETo()</a></code>. Details in the function documentation</li>
-<li>New <code><a href="../reference/temperature.html">temperature()</a></code> indices provided</li>
+<li>New <code><a href="../reference/temperature.html">temperature()</a></code> indices provided. Details in the function documentation</li>
+<li>
+</li>
 </ul>
 </div>
     <div id="climatrends-010-2020-02-20" class="section level1">
