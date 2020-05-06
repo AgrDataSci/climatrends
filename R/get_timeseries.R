@@ -345,7 +345,8 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
     
     id <- rep(id, length(x))
     
-    data.frame(id = id, date = d, value = x)
+    data.frame(id = id, date = d, value = x, 
+               stringsAsFactors = FALSE)
     
   })
   

@@ -382,7 +382,8 @@ temperature.sf <- function(object, day.one,
                       WSDI  = .max_wsdi(x),
                       CSDI  = .max_csdi(y),
                       T10p  = .t10p(y),
-                      T90p  = .t90p(x))
+                      T90p  = .t90p(x),
+                      stringsAsFactors = FALSE)
       
     }, X = day, Y = night)
     

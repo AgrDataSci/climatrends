@@ -320,7 +320,8 @@ rainfall.sf <- function(object, day.one, span = NULL,
                       .very_wet_days(x),
                       .extrem_wet_days(x),
                       .r_total(x),
-                      .sdii(x))
+                      .sdii(x),
+                      stringsAsFactors = FALSE)
       
     })
     
