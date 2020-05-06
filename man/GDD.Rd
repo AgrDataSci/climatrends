@@ -7,13 +7,30 @@
 \alias{GDD.sf}
 \title{Growing degree-days}
 \usage{
-GDD(object, day.one, degree.days, base = 10, ...)
+GDD(object, day.one, degree.days = NULL, base = 10, ...)
 
-\method{GDD}{default}(object, day.one, degree.days, base = 10, span = NULL, ...)
+\method{GDD}{default}(
+  object,
+  day.one,
+  degree.days = NULL,
+  base = 10,
+  span = NULL,
+  return = "ndays",
+  ...
+)
 
-\method{GDD}{array}(object, day.one, degree.days, base = 10, ...)
+\method{GDD}{array}(object, day.one, degree.days = NULL, base = 10, return = "ndays", ...)
 
-\method{GDD}{sf}(object, day.one, degree.days, base = 10, span = NULL, as.sf = TRUE, ...)
+\method{GDD}{sf}(
+  object,
+  day.one,
+  degree.days = NULL,
+  base = 10,
+  span = NULL,
+  return = "ndays",
+  as.sf = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{a data.frame (or object that can be coerced to data.frame) 
@@ -26,7 +43,8 @@ coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting
 day to capture the climate data}
 
 \item{degree.days}{an integer for the degree-days required by the 
-organism (look for the physiology of the focal organism)}
+organism (look for the physiology of the focal organism). Optional if 
+\var{return} = \code{"daily"}}
 
 \item{base}{an integer for the base temperature}
 
@@ -35,10 +53,15 @@ organism (look for the physiology of the focal organism)}
 \item{span}{an integer or a vector with integers (optional if \var{last.day} is 
 given) for the length of the time series to be captured}
 
+\item{return}{character (one of \code{"ndays"} or \code{"daily"}) to select if 
+the function returns the number of days to reach the GDD or the raw daily values 
+of the GDD}
+
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
 \value{
-The number of days which were required to reach the growing degree-days.
+The number of days which were required to reach the growing degree-days, or 
+  the degree days in each day during the time series
 }
 \description{
 Compute number of days required to reach Growing degree-days.

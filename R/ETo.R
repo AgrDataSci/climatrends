@@ -233,8 +233,15 @@ ETo.sf <- function(object, day.one, span = NULL, Kc = 1, as.sf = TRUE, ...){
 # Compute evapotranspiration
 .eto <- function(day, night, Kc, p) {
   
-  # calculate Tmean
-  Tmean <- (rowMeans(day, na.rm = TRUE) + rowMeans(night, na.rm = TRUE)) / 2
+  temp <- cbind(day, value2 = night$value)
+  
+  temp <- split(temp, temp$id)
+  
+  Tmean <-lapply(temp, function(x){
+    (mean(x$value, na.rm = TRUE) + mean(x$value2, na.rm = TRUE)) / 2
+  })
+  
+  Tmean <- do.call("rbind", Tmean)
   
   # evapotranspiration
   eto <- p * (0.46 * Tmean + 8) * Kc
@@ -260,4 +267,3 @@ ETo.sf <- function(object, day.one, span = NULL, Kc = 1, as.sf = TRUE, ...){
   return(p)
 
 }
- 

@@ -34,12 +34,14 @@ journal: JOSS
 
 # Summary
 
-Understand how climate variability drives ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the toolkit to compute extreme precipitation and temperature indices that serves as input for climate models, crop modelling, trends in climate change and ecology. The climate variables available in **climatrends** were previously used to identify climate patterns in crop growing cycles [@Kehel2016], regional climate change assessment [@Aguilar2005], the effects of agroclimatic indices on the performance of crop varieties [@vanEtten2019] and compare perceptions to climate change with observed data [@DeSousa2018].
+Understand how climate variability drives ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the R [@RCoreTeam] toolkit to compute extreme precipitation and temperature indices that serves as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [**add-reference**].
 
 # Implementation
-Describe the main functions, methods and dependencies. 
+
+Four main functions are provided, `ETo()`, `GDD()`, `rainfall()` and `temperature()` with methods [@RCoreTeam] for classes 'data.frame', 'matrix' (or array), and 'sf' [@sf]. 
 
 # Application: common beans
+
 Replicate part of the analysis in van Etten et al [-@vanEtten2019] with the beans data to show how we can use this package to capture the influence of climate variability on crop performance. The idea is to show the same PlackettLuce Tree.
 
 # Application: time series 

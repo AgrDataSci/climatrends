@@ -10,14 +10,32 @@ test_that("right values array method", {
   dg <- GDD(object = temp,
             day.one = d, 
             degree.days = 45,
-            base = 10,
-            span = 12)
+            base = 10)
   
   dg <- all(realv == dg[, 1])
   
   expect_true(dg)
   
 })
+
+realv <- c(11, 11, 11, 11, 11, 
+           12, 12, 12, 12, 12)
+# return daily gdd
+test_that("return daily gdd", {
+  
+  gdd <- GDD(object = temp[1:2,,],
+             day.one = d[1:2,], 
+             span = 5,
+             base = 10,
+             return = "daily")$gdd
+  
+  gdd <- round(gdd, 0)
+  
+  istrue <- all(gdd == realv)
+  
+  expect_true(istrue)
+})
+
 
 realv <- c(7,6,6)
 test_that("nasapower works", {

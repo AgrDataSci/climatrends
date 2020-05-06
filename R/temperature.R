@@ -125,8 +125,7 @@ temperature <- function(object, day.one,
 #' @export
 temperature.default <- function(object, day.one, 
                                 span = NULL, timeseries = FALSE,
-                                intervals = 5,
-                                ...){
+                                intervals = 5, ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -151,7 +150,7 @@ temperature.default <- function(object, day.one,
   
   night <- dat[[pars[[2]]]]
   
-  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, last.day)
+  indices <- .temperature_indices(day, night, timeseries, intervals)
   
   class(indices) <- union("clima_df", class(indices))
   
@@ -180,7 +179,7 @@ temperature.array <- function(object, day.one,
   
   night <- get_timeseries(object[, , 2], day.one, span, ...)[[1]]
   
-  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, last.day)
+  indices <- .temperature_indices(day, night, timeseries, intervals)
   
   return(indices)
   
@@ -209,7 +208,7 @@ temperature.sf <- function(object, day.one,
   
   night <- dat[[pars[[2]]]]
   
-  indices <- .temperature_indices(day, night, timeseries, intervals, day.one, span, last.day)
+  indices <- .temperature_indices(day, night, timeseries, intervals)
   
   if (all(as.sf, timeseries)) {
   
@@ -248,40 +247,21 @@ temperature.sf <- function(object, day.one,
 #' @param night a data.frame with the night temperature
 #' @inheritParams temperature
 #' @noRd
-.temperature_indices <- function(day, night, timeseries, intervals, day.one, span = NULL, last.day = NULL){
+.temperature_indices <- function(day, night, timeseries, intervals){
   
   index <- c("maxDT", "minDT", "maxNT", "minNT",
              "DTR", "SU", "TR", "CFD",
              "WSDI", "CSDI", "T10p", "T90p")
   
-  n <- nrow(day)
+  nr <- max(unique(day$id))
   
   if (isTRUE(timeseries)) {
     
-    # check if day.one is a 'Date' else try to coerce to Date
-    if (!.is_Date(day.one)) {
-      
-      day.one <- .coerce2Date(day.one)
-      
-    }
+    ids <- unique(day$id)
     
-    # the timespan
-    if (!is.null(span)) {
-      span <- as.vector(t(span)) 
-    }
+    day <- split(day, day$id)
     
-    # or from last.day
-    if (!is.null(last.day)) {
-      
-      if (!.is_Date(last.day)) {
-        
-        last.day <- .coerce2Date(last.day)
-        
-      }
-      
-      span <- as.integer(last.day[[1]] - day.one[[1]])
-      
-    }
+    night <- split(night, night$id)
     
     # it might happen that when bins are not well distributed across dates
     # in that case the last values are dropped
@@ -289,79 +269,73 @@ temperature.sf <- function(object, day.one,
     # in that case, the last four observations are dropped to fit in a vector of
     # length == 49 (the maximum integer from dividing days/intervals)
     # organise bins, ids and dates
-    bins <- floor(ncol(day) / intervals)
-    
-    bins <- rep(1:bins, each = intervals, length.out = NA)
-    
-    # ids are the row names in r
-    ids <- rownames(day)
-    
-    # dates are the first day for each bin
-    dates <- NULL
-    # for diffent day.one a loop is required to take the
-    # sequence of days and the first day in each bin
-    for (i in seq_along(day.one)) {
+    day <- lapply(day, function(x){
       
-      d <- day.one[i]:(day.one[i] + (span - 1))
+      r <- dim(x)[[1]]
       
-      d <- d[seq_along(bins)]
+      bins <- floor(r / intervals)
       
-      d <- d[!duplicated(bins)]
+      bins <- rep(1:bins, each = intervals, length.out = NA)
       
-      d <- rep(d, each = length(index))
+      x <- x[1:length(bins), ]
       
-      dates <- c(dates, d)
+      x$id <- paste(x$id, bins, sep = "_")
       
+      x 
       
-    }
+    })
     
-    dates <- as.Date(dates, origin = "1970-01-01")
+    day <- do.call("rbind", day)
     
-    # transpose and keep values until the end of bins
-    day <- t(day)
+    night <- lapply(night, function(x) {
+      
+      r <- dim(x)[[1]]
+      
+      bins <- floor(r / intervals)
+      
+      bins <- rep(1:bins, each = intervals, length.out = NA)
+      
+      x <- x[1:length(bins), ]
+      
+      x$id <- paste(x$id, bins, sep = "_")
+      
+      x 
+      
+    })
     
-    night <- t(night)
-    
-    # keep data within the lenght of bins
-    day <- as.data.frame(day[seq_along(bins), ])
-    
-    night <- as.data.frame(night[seq_along(bins), ])
+    night <- do.call("rbind", night)
     
     # split by bins
-    day <- split(day, bins)
+    day <- split(day, day$id)
     
-    night <- split(night, bins)
+    night <- split(night, night$id)
     
     ind <- mapply(function(X, Y) {
       
-      Z <- rbind(X, Y)
+      id <- strsplit(Y$id[1], "_")[[1]][[1]]
       
-      i <- apply(Z, 2, function(z) {
-        l <- length(z)
-        
-        # day
-        XX <- z[1:(l / 2)]
-        
-        # night
-        YY <- z[((l / 2) + 1):l]
-        
-        c(maxDT  = .max_temperature(XX),
-          minDT  = .min_temperature(XX),
-          maxNT  = .max_temperature(YY),
-          minNT  = .min_temperature(YY),
-          DTR    = .temperature_range(XX, YY),
-          SU     = .summer_days(XX),
-          TR     = .tropical_nights(YY),
-          CFD    = .frosty_days(YY),
-          WSDI = .max_wsdi(XX),
-          CSDI = .max_csdi(YY),
-          T10p  = .t10p(YY),
-          T90p  = .t90p(XX))
-        
-      })
+      d <- Y$date[[1]]
       
-      i <- data.frame(id    = rep(ids, each = length(index)),
-                      index = rep(index, times = length(ids)),
+      XX <- X$value
+      
+      YY <- Y$value
+
+      i <- c(maxDT = .max_temperature(XX),
+             minDT = .min_temperature(XX),
+             maxNT = .max_temperature(YY),
+             minNT = .min_temperature(YY),
+             DTR   = .temperature_range(XX, YY),
+             SU    = .summer_days(XX),
+             TR    = .tropical_nights(YY),
+             CFD   = .frosty_days(YY),
+             WSDI  = .max_wsdi(XX),
+             CSDI  = .max_csdi(YY),
+             T10p  = .t10p(YY),
+             T90p  = .t90p(XX))
+      
+      i <- data.frame(id    = id,
+                      date  = as.character(d),
+                      index = names(i),
                       value = as.vector(unlist(i)), 
                       stringsAsFactors = FALSE)
       
@@ -373,9 +347,9 @@ temperature.sf <- function(object, day.one,
     
     ind$index <- as.character(ind$index)
     
-    ind <- ind[order(ind$id), ]
+    ind$date <- .coerce2Date(ind$date)
     
-    ind$date <- dates
+    ind <- ind[order(ind$id), ]
     
     ind <- as.data.frame(ind, stringsAsFactors = FALSE)
     
@@ -388,14 +362,14 @@ temperature.sf <- function(object, day.one,
   
   if (isFALSE(timeseries)) {
     
-    day <- split(day, 1:n)
+    day <- split(day, day$id)
     
-    night <- split(night, 1:n)
+    night <- split(night, night$id)
     
     ind <- mapply(function(X, Y) {
       
-      x <- as.vector(as.matrix(X))
-      y <- as.vector(as.matrix(Y))
+      x <- as.vector(as.matrix(X$value))
+      y <- as.vector(as.matrix(Y$value))
       
       x <- data.frame(maxDT = .max_temperature(x),
                       minDT = .min_temperature(x),
@@ -413,7 +387,7 @@ temperature.sf <- function(object, day.one,
     }, X = day, Y = night)
     
     ind <- matrix(unlist(ind), 
-                  nrow = n, 
+                  nrow = nr, 
                   ncol = length(index), 
                   byrow = TRUE)
     
@@ -439,8 +413,6 @@ temperature.sf <- function(object, day.one,
 #'  when temp > 90th percentile
 #' 
 #' @param x a numeric vector
-#' @param reorder logical, if a combination of day and night is provided
-#'  reorder the vector
 #' @return the maximum warm spell duration index
 #' 
 #' set.seed(871)
@@ -448,20 +420,10 @@ temperature.sf <- function(object, day.one,
 #' 
 #' .max_wsdi(x)
 #' @noRd
-.max_wsdi <- function(x, reorder = FALSE) {
+.max_wsdi <- function(x) {
   
-  if (isTRUE(reorder)) {
-    
-    nv <- length(x)
-    
-    n <- seq(from = 1, to = nv, by = 2)
-    
-    d <- seq(from = 2, to = nv, by = 2)
-    
-    names(x) <- c(n, d)
-    
-    x <- x[order(as.integer(names(x)))]
-    
+  if (all(is.na(x))) {
+    return(NA)
   }
   
   q90 <- stats::quantile(x, probs = 0.9, na.rm = TRUE)
@@ -496,8 +458,6 @@ temperature.sf <- function(object, day.one,
 #'  when temp < 10th percentile
 #' 
 #' @param x a numeric vector
-#' @param reorder logical, if a combination of day and night is provided
-#'  reorder the vector
 #' @return the maximum cool spell duration index
 #' 
 #' set.seed(871)
@@ -506,20 +466,10 @@ temperature.sf <- function(object, day.one,
 #' .max_csdi(x)
 #' 
 #' @noRd
-.max_csdi <- function(x, reorder = FALSE) {
-  
-  if (isTRUE(reorder)) {
-    
-    nv <- length(x)
-    
-    n <- seq(from = 1, to = nv, by = 2)
-    
-    d <- seq(from = 2, to = nv, by = 2)
-    
-    names(x) <- c(n, d)
-    
-    x <- x[order(as.integer(names(x)))]
-    
+.max_csdi <- function(x) {
+
+  if (all(is.na(x))) {
+    return(NA)
   }
   
   q10 <- stats::quantile(x, probs = 0.1, na.rm = TRUE)
@@ -553,10 +503,15 @@ temperature.sf <- function(object, day.one,
 #' @return the maximum temperature 
 #' @examples 
 #' set.seed(123)
-#' temp <- runif(10, 25, 34)
-#' .max_temperature(day)
+#' x <- runif(10, 25, 34)
+#' .max_temperature(x)
 #' @noRd
 .max_temperature <- function(x) {
+  
+  if (all(is.na(x))) {
+    return(NA)
+  }
+  
   max(x, na.rm = TRUE)
 }
 
@@ -566,10 +521,15 @@ temperature.sf <- function(object, day.one,
 #' @return the minimum temperature 
 #' @examples 
 #' set.seed(123)
-#' temp <- runif(10, 25, 34)
-#' .min_temperature(day)
+#' x <- runif(10, 25, 34)
+#' .min_temperature(x)
 #' @noRd
 .min_temperature <- function(x) {
+  
+  if (all(is.na(x))) {
+    return(NA)
+  }
+  
   min(x, na.rm = TRUE)
 }
 
@@ -591,7 +551,15 @@ temperature.sf <- function(object, day.one,
 #' .temperature_range(day, night)
 #' @noRd
 .temperature_range <- function(x, y) {
+  
+  if (all(is.na(c(x,y)))) {
+    
+    return(NA)
+  
+  }
+  
   dtr <- x - y
+  
   mean(dtr, na.rm = TRUE)
 }
 
@@ -606,6 +574,11 @@ temperature.sf <- function(object, day.one,
 #' .summer_days(x)
 #' @noRd
 .summer_days <- function(x) {
+  
+  if (all(is.na(x))) {
+    return(NA)
+  }
+  
   x <- x > 30
   x <- sum(x, na.rm = TRUE)
   x <- as.integer(x)
@@ -623,6 +596,11 @@ temperature.sf <- function(object, day.one,
 #' .tropical_nights(x)
 #' @noRd
 .tropical_nights <- function(x) {
+  
+  if (all(is.na(x))) {
+    return(NA)
+  }
+  
   x <- x > 25
   x <- sum(x, na.rm = TRUE)
   x <- as.integer(x)
@@ -642,8 +620,12 @@ temperature.sf <- function(object, day.one,
 #' r[c(1,4,9:12,17)] <- 0
 #' .frosty_days(r)
 #' @noRd
-.frosty_days <- function(x)
-{
+.frosty_days <- function(x) {
+  
+  if (all(is.na(x))) {
+    return(NA)
+  }
+  
   # the function rle is applied
   # which looks for the sequencies of numbers
   # in this case, zeros (0)
@@ -678,7 +660,7 @@ temperature.sf <- function(object, day.one,
   
 }
 
-#' Day temp 90p
+#' Temp 90p
 #' 
 #' the value for the 90th percentile of temperature
 #' 
@@ -689,12 +671,17 @@ temperature.sf <- function(object, day.one,
 #' .t90p(r)
 #' @noRd
 .t90p <- function(x){
+  
+  if (all(is.na(x))) {
+    return(NA)
+  }
+  
   x <- stats::quantile(x, probs = 0.9, na.rm = TRUE)
   x <- as.numeric(x)
   return(x)
 }
 
-#' Temp 90p
+#' Temp 10p
 #' 
 #' the value for the 10th percentile of temperature
 #' 
@@ -705,6 +692,11 @@ temperature.sf <- function(object, day.one,
 #' .t10p(r)
 #' @noRd
 .t10p <- function(x){
+  
+  if (all(is.na(x))) {
+    return(NA)
+  }
+  
   x <- stats::quantile(x, probs = 0.1, na.rm = TRUE)
   x <- as.numeric(x)
   return(x)

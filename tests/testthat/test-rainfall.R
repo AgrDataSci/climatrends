@@ -47,3 +47,13 @@ test_that("larger span", {
 })
 
 
+test_that("non valid date", {
+  
+  expect_error(
+    rainfall(chirp,
+             day.one = "2013-02-31",
+             span = 11)
+  )
+  
+})
+

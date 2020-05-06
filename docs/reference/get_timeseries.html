@@ -47,7 +47,7 @@
 
 
 <meta property="og:title" content="Time series climate data — get_timeseries" />
-<meta property="og:description" content="General functions and methods to concatenate climate data across a time series." />
+<meta property="og:description" content="General functions and methods to concatenate climate data across a time series" />
 <meta property="og:image" content="/logo.svg" />
 
 
@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
       </span>
     </div>
 
@@ -137,7 +137,7 @@
     </div>
 
     <div class="ref-description">
-    <p>General functions and methods to concatenate climate data across a time series.</p>
+    <p>General functions and methods to concatenate climate data across a time series</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_timeseries</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
@@ -212,7 +212,7 @@ YYYY-MM-DD)  for the last day of the time series</p></td>
 <p>The <code>matrix</code> method assumes that the climate data was previously handled 
  and will be inputted in the format of a named matrix. 
  See help("modis", "climatrends") for examples.</p>
-<p>Available remote <var>source</var>s are: "nasapower"</p>
+<p>Available remote <var>source</var>s: "nasapower"</p>
 <p>Additional arguments:</p>
 <p><code>pars</code>: character vector of solar, meteorological or climatology parameters 
 to download. See help("parameters", "nasapower") when <var>source</var> = "nasapower".</p>
@@ -223,23 +223,27 @@ to download. See help("parameters", "nasapower") when <var>source</var> = "nasap
     <pre class="examples"><span class='co'># Using local sources</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"modis"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
-<span class='no'>day</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='st'>"2013-10-28"</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"%Y-%m-%d"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>9271</span>)
+<span class='no'>span</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>10</span>, <span class='fl'>6</span>, <span class='fl'>15</span>))
 
-<span class='fu'>get_timeseries</span>(<span class='no'>chirp</span>, <span class='no'>day</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10</span>,<span class='fl'>11</span>))
+<span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fu'>get_timeseries</span>(<span class='no'>modis</span>[,,<span class='fl'>1</span>], <span class='st'>"2013-10-28"</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='no'>span</span>)<span class='kw'>[[</span><span class='fl'>1</span>]]
 
+<span class='co'># library("ggplot2")</span>
+<span class='co'># </span>
+<span class='co'># ggplot(g, aes(x = date, y = value, group = factor(id), color = factor(id))) +</span>
+<span class='co'>#   geom_point() +</span>
+<span class='co'>#   geom_line()</span>
 
 <span class='co'>########################################################</span>
 <span class='co'># \donttest{</span>
 <span class='co'># Fetch data from NASA POWER using 'sf' method</span>
-
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"lonlatsf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
-<span class='no'>do</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span>(<span class='fl'>17667</span>, <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"1970-01-01"</span>)
-
 <span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fu'>get_timeseries</span>(<span class='no'>lonlatsf</span>,
-                    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>do</span>,
-                    <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+                    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2018-05-16"</span>,
+                    <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2018-05-30"</span>,
                     <span class='kw'>pars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PRECTOT"</span>, <span class='st'>"T2M"</span>, <span class='st'>"T10M"</span>))
+
 
 <span class='no'>g</span>
 <span class='co'># }</span></pre>

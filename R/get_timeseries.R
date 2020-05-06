@@ -1,6 +1,6 @@
 #' Time series climate data
 #' 
-#' General functions and methods to concatenate climate data across a time series.
+#' General functions and methods to concatenate climate data across a time series
 #' 
 #' @param object a \code{data.frame} (or any othwer object that can be coerced to 
 #'  data.frame) with geographical coordinates (lonlat), or an object of class 
@@ -24,7 +24,7 @@
 #'  and will be inputted in the format of a named matrix. 
 #'  See help("modis", "climatrends") for examples.
 #' 
-#' Available remote \var{source}s are: "nasapower"
+#' Available remote \var{source}s: "nasapower"
 #' 
 #' Additional arguments:
 #' 
@@ -40,23 +40,27 @@
 #' # Using local sources
 #' data("modis", package = "climatrends")
 #' 
-#' day <- as.Date("2013-10-28", format = "%Y-%m-%d")
+#' set.seed(9271)
+#' span <- as.integer(runif(10, 6, 15)) 
 #' 
-#' get_timeseries(chirp, day, span = c(10,11))
+#' g <- get_timeseries(modis[,,1], "2013-10-28", span = span)[[1]]
 #' 
+#' # library("ggplot2")
+#' # 
+#' # ggplot(g, aes(x = date, y = value, group = factor(id), color = factor(id))) +
+#' #   geom_point() +
+#' #   geom_line()
 #' 
 #' ########################################################
 #' \donttest{
 #' # Fetch data from NASA POWER using 'sf' method
-#' 
 #' data("lonlatsf", package = "climatrends")
 #' 
-#' do <- as.Date(17667, origin = "1970-01-01")
-#' 
 #' g <- get_timeseries(lonlatsf, 
-#'                     day.one = do, 
-#'                     span = 10,
+#'                     day.one = "2018-05-16", 
+#'                     last.day = "2018-05-30",
 #'                     pars = c("PRECTOT", "T2M", "T10M"))
+#' 
 #' 
 #' g
 #' }
@@ -82,7 +86,7 @@ get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL
     days.before <- 0
   }
   
-  sts <- .set_span_length(day.one, span, last.day, days.before)
+  sts <- .st_span(day.one, span, last.day, days.before)
 
   object <- as.data.frame(object)
   
@@ -92,14 +96,13 @@ get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL
                lonlat = object,
                pars = pars)
   
-  
   object <- do.call(makecall, args)
 
   r <- lapply(object, function(x){
-    .setup_timeseries(x,
-                      days = sts$b,
-                      span = sts$span,
-                      maxspan = sts$maxspan)
+    .st_ts(x,
+           days = sts$begin,
+           span = sts$span,
+           maxspan = sts$maxspan)
   })
   
   return(r)
@@ -124,7 +127,7 @@ get_timeseries.sf <- function(object, day.one, span = NULL, last.day = NULL,
   
   object <- as.data.frame(object)
   
-  sts <- .set_span_length(day.one, span, last.day, days.before)
+  sts <- .st_span(day.one, span, last.day, days.before)
   
   makecall <- paste0(".", source)
   
@@ -135,12 +138,11 @@ get_timeseries.sf <- function(object, day.one, span = NULL, last.day = NULL,
   
   object <- do.call(makecall, args)
   
-  
   r <- lapply(object, function(x){
-    .setup_timeseries(x,
-                      days = sts$b,
-                      span = sts$span,
-                      maxspan = sts$maxspan)
+    .st_ts(x,
+           days = sts$begin,
+           span = sts$span,
+           maxspan = sts$maxspan)
   })
   
   return(r)
@@ -173,14 +175,14 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
          "'span' is larger than the dim[2] of provided 'object' \n")
   }
   
-  sts <- .set_span_length(day.one, span, last.day, days.before)
+  sts <- .st_span(day.one, span, last.day, days.before)
   
   object <- as.data.frame(object)
   
-  r <- .setup_timeseries(object = object,
-                         days = sts$b,
-                         span = sts$span,
-                         maxspan = sts$maxspan)
+  r <- .st_ts(object = object,
+              days = sts$begin,
+              span = sts$span,
+              maxspan = sts$maxspan)
   
   r <- list(r)
   
@@ -197,21 +199,21 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
 #'                  span = 15)
 #'
 #' @noRd
-.set_span_length <- function(day.one, 
-                             span = NULL, 
-                             last.day = NULL, 
-                             days.before = 0){
+.st_span <- function(day.one, 
+                     span = NULL, 
+                     last.day = NULL, 
+                     days.before = 0){
   
   day.one <- as.vector(t(day.one))
   
   if (all(is.null(span), is.null(last.day))) {
-    stop("No visible timespan observed, 
-         either argument 'span' or 'last.day' should be provided \n")
+    stop("No visible time span,", 
+         " either argument 'span' or 'last.day' should be provided \n")
   }
   
   if (all(!is.null(span), !is.null(last.day))) {
-    stop("No visible bound for confliting arguments, 
-         please provide either 'span' or 'last.day'\n")
+    stop("No visible bound for confliting arguments,", 
+         " please provide either 'span' or 'last.day'\n")
   }
   
   # check if day.one is a 'Date' else try to coerce to Date
@@ -221,7 +223,7 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
   
   }
   
-  # the timespan
+  # the time span
   if (!is.null(span)) {
     
     span <- as.vector(t(span)) 
@@ -233,13 +235,15 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
     
     if (length(last.day) > 1) {
       
-      warning("argument 'last.day' has length > 1 and only the first element will be used")
+      warning("argument 'last.day' has length > 1",
+              " and only the first element will be used")
       
     }
     
     if (length(day.one) > 1) {
       
-      warning("argument 'day.one' has length > 1 and only the first element will be used")
+      warning("argument 'day.one' has length > 1",
+              " and only the first element will be used")
       
     }
     
@@ -271,77 +275,95 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
   # the first and last date to fetch
   dates <- c(min(b), maxend)
   
-  list(maxend = maxend,
-       dates = dates,
-       b = b, 
-       e = e,
-       maxspan = maxspan,
+  list(dates = dates,
+       begin = b, 
+       end = e,
+       maxend = maxend,
        day.one = day.one,
-       span = span)
-  
+       span = span,
+       maxspan = maxspan)
 }
 
 
 #' Timeseries
 #' 
 #' @examples
-#'  
-#' sts <- climatrends:::.set_span_length(day.one = "2013-10-27",
-#'                                       last.day = "2013-11-10")
-#'  
+#' sts <- .st_span(day.one = "2013-10-27",
+#'                 last.day = "2013-11-10")
+#' 
 #' object <- as.data.frame(chirp)
 #' 
-#' .setup_timeseries(object,
-#'                   days = sts$b,
-#'                   span = sts$span,
-#'                   maxspan = sts$maxspan)
-#' 
+#' .st_ts(object,
+#'        days = sts$begin,
+#'        span = sts$span,
+#'        maxspan = sts$maxspan)
 #' @noRd
-.setup_timeseries <- function(object, days, span, maxspan){
+.st_ts <- function(object, days, span, maxspan){
   
   n <- dim(object)[[1]]
-  rownames(object) <- seq_len(n)
+  ids <- seq_len(n)
+  rownames(object) <- ids
   date <- names(object)
+  object[is.na(object)] <- -9999
   
-  # find the index for the specified dates within the start.dates provided
-  date <- match(as.character(days), date)
-  
-  Y <- NULL
-  
-  for (i in 0:(maxspan-1)) {
-    Y <- cbind(Y, object[cbind(seq_len(n), date + i)])
+  # do this to preserve the initial idea that the spans and first day 
+  # can be variable (different seasons or weeks) as observed in the 
+  # citizen science data. It should work fine in both citizen science 
+  # and timeseries analysis
+  if (length(span) < n) {
+    span <- rep(span, length.out = n)
   }
   
-  # if ts is variable then add NA's
-  Y <- t(apply(cbind(span, Y), 1, function(x) {
-    
-    s <- x[1]
-    
-    x <- x[2:length(x)]
-    
-    if (length(x) > s) {
-      x[(s + 1):length(x)] <- NA
-    }
-    
-    return(x)
-    
-  }))
-  
-  # make a data.frame
-  if (n != 1) {
-    
-    dimnames(Y)[[2]] <- paste0("day", 1:ncol(Y))
-    
-    Y <- as.data.frame(Y[, seq_len(maxspan)])
-    
-  } else {
-    
-    Y <- as.data.frame(t(Y[, seq_len(maxspan)]))
-    
-    names(Y) <- paste0("day", seq_len(maxspan))
+  if (length(days) < n) {
+    days <- rep(days, length.out = n)
   }
+  
+  # find the col index in object for the specified dates within 
+  # the days provided
+  date_i <- match(as.character(days), date)
+  # and the index for the last day 
+  date_f <- date_i + (span - 1)
+  
+  Y <- cbind(date_i, date_f, ids, object)
+  # and them make the vectors for the timeseries in each point within object
+  # this returns a list of data.frames that later are combined
+  Y <- apply(Y, 1, function(x) {
+    
+    i <- t(x[1])
+    
+    f <- t(x[2])
+    
+    id <- t(x[3])
+    
+    x <- x[-c(1:3)]
+    
+    x <- x[c(i:f)]
+    
+    d <- names(x)
+    
+    x <- as.vector(t(x))
+    
+    id <- rep(id, length(x))
+    
+    data.frame(id = id, date = d, value = x)
+    
+  })
+  
+  # put all together in a single data.frame
+  Y <- do.call("rbind", Y)
+  
+  rownames(Y) <- 1:nrow(Y)
+  
+  Y[Y == -9999] <- NA
+  
+  Y$date <- .coerce2Date(Y$date)
+  
+  Y$id <- as.integer(Y$id)
+  
+  class(Y) <- union("clima_df", class(Y))
   
   return(Y)
+  
 }
 
 
@@ -378,13 +400,22 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
   nr <- dim(lonlat)[[1]]
   
   # check if data from multiple regions is required
-  h <- stats::dist(lonlat)
-  h <- stats::hclust(h)
-  regions <- stats::cutree(h, h = 5)
+  if (isTRUE(nr > 1)) {
+    h <- stats::dist(lonlat)
+    
+    h <- stats::hclust(h)
+    
+    regions <- stats::cutree(h, h = 5)
+    
+    nregions <- max(regions)
+  }
   
-  nregions <- max(regions)
+  if (isTRUE(nr == 1)) {
+    regions <- nr
+    nregions <- nr
+  }
   
-  if (nregions > 1) {
+  if (isTRUE(nregions > 1)) {
     message("Fetching data for ", nregions, " regions with 5 x 5 arc-degree \n")
   }
   

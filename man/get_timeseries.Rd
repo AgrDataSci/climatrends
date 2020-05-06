@@ -54,7 +54,7 @@ YYYY-MM-DD)  for the last day of the time series}
 An object with time series climate data for the chosen period
 }
 \description{
-General functions and methods to concatenate climate data across a time series.
+General functions and methods to concatenate climate data across a time series
 }
 \details{
 The \code{default} method and the \code{sf} method assumes that the climate 
@@ -64,7 +64,7 @@ The \code{matrix} method assumes that the climate data was previously handled
  and will be inputted in the format of a named matrix. 
  See help("modis", "climatrends") for examples.
 
-Available remote \var{source}s are: "nasapower"
+Available remote \var{source}s: "nasapower"
 
 Additional arguments:
 
@@ -78,23 +78,27 @@ to download. See help("parameters", "nasapower") when \var{source} = "nasapower"
 # Using local sources
 data("modis", package = "climatrends")
 
-day <- as.Date("2013-10-28", format = "\%Y-\%m-\%d")
+set.seed(9271)
+span <- as.integer(runif(10, 6, 15)) 
 
-get_timeseries(chirp, day, span = c(10,11))
+g <- get_timeseries(modis[,,1], "2013-10-28", span = span)[[1]]
 
+# library("ggplot2")
+# 
+# ggplot(g, aes(x = date, y = value, group = factor(id), color = factor(id))) +
+#   geom_point() +
+#   geom_line()
 
 ########################################################
 \donttest{
 # Fetch data from NASA POWER using 'sf' method
-
 data("lonlatsf", package = "climatrends")
 
-do <- as.Date(17667, origin = "1970-01-01")
-
 g <- get_timeseries(lonlatsf, 
-                    day.one = do, 
-                    span = 10,
+                    day.one = "2018-05-16", 
+                    last.day = "2018-05-30",
                     pars = c("PRECTOT", "T2M", "T10M"))
+
 
 g
 }

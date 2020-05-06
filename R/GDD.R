@@ -8,9 +8,15 @@
 #' 
 #' @inheritParams temperature
 #' @param degree.days an integer for the degree-days required by the 
-#'  organism (look for the physiology of the focal organism)
+#'  organism (look for the physiology of the focal organism). Optional if 
+#'  \var{return} = \code{"daily"}
 #' @param base an integer for the base temperature
-#' @return The number of days which were required to reach the growing degree-days.
+#' @param return character (one of \code{"ndays"} or \code{"daily"}) to select if 
+#'  the function returns the number of days to reach the GDD or the raw daily values 
+#'  of the GDD
+#' @return 
+#'  The number of days which were required to reach the growing degree-days, or 
+#'   the degree days in each day during the time series
 #' @family temperature functions
 #' @details 
 #' The \code{array} method assumes that \var{object} contains climate data provided 
@@ -82,7 +88,7 @@
 #' 
 #'}
 #' @export
-GDD <- function(object, day.one, degree.days,
+GDD <- function(object, day.one, degree.days = NULL,
                 base = 10, ...)
 {
   UseMethod("GDD")
@@ -91,8 +97,8 @@ GDD <- function(object, day.one, degree.days,
 #' @rdname GDD
 #' @method GDD default
 #' @export
-GDD.default <- function(object, day.one, degree.days,
-                        base = 10, span = NULL, ...){
+GDD.default <- function(object, day.one, degree.days = NULL,
+                        base = 10, span = NULL, return = "ndays", ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -116,7 +122,7 @@ GDD.default <- function(object, day.one, degree.days,
   
   night <- dat[[pars[[2]]]]
   
-  result <- .gdd(day, night, base, degree.days)
+  result <- .gdd(day, night, base, degree.days, return)
   
   return(result)
 }
@@ -125,8 +131,8 @@ GDD.default <- function(object, day.one, degree.days,
 #' @rdname GDD
 #' @method GDD array
 #' @export
-GDD.array <- function(object, day.one, degree.days,
-                      base = 10, ...){
+GDD.array <- function(object, day.one, degree.days = NULL,
+                      base = 10, return = "ndays", ...){
   
   if(dim(object)[[2]] == 2) {
     UseMethod("GDD", "default")
@@ -149,13 +155,11 @@ GDD.array <- function(object, day.one, degree.days,
     span <- dim(object)[[2]] - do
   }
   
-  
-  
   day <- get_timeseries(object[, , 1], day.one, span, last.day)[[1]]
   
   night <- get_timeseries(object[, , 2], day.one, span, last.day)[[1]]
   
-  result <- .gdd(day, night, base, degree.days)
+  result <- .gdd(day, night, base, degree.days, return)
   
   return(result)
 }
@@ -164,8 +168,9 @@ GDD.array <- function(object, day.one, degree.days,
 #' @rdname GDD
 #' @method GDD sf
 #' @export
-GDD.sf <- function(object, day.one, degree.days,
-                   base = 10, span = NULL, as.sf = TRUE, ...){
+GDD.sf <- function(object, day.one, degree.days = NULL,
+                   base = 10, span = NULL, return = "ndays", 
+                   as.sf = TRUE, ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -182,7 +187,7 @@ GDD.sf <- function(object, day.one, degree.days,
   
   night <- dat[[pars[[2]]]]
   
-  result <- .gdd(day, night, base, degree.days)
+  result <- .gdd(day, night, base, degree.days, return)
   
   if (isTRUE(as.sf)) {
     result <- suppressWarnings(sf::st_bind_cols(object, result))
@@ -192,23 +197,53 @@ GDD.sf <- function(object, day.one, degree.days,
 }
 
 
-.gdd <- function(day, night, base, degree.days){
-  # get the difference between day and night temperature
-  Y <- (((day + night) / 2) - base)
+.gdd <- function(day, night, base, degree.days, return = "ndays"){
   
-  # sum temperature values until reach the defined degree days
-  Y <- apply(Y, 1, function(x){
+  temp <- cbind(day, value2 = night$value)
+  
+  temp <- split(temp, temp$id)
+  
+  Y <- lapply(temp, function(x){
     
-    for (d in seq_along(x)) {
-      
-      i <- d
-      
-      if (sum(x[1:d]) > degree.days) break}
+    y <- ((x$value + x$value2) / 2) - base
     
-    return(i)
+    if (isTRUE(return == "ndays")) {
+      
+      y <- y[!is.na(y)]
+      
+      # sum temperature values until reach the defined degree days
+      for (d in seq_along(y)) {
+        
+        i <- d
+        
+        if (sum(y[1:d], na.rm = TRUE) > degree.days) {break}
+      }
+      
+      return(i)
+      
+    }
+    
+    if (isTRUE(return == "daily")) {
+      
+      y <- data.frame(id = x$id,
+                      date = x$date,
+                      gdd = y)
+      
+      return(y)
+      
+    }
+  
   })
   
-  result <- data.frame(GDD = Y, stringsAsFactors = FALSE)
+  result <- do.call("rbind", Y)
+  
+  if (isTRUE(return == "ndays")) {
+    
+    result <- data.frame(GDD = result, stringsAsFactors = FALSE)
+  
+  }
+  
+  rownames(result) <- seq_along(result[,1])
   
   class(result) <- union("clima_df", class(result))
   

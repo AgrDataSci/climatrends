@@ -84,7 +84,7 @@ integral of warmth above a base temperature." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
       </span>
     </div>
 
@@ -148,16 +148,33 @@ rates. Growing degree-days are calculated by taking the
 integral of warmth above a base temperature.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>degree.days</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>degree.days</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>GDD</span>(
+  <span class='no'>object</span>,
+  <span class='no'>day.one</span>,
+  <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>return</span> <span class='kw'>=</span> <span class='st'>"ndays"</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for array</span>
-<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>degree.days</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='no'>...</span>)
+<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>return</span> <span class='kw'>=</span> <span class='st'>"ndays"</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for sf</span>
-<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>degree.days</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>GDD</span>(
+  <span class='no'>object</span>,
+  <span class='no'>day.one</span>,
+  <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>return</span> <span class='kw'>=</span> <span class='st'>"ndays"</span>,
+  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -178,7 +195,8 @@ day to capture the climate data</p></td>
     <tr>
       <th>degree.days</th>
       <td><p>an integer for the degree-days required by the 
-organism (look for the physiology of the focal organism)</p></td>
+organism (look for the physiology of the focal organism). Optional if 
+<var>return</var> = <code>"daily"</code></p></td>
     </tr>
     <tr>
       <th>base</th>
@@ -194,6 +212,12 @@ organism (look for the physiology of the focal organism)</p></td>
 given) for the length of the time series to be captured</p></td>
     </tr>
     <tr>
+      <th>return</th>
+      <td><p>character (one of <code>"ndays"</code> or <code>"daily"</code>) to select if 
+the function returns the number of days to reach the GDD or the raw daily values 
+of the GDD</p></td>
+    </tr>
+    <tr>
       <th>as.sf</th>
       <td><p>logical, to return an object of class 'sf'</p></td>
     </tr>
@@ -201,7 +225,8 @@ given) for the length of the time series to be captured</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The number of days which were required to reach the growing degree-days.</p>
+    <p>The number of days which were required to reach the growing degree-days, or 
+  the degree days in each day during the time series</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The <code>array</code> method assumes that <var>object</var> contains climate data provided 

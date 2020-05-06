@@ -1,4 +1,4 @@
-climatrends 0.1.2 (2020-04-24)
+climatrends 0.1.3 (2020-05-06)
 =========================
 * Export function `get_timeseries()`
 * Enable future modular expansion of data sources using API clients by creating specific functions that are called with the argument `source` in all functions
