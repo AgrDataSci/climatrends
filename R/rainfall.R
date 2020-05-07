@@ -4,6 +4,10 @@
 #'
 #' @family precipitation functions
 #' @inheritParams get_timeseries
+#' @param object a \code{data.frame} (or any other object that can be coerced to 
+#'  data.frame) with geographical coordinates (lonlat), or an object of class 
+#'  \code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
+#'  precipitation data, or a data.frame of class \code{clima_df}. See details.   
 #' @param timeseries logical, \code{FALSE} for a single point time series
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
 #' @param intervals integer (no lower than 5), for the days intervals when
@@ -14,8 +18,9 @@
 #'  from a local source; see help("chirp", package = "climatrends") for an example on input 
 #'  structure.
 #' 
-#' The default method and the sf method assumes that the climate data will be fetched 
-#'  from an remote (cloud) \var{source}.
+#' The \code{default} method and the \code{sf} method assumes that the climate data
+#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
+#'  \var{data.from}.
 #'
 #' When \var{timeseries} = \code{TRUE}, an id is created, 
 #'  which is the index for the rownames of the inputted \var{object}.
@@ -26,11 +31,11 @@
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
 #'  YYYY-MM-DD)  for the last day of the time series
 #' 
-#' \code{source}: character for the source of remote data. Current remote \var{source} 
+#' \code{data.from}: character for the source of remote data. Current remote source 
 #'  is: 'nasapower'
 #' 
 #' \code{pars}: character vector for the precipitation data to be fetched. If 
-#'  \code{source} is 'nasapower', the default precipitation parameter is "PRECTOT".
+#'  \code{data.from} is 'nasapower', the default precipitation parameter is "PRECTOT".
 #' 
 #' \code{days.before}: optional, an integer for the number of days before 
 #'  \var{day.one} to be included in the timespan.
@@ -102,7 +107,7 @@
 #'          
 #' @importFrom stats quantile
 #' @export
-rainfall <- function(object, day.one, span, ...)
+rainfall <- function(object, ...)
 {
   UseMethod("rainfall")
 }
@@ -210,6 +215,19 @@ rainfall.sf <- function(object, day.one, span = NULL,
     class(indices) <- union("clima_df", class(indices))
     
   }
+  
+  return(indices)
+  
+}
+
+#' @rdname rainfall
+#' @method rainfall clima_df
+#' @export
+rainfall.clima_df <- function(object, 
+                              timeseries = FALSE,
+                              intervals = 5, ...){
+  
+  indices <- .rainfall_indices(object, timeseries, intervals)
   
   return(indices)
   

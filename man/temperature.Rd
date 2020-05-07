@@ -5,9 +5,10 @@
 \alias{temperature.default}
 \alias{temperature.array}
 \alias{temperature.sf}
+\alias{temperature.clima_ls}
 \title{Temperature indices}
 \usage{
-temperature(object, day.one, span, ...)
+temperature(object, ...)
 
 \method{temperature}{default}(
   object,
@@ -36,12 +37,17 @@ temperature(object, day.one, span, ...)
   as.sf = TRUE,
   ...
 )
+
+\method{temperature}{clima_ls}(object, timeseries = FALSE, intervals = 5, ...)
 }
 \arguments{
-\item{object}{a data.frame (or object that can be coerced to data.frame) 
+\item{object}{a data.frame (or any object that can be coerced to data.frame) 
 with geographical coordinates (lonlat), or an object of class \code{sf}
 with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data, see details.}
+containing the temperature data or a \code{clima_ls} with day and night 
+temperature, in that order. See details}
+
+\item{...}{additional arguments passed to methods. See details}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -49,8 +55,6 @@ day to capture the climate data}
 
 \item{span}{an integer or a vector with integers (optional if \var{last.day} is 
 given) for the length of the time series to be captured}
-
-\item{...}{additional arguments passed to methods. See details.}
 
 \item{timeseries}{logical, \code{FALSE} for a single point time series
 observation or \code{TRUE} for a time series based on \var{intervals}}
@@ -90,8 +94,9 @@ The \code{array} method assumes that \var{object} contains climate data provided
  contains the day temperature and 2nd dimension the night temperature, 
  see help("modis", package = "climatrends") for an example on input structure.
 
-The default method and the sf method assumes that the climate data will be fetched 
- from an remote (cloud) \var{source}.
+The \code{default} method and the \code{sf} method assumes that the climate data
+ will e fetched from a remote (cloud) source that be adjusted using the argument 
+ \var{data.from}.
 
 When \var{timeseries} = \code{TRUE}, an id is created, 
  which is the index for the rownames of the inputted \var{object}.
@@ -102,11 +107,11 @@ Additional arguments:
  any other object that can be coerced to \code{Date} (e.g. integer, character 
  YYYY-MM-DD)  for the last day of the time series
 
-\code{source}: character for the source of remote data. Current remote \var{source} 
+\code{data.from}: character for the source of remote data. Current remote source 
  is: 'nasapower'
 
 \code{pars}: character vector for the temperature data to be fetched. If 
- \code{source} is 'nasapower', the temperature can be adjusted to 2 m, the default,
+ \code{data.from} is 'nasapower', the temperature can be adjusted to 2 m, the default,
  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
 
 \code{days.before}: optional, an integer for the number of days before 

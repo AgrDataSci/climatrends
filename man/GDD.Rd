@@ -5,69 +5,88 @@
 \alias{GDD.default}
 \alias{GDD.array}
 \alias{GDD.sf}
+\alias{GDD.clima_ls}
 \title{Growing degree-days}
 \usage{
-GDD(object, day.one, degree.days = NULL, base = 10, ...)
+GDD(object, ..., base = 10)
 
 \method{GDD}{default}(
   object,
   day.one,
-  degree.days = NULL,
   base = 10,
-  span = NULL,
-  return = "ndays",
+  degree.days = NULL,
+  equation = "default",
+  return.as = "ndays",
   ...
 )
 
-\method{GDD}{array}(object, day.one, degree.days = NULL, base = 10, return = "ndays", ...)
+\method{GDD}{array}(
+  object,
+  day.one,
+  base = 10,
+  degree.days = NULL,
+  equation = "default",
+  return.as = "ndays",
+  ...
+)
 
 \method{GDD}{sf}(
   object,
   day.one,
-  degree.days = NULL,
   base = 10,
-  span = NULL,
-  return = "ndays",
+  degree.days = NULL,
+  equation = "default",
+  return.as = "ndays",
   as.sf = TRUE,
+  ...
+)
+
+\method{GDD}{clima_ls}(
+  object,
+  base = 10,
+  degree.days = NULL,
+  equation = "default",
+  return.as = "ndays",
   ...
 )
 }
 \arguments{
-\item{object}{a data.frame (or object that can be coerced to data.frame) 
+\item{object}{a data.frame (or any object that can be coerced to data.frame) 
 with geographical coordinates (lonlat), or an object of class \code{sf}
 with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data, see details.}
+containing the temperature data or a \code{clima_ls} with day and night 
+temperature, in that order. See details}
+
+\item{...}{additional arguments passed to methods. See details}
+
+\item{base}{an integer for the minimum temperature for growth (as per the physiology 
+of the focal organism)}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
 day to capture the climate data}
 
-\item{degree.days}{an integer for the degree-days required by the 
-organism (look for the physiology of the focal organism). Optional if 
-\var{return} = \code{"daily"}}
+\item{degree.days}{an integer for the accumulated degree-days required by the 
+organism (as per the physiology of the focal organism). Optional if 
+\var{return.as} = \code{"gdd"}}
 
-\item{base}{an integer for the base temperature}
+\item{equation}{character to specify the equation to be used, one of \code{"default"},
+\code{"variant_a"} or \code{"variant_b"}. See details}
 
-\item{...}{additional arguments passed to methods. See details.}
-
-\item{span}{an integer or a vector with integers (optional if \var{last.day} is 
-given) for the length of the time series to be captured}
-
-\item{return}{character (one of \code{"ndays"} or \code{"daily"}) to select if 
-the function returns the number of days to reach the GDD or the raw daily values 
-of the GDD}
+\item{return.as}{character (one of \code{"ndays"} the default or \code{"gdd"})
+to select if the function returns the number of days to reach the accumulated 
+\var{degree.days} or the daily values of the GDD}
 
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
 \value{
-The number of days which were required to reach the growing degree-days, or 
-  the degree days in each day during the time series
+The number of days to reach the accumulated \var{degree.days} or the daily degree-days 
+  as defined with the argument \var{return.as}
 }
 \description{
-Compute number of days required to reach Growing degree-days.
-GDD is a heuristic tool in phenology that measures heat 
-accumulation and is used to predict plant and animal development 
-rates. Growing degree-days are calculated by taking the 
+Compute Growing degree-days. This a heuristic tool in phenology 
+that measures heat accumulation and is used to predict plant and animal 
+development rates. Growing degree-days are calculated by taking the 
 integral of warmth above a base temperature.
 }
 \details{
@@ -76,64 +95,72 @@ The \code{array} method assumes that \var{object} contains climate data provided
  contains the day temperature and 2nd dimension the night temperature, 
  see help("modis", "climatrends") for an example on input structure.
 
-The default method and the sf method assumes that the climate data will be fetched 
- from an remote (cloud) \var{source}.
+The \code{default} method and the \code{sf} method assumes that the climate data
+ will e fetched from a remote (cloud) source that be adjusted using the argument 
+ \var{data.from}.
+ 
+The \code{"default"} \var{equation} uses the average of the daily maximum (Tmax) and 
+ minimum (Tmin) temperatures compared to a \var{base} temperature (Tbase). If Tmin 
+ is below Tbase there are two variants: 
+ 
+ \code{"variant_a"}: set Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
+ 
+ \code{"variant_b"}: set Tmin = Tbase if Tmin < Tbase
 
 Additional arguments:
 
-\code{last.day}: optional to \var{span}, an object of class \code{Date} or
+\code{last.day}: an object (optional to \var{span}) of class \code{Date} or
  any other object that can be coerced to \code{Date} (e.g. integer, character 
  YYYY-MM-DD)  for the last day of the time series
+ 
+\code{span}: an integer (optional to \var{last.day}) or a vector with 
+ integers (optional if \var{last.day} is given) for the length of 
+ the time series to be captured
 
-\code{source}: character for the source of remote data. Current remote \var{source} 
+\code{data.from}: character for the source of remote data. Current remote source 
  is: 'nasapower'
 
 \code{pars}: character vector for the temperature data to be fetched. If 
- \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+ \code{data.from} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN")
 }
 \examples{
-# Using local sources
+# Using local data
 data("modis", package = "climatrends")
 
 GDD(modis,
     day.one = "2013-10-28",
+    base = 10,
+    degree.days = 100)
+
+# change the equation to variant_b where 
+# Tmin = Tbase if (Tmax + Tmin) / 2 < Tbase
+GDD(modis,
+    day.one = "2013-10-28",
+    base = 10,
     degree.days = 100,
-    base = 5)
+    equation = "variant_b")
 
-######################################
+# return as degree days
+GDD(modis,
+    day.one = "2013-10-28",
+    base = 10,
+    degree.days = 100,
+    return.as = "gdd")
+
 \donttest{
-# Using remote sources
-set.seed(123)
-# random geographic locations around bbox(11, 12, 55, 58)
-lonlat <- data.frame(lon = runif(3, 11, 12),
-                     lat = runif(3, 55, 58))
-
-set.seed(321)
-# random dates around 2018-05-15 and 2018-05-20
-dates <- as.integer(runif(3, 17666, 17670))
-
-# Calculate the days required for the plants in these plots to reach the
-# maturity. Here the plant species requires ~1300 degree days for it.
-GDD(lonlat,
-    day.one = dates,
-    degree.days = 1300,
-    span = 150,
-    base = 5)
-
-######################################
-
-# Objects of class 'sf'
+# Using remote sources and sf method
 data("lonlatsf", package = "climatrends")
 
-dates <- as.Date(16150, origin = "1970-01-01")
-
+# compute number of days from "2019-04-01" to reach accumated GDD 
+# for Acer platanoides that begins to flowering at 45 GDD
+# set equation to variant_a where Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
 GDD(lonlatsf,
-    day.one = "2014-03-21",
-    last.day = "2014-06-30",
-    degree.days = 200,
-    base = 5)
-
+    day.one = "2019-04-01",
+    last.day = "2019-06-30",
+    base = 5,
+    degree.days = 45,
+    equation = "variant_a")
 }
 }
 \references{

@@ -2,25 +2,27 @@
 #'
 #' Methods to compute temperature indices over a time series
 #'
-#' @param object a data.frame (or object that can be coerced to data.frame) 
+#' @param object a data.frame (or any object that can be coerced to data.frame) 
 #'  with geographical coordinates (lonlat), or an object of class \code{sf}
 #'  with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-#'  containing the temperature data, see details. 
+#'  containing the temperature data or a \code{clima_ls} with day and night 
+#'  temperature, in that order. See details 
 #' @inheritParams get_timeseries
 #' @param timeseries logical, \code{FALSE} for a single point time series
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
 #' @param intervals integer (no lower than 5), for the days intervals when
 #'  \var{timeseries} = \code{TRUE}
 #' @param as.sf logical, to return an object of class 'sf'
-#' @param ... additional arguments passed to methods. See details.
+#' @param ... additional arguments passed to methods. See details
 #' @details 
 #' The \code{array} method assumes that \var{object} contains climate data provided 
 #'  from a local source; this requires an array with two dimensions, 1st dimension 
 #'  contains the day temperature and 2nd dimension the night temperature, 
 #'  see help("modis", package = "climatrends") for an example on input structure.
 #' 
-#' The default method and the sf method assumes that the climate data will be fetched 
-#'  from an remote (cloud) \var{source}.
+#' The \code{default} method and the \code{sf} method assumes that the climate data
+#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
+#'  \var{data.from}.
 #'
 #' When \var{timeseries} = \code{TRUE}, an id is created, 
 #'  which is the index for the rownames of the inputted \var{object}.
@@ -31,11 +33,11 @@
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
 #'  YYYY-MM-DD)  for the last day of the time series
 #' 
-#' \code{source}: character for the source of remote data. Current remote \var{source} 
+#' \code{data.from}: character for the source of remote data. Current remote source 
 #'  is: 'nasapower'
 #' 
 #' \code{pars}: character vector for the temperature data to be fetched. If 
-#'  \code{source} is 'nasapower', the temperature can be adjusted to 2 m, the default,
+#'  \code{data.from} is 'nasapower', the temperature can be adjusted to 2 m, the default,
 #'  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
 #' 
 #' \code{days.before}: optional, an integer for the number of days before 
@@ -111,8 +113,7 @@
 #' 
 #' }
 #' @export
-temperature <- function(object, day.one, 
-                        span, ...)
+temperature <- function(object, ...)
 {
   
   UseMethod("temperature")
@@ -239,6 +240,22 @@ temperature.sf <- function(object, day.one,
   }
   
   return(indices)
+  
+}
+
+#' @rdname temperature
+#' @method temperature clima_ls
+#' @export
+temperature.clima_ls <- function(object, 
+                                 timeseries = FALSE,
+                                 intervals = 5, ...){
+  
+  day <- object[[1]]
+  night <- object[[2]]
+  
+  result <- .temperature_indices(day, night, timeseries, intervals)
+  
+  return(result)
   
 }
 

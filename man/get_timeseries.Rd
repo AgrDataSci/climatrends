@@ -14,7 +14,7 @@ get_timeseries(object, day.one, span = NULL, last.day = NULL, ...)
   day.one,
   span = NULL,
   last.day = NULL,
-  source = "nasapower",
+  data.from = "nasapower",
   ...
 )
 
@@ -23,14 +23,14 @@ get_timeseries(object, day.one, span = NULL, last.day = NULL, ...)
   day.one,
   span = NULL,
   last.day = NULL,
-  source = "nasapower",
+  data.from = "nasapower",
   ...
 )
 
 \method{get_timeseries}{matrix}(object, day.one, span = NULL, last.day = NULL, ...)
 }
 \arguments{
-\item{object}{a \code{data.frame} (or any othwer object that can be coerced to 
+\item{object}{a \code{data.frame} (or any other object that can be coerced to 
 data.frame) with geographical coordinates (lonlat), or an object of class 
 \code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
 climate data. See details.}
@@ -48,28 +48,29 @@ YYYY-MM-DD)  for the last day of the time series}
 
 \item{...}{additional arguments passed to methods. See details.}
 
-\item{source}{character, for the source of climate data. See details.}
+\item{data.from}{character, for the source of climate data. See details.}
 }
 \value{
-An object with time series climate data for the chosen period
+A list with class \code{clima_ls} with data.frame(s) with 
+ the class \code{clima_df}
 }
 \description{
 General functions and methods to concatenate climate data across a time series
 }
 \details{
 The \code{default} method and the \code{sf} method assumes that the climate 
- data will be fetched from an remote (cloud) \var{source}.
+ data will be fetched from an remote (cloud) \var{data.from}.
 
 The \code{matrix} method assumes that the climate data was previously handled 
  and will be inputted in the format of a named matrix. 
  See help("modis", "climatrends") for examples.
 
-Available remote \var{source}s: "nasapower"
+Available remote sources to pass \var{data.from}: "nasapower"
 
 Additional arguments:
 
 \code{pars}: character vector of solar, meteorological or climatology parameters 
-to download. See help("parameters", "nasapower") when \var{source} = "nasapower".
+to download. See help("parameters", "nasapower") when \var{data.from} = "nasapower".
 
 \code{days.before}: an integer for the number of days before \var{day.one} to be 
  included in the timespan.

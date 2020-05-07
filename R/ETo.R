@@ -1,6 +1,6 @@
 #' Evapotranspiration
 #' 
-#' Evapotranspiration using the Blaney-Criddle method. This is  
+#' Evapotranspiration using the Blaney-Criddle method. This is general  
 #' theoretical method used when no measured data on pan evaporation 
 #' is available locally. 
 #' 
@@ -22,8 +22,9 @@
 #'  contains the day temperature and 2nd dimension the night temperature, 
 #'  see help("modis", "climatrends") for an example on input structure.
 #' 
-#' The \code{default} method and the \code{sf} method assumes that the climate data 
-#'  will be fetched from an remote (cloud) \var{source}.
+#' The \code{default} method and the \code{sf} method assumes that the climate data
+#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
+#'  \var{data.from}.
 #' 
 #' Additional arguments:
 #' 
@@ -31,11 +32,11 @@
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
 #'  YYYY-MM-DD)  for the last day of the time series
 #' 
-#' \code{source}: character for the source of climate data. Current remote \var{source} 
+#' \code{data.from}: character for the source of climate data. Current remote data 
 #'  is: 'nasapower'
 #' 
 #' \code{pars}: character vector for the temperature data to be fetched. If 
-#'  \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+#'  \code{data.from} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
 #'  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
 #' 
 #' \code{days.before}: optional, an integer for the number of days before 
@@ -49,7 +50,7 @@
 #' \url{http://www.fao.org/3/S2022E/s2022e00.htm}
 #' 
 #' @examples
-#' # Using local sources
+#' # Using local data
 #' data("modis", package = "climatrends")
 #' 
 #' ETo(modis, 
@@ -60,7 +61,7 @@
 #' \donttest{
 #' ######################################
 #'  
-#' # Using remote sources
+#' # Using remote data
 #' # random geographic locations around bbox(11, 12, 55, 58)
 #' set.seed(826128)
 #' lonlat <- data.frame(lon = runif(2, 11, 12),

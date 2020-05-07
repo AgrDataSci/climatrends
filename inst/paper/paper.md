@@ -25,7 +25,7 @@ affiliations:
   - name: Bioversity International, Rome, Italy
     index: 2
 citation_author: de Sousa et. al.
-date: "`r format(Sys.time(), '%d %B %Y')`"
+date: "07 May 2020"
 year: 2020
 bibliography: paper.bib
 output: rticles::joss_article
@@ -58,7 +58,7 @@ $$ T_{min} < T_{base} \rightarrow T_{min} = T_{base} $$
 
 ## Evapotranspiration
 
-Applies the Blaney-Criddle formula. This is general theoretical method used when no measured data on pan evaporation is available locally.
+Applies the Blaney-Criddle formula. This is theoretical method used when no measured data on pan evaporation is available locally.
 
 $$ETo = p \times (0.46 \times T_{mean} + 8) \times Kc$$
 

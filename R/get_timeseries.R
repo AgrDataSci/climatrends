@@ -2,7 +2,7 @@
 #' 
 #' General functions and methods to concatenate climate data across a time series
 #' 
-#' @param object a \code{data.frame} (or any othwer object that can be coerced to 
+#' @param object a \code{data.frame} (or any other object that can be coerced to 
 #'  data.frame) with geographical coordinates (lonlat), or an object of class 
 #'  \code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
 #'  climate data. See details.   
@@ -14,27 +14,28 @@
 #' @param last.day optional to \var{span}, an object of class \code{Date} or
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
 #'  YYYY-MM-DD)  for the last day of the time series
-#' @param source character, for the source of climate data. See details.
+#' @param data.from character, for the source of climate data. See details.
 #' @param ... additional arguments passed to methods. See details.
 #' @details 
 #' The \code{default} method and the \code{sf} method assumes that the climate 
-#'  data will be fetched from an remote (cloud) \var{source}.
+#'  data will be fetched from an remote (cloud) \var{data.from}.
 #'
 #' The \code{matrix} method assumes that the climate data was previously handled 
 #'  and will be inputted in the format of a named matrix. 
 #'  See help("modis", "climatrends") for examples.
 #' 
-#' Available remote \var{source}s: "nasapower"
+#' Available remote sources to pass \var{data.from}: "nasapower"
 #' 
 #' Additional arguments:
 #' 
 #' \code{pars}: character vector of solar, meteorological or climatology parameters 
-#' to download. See help("parameters", "nasapower") when \var{source} = "nasapower".
+#' to download. See help("parameters", "nasapower") when \var{data.from} = "nasapower".
 #' 
 #' \code{days.before}: an integer for the number of days before \var{day.one} to be 
 #'  included in the timespan.
 #' 
-#' @return A list of data.frame(s) with the class \code{clima_df} 
+#' @return A list with class \code{clima_ls} with data.frame(s) with 
+#'  the class \code{clima_df} 
 #' @family GET functions
 #' @examples 
 #' # Using local sources
@@ -77,7 +78,7 @@ get_timeseries <- function(object, day.one, span = NULL, last.day = NULL, ...) {
 #' @rdname get_timeseries
 #' @export
 get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL,
-                                   source = "nasapower", ...){
+                                   data.from = "nasapower", ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -90,7 +91,7 @@ get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL
 
   object <- as.data.frame(object)
   
-  makecall <- paste0(".", source)
+  makecall <- paste0(".", data.from)
   
   args <- list(dates = sts$dates,
                lonlat = object,
@@ -105,6 +106,8 @@ get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL
            maxspan = sts$maxspan)
   })
   
+  class(r) <- union("clima_ls", class(r))
+  
   return(r)
   
 }
@@ -113,7 +116,7 @@ get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL
 #' @method get_timeseries sf
 #' @export
 get_timeseries.sf <- function(object, day.one, span = NULL, last.day = NULL, 
-                              source = "nasapower",
+                              data.from = "nasapower",
                               ...){
   
   dots <- list(...)
@@ -129,7 +132,7 @@ get_timeseries.sf <- function(object, day.one, span = NULL, last.day = NULL,
   
   sts <- .st_span(day.one, span, last.day, days.before)
   
-  makecall <- paste0(".", source)
+  makecall <- paste0(".", data.from)
   
   args <- list(dates = sts$dates,
                lonlat = object,
@@ -144,6 +147,8 @@ get_timeseries.sf <- function(object, day.one, span = NULL, last.day = NULL,
            span = sts$span,
            maxspan = sts$maxspan)
   })
+  
+  class(r) <- union("clima_ls", class(r))
   
   return(r)
   
@@ -185,6 +190,8 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
               maxspan = sts$maxspan)
   
   r <- list(r)
+  
+  class(r) <- union("clima_ls", class(r))
   
   return(r)
 }

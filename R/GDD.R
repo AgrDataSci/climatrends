@@ -1,22 +1,24 @@
 #' Growing degree-days
 #' 
-#' Compute number of days required to reach Growing degree-days.
-#' GDD is a heuristic tool in phenology that measures heat 
-#' accumulation and is used to predict plant and animal development 
-#' rates. Growing degree-days are calculated by taking the 
+#' Compute Growing degree-days. This a heuristic tool in phenology 
+#' that measures heat accumulation and is used to predict plant and animal 
+#' development rates. Growing degree-days are calculated by taking the 
 #' integral of warmth above a base temperature.
 #' 
 #' @inheritParams temperature
-#' @param degree.days an integer for the degree-days required by the 
-#'  organism (look for the physiology of the focal organism). Optional if 
-#'  \var{return} = \code{"daily"}
-#' @param base an integer for the base temperature
-#' @param return character (one of \code{"ndays"} or \code{"daily"}) to select if 
-#'  the function returns the number of days to reach the GDD or the raw daily values 
-#'  of the GDD
+#' @param base an integer for the minimum temperature for growth (as per the physiology 
+#'  of the focal organism)
+#' @param degree.days an integer for the accumulated degree-days required by the 
+#'  organism (as per the physiology of the focal organism). Optional if 
+#'  \var{return.as} = \code{"gdd"}
+#' @param equation character to specify the equation to be used, one of \code{"default"},
+#' \code{"variant_a"} or \code{"variant_b"}. See details 
+#' @param return.as character (one of \code{"ndays"} the default or \code{"gdd"})
+#'  to select if the function returns the number of days to reach the accumulated 
+#'  \var{degree.days} or the daily values of the GDD
 #' @return 
-#'  The number of days which were required to reach the growing degree-days, or 
-#'   the degree days in each day during the time series
+#'  The number of days to reach the accumulated \var{degree.days} or the daily degree-days 
+#'   as defined with the argument \var{return.as}
 #' @family temperature functions
 #' @details 
 #' The \code{array} method assumes that \var{object} contains climate data provided 
@@ -24,20 +26,33 @@
 #'  contains the day temperature and 2nd dimension the night temperature, 
 #'  see help("modis", "climatrends") for an example on input structure.
 #' 
-#' The default method and the sf method assumes that the climate data will be fetched 
-#'  from an remote (cloud) \var{source}.
+#' The \code{default} method and the \code{sf} method assumes that the climate data
+#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
+#'  \var{data.from}.
+#'  
+#' The \code{"default"} \var{equation} uses the average of the daily maximum (Tmax) and 
+#'  minimum (Tmin) temperatures compared to a \var{base} temperature (Tbase). If Tmin 
+#'  is below Tbase there are two variants: 
+#'  
+#'  \code{"variant_a"}: set Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
+#'  
+#'  \code{"variant_b"}: set Tmin = Tbase if Tmin < Tbase
 #'
 #' Additional arguments:
 #' 
-#' \code{last.day}: optional to \var{span}, an object of class \code{Date} or
+#' \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
 #'  YYYY-MM-DD)  for the last day of the time series
+#'  
+#' \code{span}: an integer (optional to \var{last.day}) or a vector with 
+#'  integers (optional if \var{last.day} is given) for the length of 
+#'  the time series to be captured
 #' 
-#' \code{source}: character for the source of remote data. Current remote \var{source} 
+#' \code{data.from}: character for the source of remote data. Current remote source 
 #'  is: 'nasapower'
 #' 
 #' \code{pars}: character vector for the temperature data to be fetched. If 
-#'  \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+#'  \code{data.from} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
 #'  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
 #' 
 #' @references 
@@ -45,51 +60,45 @@
 #' \cr\url{https://doi.org/10.2307/2845499}
 #' 
 #' @examples
-#' # Using local sources
+#' # Using local data
 #' data("modis", package = "climatrends")
 #' 
 #' GDD(modis,
 #'     day.one = "2013-10-28",
+#'     base = 10,
+#'     degree.days = 100)
+#' 
+#' # change the equation to variant_b where 
+#' # Tmin = Tbase if (Tmax + Tmin) / 2 < Tbase
+#' GDD(modis,
+#'     day.one = "2013-10-28",
+#'     base = 10,
 #'     degree.days = 100,
-#'     base = 5)
+#'     equation = "variant_b")
 #' 
-#' ######################################
+#' # return as degree days
+#' GDD(modis,
+#'     day.one = "2013-10-28",
+#'     base = 10,
+#'     degree.days = 100,
+#'     return.as = "gdd")
+#' 
 #' \donttest{
-#' # Using remote sources
-#' set.seed(123)
-#' # random geographic locations around bbox(11, 12, 55, 58)
-#' lonlat <- data.frame(lon = runif(3, 11, 12),
-#'                      lat = runif(3, 55, 58))
-#' 
-#' set.seed(321)
-#' # random dates around 2018-05-15 and 2018-05-20
-#' dates <- as.integer(runif(3, 17666, 17670))
-#' 
-#' # Calculate the days required for the plants in these plots to reach the
-#' # maturity. Here the plant species requires ~1300 degree days for it.
-#' GDD(lonlat,
-#'     day.one = dates,
-#'     degree.days = 1300,
-#'     span = 150,
-#'     base = 5)
-#' 
-#' ######################################
-#' 
-#' # Objects of class 'sf'
+#' # Using remote sources and sf method
 #' data("lonlatsf", package = "climatrends")
 #' 
-#' dates <- as.Date(16150, origin = "1970-01-01")
-#' 
+#' # compute number of days from "2019-04-01" to reach accumated GDD 
+#' # for Acer platanoides that begins to flowering at 45 GDD
+#' # set equation to variant_a where Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
 #' GDD(lonlatsf,
-#'     day.one = "2014-03-21",
-#'     last.day = "2014-06-30",
-#'     degree.days = 200,
-#'     base = 5)
-#' 
-#'}
+#'     day.one = "2019-04-01",
+#'     last.day = "2019-06-30",
+#'     base = 5,
+#'     degree.days = 45,
+#'     equation = "variant_a")
+#' }
 #' @export
-GDD <- function(object, day.one, degree.days = NULL,
-                base = 10, ...)
+GDD <- function(object, ..., base = 10)
 {
   UseMethod("GDD")
 }
@@ -97,14 +106,17 @@ GDD <- function(object, day.one, degree.days = NULL,
 #' @rdname GDD
 #' @method GDD default
 #' @export
-GDD.default <- function(object, day.one, degree.days = NULL,
-                        base = 10, span = NULL, return = "ndays", ...){
+GDD.default <- function(object, day.one, base = 10, 
+                        degree.days = NULL,
+                        equation = "default",
+                        return.as = "ndays", ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
   
   # coerce inputs to data.frame
   object <- as.data.frame(object)
+  
   if(dim(object)[[2]] != 2) {
     stop("Subscript out of bounds. In GDD.default(),",
          " only lonlat should be provided. \n")
@@ -116,13 +128,13 @@ GDD.default <- function(object, day.one, degree.days = NULL,
     pars <- c("T2M_MAX", "T2M_MIN")
   }
   
-  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  dat <- get_timeseries(object, day.one, pars = pars, ...)
   
   day <- dat[[pars[[1]]]]
   
   night <- dat[[pars[[2]]]]
   
-  result <- .gdd(day, night, base, degree.days, return)
+  result <- .gdd(day, night, base, degree.days, equation, return.as)
   
   return(result)
 }
@@ -131,8 +143,10 @@ GDD.default <- function(object, day.one, degree.days = NULL,
 #' @rdname GDD
 #' @method GDD array
 #' @export
-GDD.array <- function(object, day.one, degree.days = NULL,
-                      base = 10, return = "ndays", ...){
+GDD.array <- function(object, day.one, base = 10, 
+                      degree.days = NULL, 
+                      equation = "default", 
+                      return.as = "ndays", ...){
   
   if(dim(object)[[2]] == 2) {
     UseMethod("GDD", "default")
@@ -159,7 +173,7 @@ GDD.array <- function(object, day.one, degree.days = NULL,
   
   night <- get_timeseries(object[, , 2], day.one, span, last.day)[[1]]
   
-  result <- .gdd(day, night, base, degree.days, return)
+  result <- .gdd(day, night, base, degree.days, equation, return.as)
   
   return(result)
 }
@@ -168,8 +182,10 @@ GDD.array <- function(object, day.one, degree.days = NULL,
 #' @rdname GDD
 #' @method GDD sf
 #' @export
-GDD.sf <- function(object, day.one, degree.days = NULL,
-                   base = 10, span = NULL, return = "ndays", 
+GDD.sf <- function(object, day.one, base = 10, 
+                   degree.days = NULL, 
+                   equation = "default",
+                   return.as = "ndays", 
                    as.sf = TRUE, ...){
   
   dots <- list(...)
@@ -181,13 +197,13 @@ GDD.sf <- function(object, day.one, degree.days = NULL,
     pars <- c("T2M_MAX", "T2M_MIN")
   }
   
-  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  dat <- get_timeseries(object, day.one, pars = pars, ...)
   
   day <- dat[[pars[[1]]]]
   
   night <- dat[[pars[[2]]]]
   
-  result <- .gdd(day, night, base, degree.days, return)
+  result <- .gdd(day, night, base, degree.days, equation, return.as)
   
   if (isTRUE(as.sf)) {
     result <- suppressWarnings(sf::st_bind_cols(object, result))
@@ -197,17 +213,66 @@ GDD.sf <- function(object, day.one, degree.days = NULL,
 }
 
 
-.gdd <- function(day, night, base, degree.days, return = "ndays"){
+
+#' @rdname GDD
+#' @method GDD clima_ls
+#' @export
+GDD.clima_ls <- function(object, 
+                         base = 10, 
+                         degree.days = NULL, 
+                         equation = "default",
+                         return.as = "ndays", ...){
   
-  temp <- cbind(day, value2 = night$value)
+  day <- object[[1]]
+  night <- object[[2]]
+  
+  result <- .gdd(day, night, base, degree.days, equation, return.as)
+  
+  return(result)
+  
+}
+
+.gdd <- function(day, night, base, degree.days, equation = "default", return.as = "ndays"){
+  
+  if (all(return.as == "ndays", is.null(degree.days))) {
+    stop("argument degree.days is missing with no default \n")
+  }
+  
+  temp <- cbind(day, tmin = night$value)
   
   temp <- split(temp, temp$id)
   
   Y <- lapply(temp, function(x){
     
-    y <- ((x$value + x$value2) / 2) - base
+    tmax <- x$value
+    tmin <- x$tmin
     
-    if (isTRUE(return == "ndays")) {
+    
+    if (isTRUE(equation == "default")) {
+      
+      y <- ((tmax + tmin) / 2) - base
+    
+    }
+    
+    if (isTRUE(equation == "variant_a")) {
+      # adjust Tmean if Tmean < base
+      tmean <- (tmax + tmin) / 2
+      
+      tadj <- ifelse(tmean < base, base, tmean)
+      
+      y <- tadj - base
+      
+    }
+    
+    if (isTRUE(equation == "variant_b")) {
+      # set Tmin = base if Tmin < base
+      tadj <- ifelse(tmin < base, base, tmin)
+      
+      y <- ((tmax + tadj) / 2) - base
+      
+    }
+    
+    if (isTRUE(return.as == "ndays")) {
       
       y <- y[!is.na(y)]
       
@@ -216,14 +281,14 @@ GDD.sf <- function(object, day.one, degree.days = NULL,
         
         i <- d
         
-        if (sum(y[1:d], na.rm = TRUE) > degree.days) {break}
+        if (sum(y[1:d], na.rm = TRUE) >= degree.days) {break}
       }
       
       return(i)
       
     }
     
-    if (isTRUE(return == "daily")) {
+    if (isTRUE(return.as == "gdd")) {
       
       y <- data.frame(id = x$id,
                       date = x$date,
@@ -237,7 +302,7 @@ GDD.sf <- function(object, day.one, degree.days = NULL,
   
   result <- do.call("rbind", Y)
   
-  if (isTRUE(return == "ndays")) {
+  if (isTRUE(return.as == "ndays")) {
     
     result <- data.frame(GDD = result, stringsAsFactors = FALSE)
   

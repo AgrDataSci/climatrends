@@ -21,13 +21,13 @@ test_that("right values array method", {
 realv <- c(11, 11, 11, 11, 11, 
            12, 12, 12, 12, 12)
 # return daily gdd
-test_that("return daily gdd", {
+test_that("return gdd", {
   
   gdd <- GDD(object = temp[1:2,,],
              day.one = d[1:2,], 
              span = 5,
              base = 10,
-             return = "daily")$gdd
+             return = "gdd")$gdd
   
   gdd <- round(gdd, 0)
   
@@ -54,4 +54,16 @@ test_that("nasapower works", {
   
   expect_true(dg)
 
+})
+
+
+test_that("missing degree.days return.as ndays", {
+  
+  expect_error(
+    GDD(object = temp,
+        day.one = d, 
+        base = 10,
+        return.as = "ndays")
+  )
+  
 })

@@ -16,10 +16,11 @@ ETo(object, day.one, span = NULL, Kc = 1, ...)
 \method{ETo}{sf}(object, day.one, span = NULL, Kc = 1, as.sf = TRUE, ...)
 }
 \arguments{
-\item{object}{a data.frame (or object that can be coerced to data.frame) 
+\item{object}{a data.frame (or any object that can be coerced to data.frame) 
 with geographical coordinates (lonlat), or an object of class \code{sf}
 with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data, see details.}
+containing the temperature data or a \code{clima_ls} with day and night 
+temperature, in that order. See details}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -30,7 +31,7 @@ given) for the length of the time series to be captured}
 
 \item{Kc}{a numeric value for the crop factor for water requirement}
 
-\item{...}{additional arguments passed to methods. See details.}
+\item{...}{additional arguments passed to methods. See details}
 
 \item{lat}{a vector for the latitude (in Decimal degrees), used to compute 
 mean daily percentage of annual daytime hours based on the latitude and month.
@@ -42,7 +43,7 @@ This is extracted automatically in the \code{sf} method. See details}
 The evapotranspiration in mm/day
 }
 \description{
-Evapotranspiration using the Blaney-Criddle method. This is  
+Evapotranspiration using the Blaney-Criddle method. This is general  
 theoretical method used when no measured data on pan evaporation 
 is available locally.
 }
@@ -58,8 +59,9 @@ The \code{array} method assumes that \var{object} contains climate data provided
  contains the day temperature and 2nd dimension the night temperature, 
  see help("modis", "climatrends") for an example on input structure.
 
-The \code{default} method and the \code{sf} method assumes that the climate data 
- will be fetched from an remote (cloud) \var{source}.
+The \code{default} method and the \code{sf} method assumes that the climate data
+ will e fetched from a remote (cloud) source that be adjusted using the argument 
+ \var{data.from}.
 
 Additional arguments:
 
@@ -67,18 +69,18 @@ Additional arguments:
  any other object that can be coerced to \code{Date} (e.g. integer, character 
  YYYY-MM-DD)  for the last day of the time series
 
-\code{source}: character for the source of climate data. Current remote \var{source} 
+\code{data.from}: character for the source of climate data. Current remote data 
  is: 'nasapower'
 
 \code{pars}: character vector for the temperature data to be fetched. If 
- \code{source} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
+ \code{data.from} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
 
 \code{days.before}: optional, an integer for the number of days before 
  \var{day.one} to be included in the timespan.
 }
 \examples{
-# Using local sources
+# Using local data
 data("modis", package = "climatrends")
 
 ETo(modis, 
@@ -89,7 +91,7 @@ ETo(modis,
 \donttest{
 ######################################
  
-# Using remote sources
+# Using remote data
 # random geographic locations around bbox(11, 12, 55, 58)
 set.seed(826128)
 lonlat <- data.frame(lon = runif(2, 11, 12),

@@ -1,15 +1,23 @@
-climatrends 0.1.3 (2020-05-06)
+climatrends 0.1.4 (2020-05-07)
 =========================
+
+### NEW FEATURES
+
 * Export function `get_timeseries()`
-* Enable future modular expansion of data sources using API clients by creating specific functions that are called with the argument `source` in all functions
-* Enable argument `last.day`, optional to `span`, when indices are retrieved with focus on timeseries
+* Enable future modular expansion of data sources using API clients by creating specific functions that are called with the argument `data.from` in `get_timeseries()`
+* Enable argument `last.day`, optional to `span`, when indices are retrieved with focus on time series analysis
 * Enable data retrieve from large areas in 'nasapower' by clustering the lonlat points with `stats::hclust()`
-* Methods for objects of classes 'sf', 'matrix', 'array' and 'data.frame' (default) in all functions
+* Methods for objects of classes 'data.frame' (default), 'sf', 'matrix', 'array', 'clima_df' and 'clima_ls' in all functions
 * Remove dependency from 'tibble' which was basically to provide a 'cool' printing method
 * Implement a `print()` method for objects that inherits the class 'clima_df'
 * Calls from "nasapower" can be adjusted with argument `pars`, mainly for `temperature()`, `GDD()` and `ETo()`. Details in the function documentation
 * New `temperature()` indices provided. Details in the function documentation
-* 
+* Function `GDD()` applies two equations adjustments for cold zones with the argument `equation`. Details in the function documentation
+* Function `GDD()` now allows to return the raw daily gdd or number of days to reach the accumulated gdd (the default in previous versions) using the argument `return.as`
+
+### CHANGES IN BEHAVIOUR
+
+* Change order of `GDD()` arguments. Previous versions used *GDD(object, day.one = NULL, degree.days = NULL, base = 10, span = 150, ...)*. From now on `GDD()` default behaviour is *GDD(object, day.one, base = 10, ...)*, additional arguments are passed through `...` in each defined method.
 
 climatrends 0.1.0 (2020-02-20)
 =========================

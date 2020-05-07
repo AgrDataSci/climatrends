@@ -1,16 +1,3 @@
-#' Is a tibble object
-#' @param object an object to have its class tested
-#' @return a logical value where TRUE indicates that the 
-#' object is of class "tbl_df"
-#' @examples
-#' .is_tibble(airquality)
-#' @noRd
-.is_tibble <- function(object) {
-  
-  c("tbl_df") %in% class(object)
-
-}
-
 #' Is a Date object
 #' @param object an object to have its class tested
 #' @return a logical value where TRUE indicates that the 
@@ -23,20 +10,6 @@
   
   c("Date") %in% class(object)
 
-}
-
-#' Is a sf object
-#' @param object an object to have its class tested
-#' @return a logical value where TRUE indicates that the 
-#' object is of class "sf"
-#' @examples
-#' x <- as.Date(c(1000, 2000), origin = "1970-01-01")
-#' .is_sf(x)
-#' @noRd
-.is_sf <- function(object) {
-  
-  c("sf") %in% class(object)
-  
 }
 
 #' Round to the nearest base value
