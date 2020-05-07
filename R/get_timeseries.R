@@ -34,7 +34,7 @@
 #' \code{days.before}: an integer for the number of days before \var{day.one} to be 
 #'  included in the timespan.
 #' 
-#' @return An object with time series climate data for the chosen period
+#' @return A list of data.frame(s) with the class \code{clima_df} 
 #' @family GET functions
 #' @examples 
 #' # Using local sources

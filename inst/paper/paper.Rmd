@@ -36,9 +36,19 @@ journal: JOSS
 
 Understand how climate variability drives ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the R [@RCoreTeam] toolkit to compute extreme precipitation and temperature indices that serves as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [**add-reference**].
 
-# Implementation
+# Methods and features
+
+## Implementation
 
 Four main functions are provided, `ETo()`, `GDD()`, `rainfall()` and `temperature()` with methods [@RCoreTeam] for classes 'data.frame', 'matrix' (or array), and 'sf' [@sf]. 
+
+# Growing degree-days
+
+$$ GDD = \frac{}{}  $$
+
+
+# Evapotranspiration
+
 
 # Application: common beans
 
