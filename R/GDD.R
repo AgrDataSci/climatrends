@@ -42,7 +42,7 @@
 #' 
 #' \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
-#'  YYYY-MM-DD)  for the last day of the time series
+#'  YYYY-MM-DD) for the last day of the time series
 #'  
 #' \code{span}: an integer (optional to \var{last.day}) or a vector with 
 #'  integers (optional if \var{last.day} is given) for the length of 
@@ -156,14 +156,14 @@ GDD.array <- function(object, day.one, base = 10,
   span <- dots[["span"]]
   last.day <- dots[["last.day"]]
   
-  # coerce to vector
   day.one <- as.vector(t(day.one))
   
+  # check if day.one is a 'Date' else try to coerce to Date
+  if (isFALSE(.is_Date(day.one))) {
+    day.one <- .coerce2Date(day.one)
+  }
+  
   if (all(is.null(span), is.null(last.day))) {
-    
-    if (isFALSE(.is_Date(day.one))){
-      day.one <- .coerce2Date(day.one)
-    }
     do <- as.character(max(day.one))
     do <- match(do, dimnames(object[,,1])[[2]])
     span <- dim(object)[[2]] - do

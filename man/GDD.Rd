@@ -111,7 +111,7 @@ Additional arguments:
 
 \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
  any other object that can be coerced to \code{Date} (e.g. integer, character 
- YYYY-MM-DD)  for the last day of the time series
+ YYYY-MM-DD) for the last day of the time series
  
 \code{span}: an integer (optional to \var{last.day}) or a vector with 
  integers (optional if \var{last.day} is given) for the length of 

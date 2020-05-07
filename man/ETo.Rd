@@ -5,15 +5,15 @@
 \alias{ETo.default}
 \alias{ETo.array}
 \alias{ETo.sf}
-\title{Evapotranspiration}
+\title{Reference evapotranspiration}
 \usage{
-ETo(object, day.one, span = NULL, Kc = 1, ...)
+ETo(object, day.one, Kc = 1, ...)
 
-\method{ETo}{default}(object, day.one, span = NULL, Kc = 1, lat = NULL, ...)
+\method{ETo}{default}(object, day.one, Kc = 1, ...)
 
-\method{ETo}{array}(object, day.one, span = NULL, Kc = 1, lat = NULL, ...)
+\method{ETo}{array}(object, day.one, Kc = 1, lat = NULL, p = 0.27, ...)
 
-\method{ETo}{sf}(object, day.one, span = NULL, Kc = 1, as.sf = TRUE, ...)
+\method{ETo}{sf}(object, day.one, Kc = 1, as.sf = TRUE, ...)
 }
 \arguments{
 \item{object}{a data.frame (or any object that can be coerced to data.frame) 
@@ -26,9 +26,6 @@ temperature, in that order. See details}
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
 day to capture the climate data}
 
-\item{span}{an integer or a vector with integers (optional if \var{last.day} is 
-given) for the length of the time series to be captured}
-
 \item{Kc}{a numeric value for the crop factor for water requirement}
 
 \item{...}{additional arguments passed to methods. See details}
@@ -37,13 +34,16 @@ given) for the length of the time series to be captured}
 mean daily percentage of annual daytime hours based on the latitude and month.
 This is extracted automatically in the \code{sf} method. See details}
 
+\item{p}{optional if \var{lat} is given, a numeric for the mean daily percentage 
+of annual daytime hours (p = 0.27 by default)}
+
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
 \value{
 The evapotranspiration in mm/day
 }
 \description{
-Evapotranspiration using the Blaney-Criddle method. This is general  
+Reference evapotranspiration using the Blaney-Criddle method. This is general  
 theoretical method used when no measured data on pan evaporation 
 is available locally.
 }
@@ -65,9 +65,13 @@ The \code{default} method and the \code{sf} method assumes that the climate data
 
 Additional arguments:
 
-\code{last.day}: optional to \var{span}, an object of class \code{Date} or
+\code{last.day}: an object (optional to \var{span}) of class \code{Date} or
  any other object that can be coerced to \code{Date} (e.g. integer, character 
- YYYY-MM-DD)  for the last day of the time series
+ YYYY-MM-DD) for the last day of the time series
+ 
+\code{span}: an integer (optional to \var{last.day}) or a vector with 
+ integers (optional if \var{last.day} is given) for the length of 
+ the time series to be captured
 
 \code{data.from}: character for the source of climate data. Current remote data 
  is: 'nasapower'
@@ -87,38 +91,32 @@ ETo(modis,
     day.one = "2013-10-28",
     span = 10,
     Kc = 0.92)
-    
+
 \donttest{
 ######################################
- 
+
 # Using remote data
 # random geographic locations around bbox(11, 12, 55, 58)
 set.seed(826128)
 lonlat <- data.frame(lon = runif(2, 11, 12),
                      lat = runif(2, 55, 58))
 
-# random dates around 2018-05-15 and 2018-05-20
-set.seed(826128)
-dates <- as.integer(runif(2, 17666, 17670))
-
-# the evapotranspiration in the first 50 days after day.one
+# the evapotranspiration in the 30 days
 ETo(lonlat,
-    day.one = dates,
-    span = 50,
-    lat = lonlat["lat"])
-    
+    day.one = "2018-05-15",
+    last.day = "2018-06-15",
+    Kc = 0.5)
+
 #######################################
- 
+
 # Objects of class 'sf'
 data("lonlatsf", package = "climatrends")
 
 ETo(lonlatsf,
-    day.one = "2015-09-22",
-    last.day = "2015-10-15",
+    day.one = "2015-04-22",
+    last.day = "2015-06-22",
     pars = c("T10M_MAX", "T10M_MIN"))
-
 }
-
 }
 \references{
 Brouwer C. & Heibloem M. (1986). Irrigation water management: 

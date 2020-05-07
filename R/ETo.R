@@ -1,6 +1,6 @@
-#' Evapotranspiration
+#' Reference evapotranspiration
 #' 
-#' Evapotranspiration using the Blaney-Criddle method. This is general  
+#' Reference evapotranspiration using the Blaney-Criddle method. This is general  
 #' theoretical method used when no measured data on pan evaporation 
 #' is available locally. 
 #' 
@@ -9,6 +9,8 @@
 #'  mean daily percentage of annual daytime hours based on the latitude and month.
 #'  This is extracted automatically in the \code{sf} method. See details
 #' @param Kc a numeric value for the crop factor for water requirement
+#' @param p optional if \var{lat} is given, a numeric for the mean daily percentage 
+#'  of annual daytime hours (p = 0.27 by default)
 #' @return The evapotranspiration in mm/day
 #' @details 
 #' When \var{lat} is provided, it is combined with the month provided in 
@@ -28,9 +30,13 @@
 #' 
 #' Additional arguments:
 #' 
-#' \code{last.day}: optional to \var{span}, an object of class \code{Date} or
+#' \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
-#'  YYYY-MM-DD)  for the last day of the time series
+#'  YYYY-MM-DD) for the last day of the time series
+#'  
+#' \code{span}: an integer (optional to \var{last.day}) or a vector with 
+#'  integers (optional if \var{last.day} is given) for the length of 
+#'  the time series to be captured
 #' 
 #' \code{data.from}: character for the source of climate data. Current remote data 
 #'  is: 'nasapower'
@@ -57,41 +63,35 @@
 #'     day.one = "2013-10-28",
 #'     span = 10,
 #'     Kc = 0.92)
-#'     
+#' 
 #' \donttest{
 #' ######################################
-#'  
+#' 
 #' # Using remote data
 #' # random geographic locations around bbox(11, 12, 55, 58)
 #' set.seed(826128)
 #' lonlat <- data.frame(lon = runif(2, 11, 12),
 #'                      lat = runif(2, 55, 58))
 #' 
-#' # random dates around 2018-05-15 and 2018-05-20
-#' set.seed(826128)
-#' dates <- as.integer(runif(2, 17666, 17670))
-#' 
-#' # the evapotranspiration in the first 50 days after day.one
+#' # the evapotranspiration in the 30 days
 #' ETo(lonlat,
-#'     day.one = dates,
-#'     span = 50,
-#'     lat = lonlat["lat"])
-#'     
+#'     day.one = "2018-05-15",
+#'     last.day = "2018-06-15",
+#'     Kc = 0.5)
+#' 
 #' #######################################
-#'  
+#' 
 #' # Objects of class 'sf'
 #' data("lonlatsf", package = "climatrends")
 #' 
 #' ETo(lonlatsf,
-#'     day.one = "2015-09-22",
-#'     last.day = "2015-10-15",
+#'     day.one = "2015-04-22",
+#'     last.day = "2015-06-22",
 #'     pars = c("T10M_MAX", "T10M_MIN"))
-#' 
 #' }
-#' 
 #' @importFrom sf st_bind_cols
 #' @export
-ETo <- function(object, day.one, span = NULL, Kc = 1, ...){
+ETo <- function(object, day.one, Kc = 1, ...){
   
   UseMethod("ETo")
 
@@ -100,7 +100,7 @@ ETo <- function(object, day.one, span = NULL, Kc = 1, ...){
 #' @rdname ETo
 #' @method ETo default
 #' @export
-ETo.default <- function(object, day.one, span = NULL, Kc = 1, lat = NULL, ...){
+ETo.default <- function(object, day.one, Kc = 1, ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -114,6 +114,9 @@ ETo.default <- function(object, day.one, span = NULL, Kc = 1, lat = NULL, ...){
   
   day.one <- as.vector(t(day.one))
   
+  # get the latitude
+  lat <- object[, 2]
+  
   # check if day.one is a 'Date' else try to coerce to Date
   if (!.is_Date(day.one)) {
     
@@ -121,21 +124,16 @@ ETo.default <- function(object, day.one, span = NULL, Kc = 1, lat = NULL, ...){
     
   }
   
-  # get p if lat is provided
-  if (!is.null(lat)) {
-    m <- as.integer(format(day.one, "%m"))
-    p <- .p_daytime(lat = lat, month = m)
-  } 
+  # get p using lat and day.one
+  m <- as.integer(format(day.one, "%m"))
   
-  if (is.null(lat)) {
-    p <- 0.27
-  }
+  p <- .p_daytime(lat = lat, month = m)
   
   if (is.null(pars)) {
     pars <- c("T2M_MAX", "T2M_MIN")
   }
   
-  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  dat <- get_timeseries(object, day.one, pars = pars, ...)
   
   day <- dat[[pars[[1]]]]
   
@@ -150,34 +148,39 @@ ETo.default <- function(object, day.one, span = NULL, Kc = 1, lat = NULL, ...){
 #' @rdname ETo
 #' @method ETo array
 #' @export
-ETo.array <- function(object, day.one, span = NULL, Kc = 1, lat = NULL, ...){
+ETo.array <- function(object, day.one, Kc = 1, lat = NULL, p = 0.27, ...){
   
   if(dim(object)[[2]] == 2) {
     UseMethod("ETo", "default")
   }
   
+  dots <- list(...)
+  span <- dots[["span"]]
+  last.day <- dots[["last.day"]]
+  
+  # coerce to vector
   day.one <- as.vector(t(day.one))
   
   # check if day.one is a 'Date' else try to coerce to Date
-  if (!.is_Date(day.one)) {
-    
+  if (isFALSE(.is_Date(day.one))) {
     day.one <- .coerce2Date(day.one)
-    
+  }
+  
+  if (all(is.null(span), is.null(last.day))) {
+    do <- as.character(max(day.one))
+    do <- match(do, dimnames(object[,,1])[[2]])
+    span <- dim(object)[[2]] - do
   }
 
   # get p if lat is provided
   if (!is.null(lat)) {
     m <- as.integer(format(day.one, "%m"))
     p <- .p_daytime(lat = lat, month = m)
-  } 
-  
-  if (is.null(lat)) {
-    p <- 0.27
   }
   
-  day <- get_timeseries(object[, , 1], day.one, span)[[1]]
+  day <- get_timeseries(object[, , 1], day.one, span, last.day)[[1]]
   
-  night <- get_timeseries(object[, , 2], day.one, span)[[1]]
+  night <- get_timeseries(object[, , 2], day.one, span, last.day)[[1]]
   
   result <- .eto(day, night, Kc, p)
   
@@ -189,7 +192,7 @@ ETo.array <- function(object, day.one, span = NULL, Kc = 1, lat = NULL, ...){
 #' @rdname ETo
 #' @method ETo sf
 #' @export
-ETo.sf <- function(object, day.one, span = NULL, Kc = 1, as.sf = TRUE, ...){
+ETo.sf <- function(object, day.one, Kc = 1, as.sf = TRUE, ...){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -215,7 +218,7 @@ ETo.sf <- function(object, day.one, span = NULL, Kc = 1, as.sf = TRUE, ...){
     pars <- c("T2M_MAX", "T2M_MIN")
   }
   
-  dat <- get_timeseries(object, day.one, span, pars = pars, ...)
+  dat <- get_timeseries(object, day.one, pars = pars, ...)
   
   day <- dat[[pars[[1]]]]
   

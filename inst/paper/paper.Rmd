@@ -34,7 +34,9 @@ journal: JOSS
 
 # Summary
 
-Understand how climate variability drives ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the R [@RCoreTeam] toolkit to compute extreme precipitation and temperature indices that serves as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [**add-reference**].
+Understand how climate variability drives ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the R [@RCoreTeam] toolkit to compute extreme precipitation and temperature indices that serves as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [@Prentice1992; @YLiu2018].
+
+[...continue...]
 
 # Methods and features
 
@@ -42,25 +44,44 @@ Understand how climate variability drives ecological processes is a key approach
 
 Four main functions are provided, `ETo()`, `GDD()`, `rainfall()` and `temperature()` with methods [@RCoreTeam] for classes 'data.frame', 'matrix' (or array), and 'sf' [@sf]. 
 
+[...continue...]
+
 ## Growing degree-days
 
-By default the function `GDD()` applies the following equation.
+Growing degree-days (gdd) is an heuristic tool in phenology that measures heat accumulation and is used to predict plant and animal development rates [@Prentice1992]. Growing degree-days are calculated by taking the integral of warmth above a base temperature ($T_{0}$). The function `GDD()` applies by default the following equation.
 
-$$ GDD = \frac{T_{max} + T_{min}}{2} - T_{base}$$
+Equation [1]
 
-variant A
+$$GDD = \frac{T_{max} + T_{min}}{2} - T_{0}$$
 
-$$ GDD = max \left(\frac{T_{max} + T_{min}}{2} - T_{base}, 0 \right)  $$
+Where $T_{max}$ is the maximum temperature in the given day, $T_{min}$ is the minimum temperature in the given day and $T_{0}$ is the minimum temperature for growth (as per the physiology of the focal organism). 
 
-variant B, changes $T_{base}$ to $T_{min}$ if $T_{base}$ is lower than $T_{min}$
+For cold environments, where $T_{min}$ may be lower than $T_{0}$, there are two variants of the previous equation to adjust either $T_{mean}$ (variant A) or $T_{min}$ (variant B). The variant A changes $T_{mean}$ to $T_{0}$ if $T_{mean} < T_{0}$ and is expressed as follows.
 
-$$ T_{min} < T_{base} \rightarrow T_{min} = T_{base} $$
+Equation [2]
 
-## Evapotranspiration
+$$ GDD = max \left(\frac{T_{max} + T_{min}}{2} - T_{0}, \; 0 \right)$$
 
-Applies the Blaney-Criddle formula. This is general theoretical method used when no measured data on pan evaporation is available locally.
+The variant B, is calculated using Equation 1, but adjusts $T_{min}$ to $T_{0}$ if $T_{min} < T_{o}$, and is adjusted as follows.
 
-$$ETo = p \times (0.46 \times T_{mean} + 8) \times Kc$$
+Equation [3]
+
+$$ T_{min} < T_{o} \; \rightarrow \; T_{min} = T_{o} $$
+
+In `GDD()` these equations are defined as 'default', 'variant_a' and 'variant_b', respectively, and can be selected using the argument `equation`.
+
+Additionally, the function may return the number of days that a given organism required to reach a certain number of accumulated degree-days or the raw gdd in each observed day. These values are defined by 'ndays' or 'gdd' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset of photosynthesis [@JWu2013].
+
+
+## Reference evapotranspiration
+
+The reference evapotranspiration measures the influence of the climate on a given organism (generally a crop species) water needs [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle formula, a general theoretical method used when no measured data on pan evaporation is available locally, using the following equation.
+
+Equation [4]
+
+$$ETo = p \times \left(0.46 \times \frac{T_{max} + T_{min}}{2} + 8 \right) \times K_c$$
+
+Where $p$ is the mean daily percentage of annual daytime hours, $T_{max}$ is the maximum temperature, $T_{min}$ is the minimum temperature, and $K_c$ is the relationship between the reference organism and the actually grown of the organism and may change according to the growth stage.
 
 # Examples
 
@@ -74,6 +95,7 @@ Pick some random points in Norway (or Scandinavia??) and check how the trends on
 
 
 # Further development
+
 Integration with other datasets as they become available in `R` via API client packages. New indices related to the physiology of crops to be implemented while I work on the rice data.
 
 # Acknowledgements
