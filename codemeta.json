@@ -10,7 +10,7 @@
   "codeRepository": "https://agrobioinfoservices.github.io/climatrends",
   "issueTracker": "https://github.com/agrobioinfoservices/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
