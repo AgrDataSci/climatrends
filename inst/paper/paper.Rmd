@@ -28,6 +28,7 @@ citation_author: de Sousa et. al.
 date: "`r format(Sys.time(), '%d %B %Y')`"
 year: 2020
 bibliography: paper.bib
+#output: pdf_document
 output: rticles::joss_article
 journal: JOSS
 ---
@@ -70,18 +71,24 @@ $$ T_{min} < T_{o} \; \rightarrow \; T_{min} = T_{o} $$
 
 In `GDD()` these equations are defined as 'default', 'variant_a' and 'variant_b', respectively, and can be selected using the argument `equation`.
 
-Additionally, the function may return the number of days that a given organism required to reach a certain number of accumulated degree-days or the raw gdd in each observed day. These values are defined by 'ndays' or 'gdd' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset of photosynthesis [@JWu2013].
+Additionally, the function may return the number of days that a given organism required to reach a certain number of accumulated degree-days or the raw gdd in each observed day. These values are defined by 'ndays' or 'gdd' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset of photosynthesis [@JWu2013]. In that case, the function will calculate the growing degree-days ($gdd$) and sum up the values until it reaches the defined gdd (105 $^\circ C$) and return the number of days needed in the given season ($GDD_{ndays}$), as follows.
+
+Equation [4]
+
+$$\parallel GDD_{ndays} \parallel \: = \; \sum^{ggd_1}_{gdd_n}$$
 
 
 ## Reference evapotranspiration
 
-The reference evapotranspiration measures the influence of the climate on a given organism (generally a crop species) water needs [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle formula, a general theoretical method used when no measured data on pan evaporation is available locally, using the following equation.
+The reference evapotranspiration measures the influence of the climate on a given organism (generally a crop species) water needs [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle method, a general theoretical method used when only air-temperature is available locally. It should be noted that this method is not very accurate and aims to provide the order of magnitude of evapotranspitation. The reference evapotranspiration is calculated using the following equation.
 
-Equation [4]
+Equation [5]
 
 $$ETo = p \times \left(0.46 \times \frac{T_{max} + T_{min}}{2} + 8 \right) \times K_c$$
 
-Where $p$ is the mean daily percentage of annual daytime hours, $T_{max}$ is the maximum temperature, $T_{min}$ is the minimum temperature, and $K_c$ is the relationship between the reference organism and the actually grown of the organism and may change according to the growth stage.
+Where $p$ is the mean daily percentage of annual daytime hours, $T_{max}$ is the maximum temperature, $T_{min}$ is the minimum temperature, and $K_c$ is the factor for organism water need may change according to the growth stage.
+
+The percentage of daytime hours ($p$) is calculated internally by most methods in `ETo()` (except the array method) using the given latitude (taken from the inputted `object`) and date (taken from the inputted `day.one`). It matches the latitude and date with a table of daylight percentage derived from Brouwer and Heibloem [-@Brouwer1986]. The table can be verified using `climatrends:::daylight`.
 
 # Examples
 

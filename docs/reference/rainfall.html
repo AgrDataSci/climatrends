@@ -246,23 +246,13 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
 110(D23), D23107. <br /><a href='https://doi.org/10.1029/2005JD006119'>https://doi.org/10.1029/2005JD006119</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Using local sources</span>
+    <pre class="examples"><span class='co'># Using local sources</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"chirp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='fu'>rainfall</span>(<span class='no'>chirp</span>,
          <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
-         <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>12</span>)</div><div class='output co'>#&gt;      MLDS  MLWS R10mm R20mm Rx1day Rx5day  R95p  R99p Rtotal  SDII
-#&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1:      9     1     0     0   2.41   2.41  2.41  2.41   2.41  2.41
-#&gt; 2:      9     1     0     0   2.87   2.87  2.87  2.87   2.87  2.87
-#&gt; 3:     12     0     0     0   0.00   0.00  0.00  0.00   0.00  0.00
-#&gt; 4:     12     0     0     0   0.00   0.00  0.00  0.00   0.00  0.00
-#&gt; 5:     12     0     0     0   0.00   0.00  0.00  0.00   0.00  0.00
-#&gt; 6:     12     0     0     0   0.00   0.00  0.00  0.00   0.00  0.00
-#&gt; 7:     12     0     0     0   0.00   0.00  0.00  0.00   0.00  0.00
-#&gt; 8:     12     0     0     0   0.00   0.00  0.00  0.00   0.00  0.00
-#&gt; 9:     12     0     0     0   0.00   0.00  0.00  0.00   0.00  0.00
-#&gt; 10:    12     0     0     0   0.00   0.00  0.00  0.00   0.00  0.00</div><div class='input'>
+         <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>12</span>)
+
 <span class='co'>#####################################################</span>
 <span class='co'># \donttest{</span>
 <span class='co'># Using remote sources of climate data</span>
@@ -278,46 +268,26 @@ observation or <code>TRUE</code> for a time series based on <var>intervals</var>
 <span class='no'>rain1</span> <span class='kw'>&lt;-</span> <span class='fu'>rainfall</span>(<span class='no'>lonlatsf</span>,
                   <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
                   <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-                  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>rain1</span></div><div class='output co'>#&gt;     MLDS  MLWS R10mm R20mm Rx1day Rx5day  R95p  R99p Rtotal  SDII
-#&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1:    12     5     0     0   9.61  23.35 17.93  9.61  35.70  4.96
-#&gt; 2:    13     2     1     0  13.96  21.46 16.91 13.96  24.63  4.11
-#&gt; 3:    22     2     0     0   7.20  11.16  9.07  7.20  11.66  3.90
-#&gt; 4:    14     7     1     0  15.06  32.96 23.43 15.06  39.72  4.82
-#&gt; 5:    10     2     0     0   5.84  10.28 10.40  5.84  21.51  3.56</div><div class='input'>
+                  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>rain1</span>
+
 <span class='co'># get precipitation indices from "2010-12-01" to "2011-01-31"</span>
 <span class='no'>rain2</span> <span class='kw'>&lt;-</span> <span class='fu'>rainfall</span>(<span class='no'>lonlatsf</span>,
                   <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2010-12-01"</span>,
                   <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2011-01-31"</span>,
-                  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>rain2</span></div><div class='output co'>#&gt;     MLDS  MLWS R10mm R20mm Rx1day Rx5day  R95p  R99p Rtotal  SDII
-#&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1:     6    13     1     0  12.45  36.37 36.17 12.45 179.73  4.25
-#&gt; 2:    14     4     0     0   8.45  21.32 28.72  8.45  61.96  3.64
-#&gt; 3:     7     4     2     0  11.38  31.08 38.99 11.38  96.66  4.88
-#&gt; 4:    15     4     0     0   9.70  23.76 32.87  9.70  65.77  4.50
-#&gt; 5:    15     7     0     0   9.57  28.87 31.82  9.57  82.18  4.24</div><div class='input'>
+                  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>rain2</span>
+
 <span class='co'># indices from "2010-12-01" to "2011-01-31" with intervals of 7 days</span>
 <span class='no'>rain3</span> <span class='kw'>&lt;-</span> <span class='fu'>rainfall</span>(<span class='no'>lonlatsf</span>,
                   <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2010-12-01"</span>,
                   <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2011-01-31"</span>,
                   <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
                   <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-                  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>rain3</span></div><div class='output co'>#&gt;         id   lon   lat       date  index value
-#&gt;      &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;date&gt;  &lt;chr&gt; &lt;dbl&gt;
-#&gt; 1:       1  8.35 61.86 2010-12-01   MLDS  3.00
-#&gt; 2:       1  8.35 61.86 2010-12-01   MLWS  2.00
-#&gt; 3:       1  8.35 61.86 2010-12-01  R10mm  0.00
-#&gt; 4:       1  8.35 61.86 2010-12-01  R20mm  0.00
-#&gt; 5:       1  8.35 61.86 2010-12-01 Rx1day  1.71
-#&gt; ---                                           
-#&gt; 396:     5 11.21 61.32 2011-01-19 Rx5day  1.28
-#&gt; 397:     5 11.21 61.32 2011-01-19   R95p  0.35
-#&gt; 398:     5 11.21 61.32 2011-01-19   R99p  0.35
-#&gt; 399:     5 11.21 61.32 2011-01-19 Rtotal  0.00
-#&gt; 400:     5 11.21 61.32 2011-01-19   SDII  0.00</div><div class='input'>
-# }       
-         
-</div></pre>
+                  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>rain3</span>
+
+<span class='co'># }       </span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

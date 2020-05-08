@@ -1,9 +1,8 @@
 #' Growing degree-days
 #' 
-#' Compute Growing degree-days. This a heuristic tool in phenology 
-#' that measures heat accumulation and is used to predict plant and animal 
-#' development rates. Growing degree-days are calculated by taking the 
-#' integral of warmth above a base temperature.
+#' This a heuristic tool in phenology that measures heat accumulation and 
+#' is used to predict plant and animal development rates. Growing degree-days
+#' are calculated by taking the integral of warmth above a base temperature.
 #' 
 #' @inheritParams temperature
 #' @param base an integer for the minimum temperature for growth (as per the physiology 
@@ -240,41 +239,38 @@ GDD.clima_ls <- function(object,
   
   temp <- cbind(day, tmin = night$value)
   
+  names(temp)[names(temp)=="value"] <- "tmax"
+  
   temp <- split(temp, temp$id)
   
+  suppressWarnings(
   Y <- lapply(temp, function(x){
-    
-    tmax <- x$value
-    tmin <- x$tmin
-    
     
     if (isTRUE(equation == "default")) {
       
-      y <- ((tmax + tmin) / 2) - base
+      y <- ((x$tmax + x$tmin) / 2) - base
     
     }
     
     if (isTRUE(equation == "variant_a")) {
-      # adjust Tmean if Tmean < base
-      tmean <- (tmax + tmin) / 2
+      # take the maximum between y and base
+      y <- ((x$tmax + x$tmin) / 2) - base
       
-      tadj <- ifelse(tmean < base, base, tmean)
-      
-      y <- tadj - base
+      y <- max(y, 0)
       
     }
     
     if (isTRUE(equation == "variant_b")) {
       # set Tmin = base if Tmin < base
-      tadj <- ifelse(tmin < base, base, tmin)
+      tadj <- ifelse(x$tmin < base, base, x$tmin)
       
-      y <- ((tmax + tadj) / 2) - base
+      y <- ((x$tmax + tadj) / 2) - base
       
     }
     
     if (isTRUE(return.as == "ndays")) {
       
-      y <- y[!is.na(y)]
+      y[is.na(y)] <- 0
       
       # sum temperature values until reach the defined degree days
       for (d in seq_along(y)) {
@@ -299,7 +295,7 @@ GDD.clima_ls <- function(object,
     }
   
   })
-  
+  )
   result <- do.call("rbind", Y)
   
   if (isTRUE(return.as == "ndays")) {

@@ -262,7 +262,7 @@ to select if the function returns the number of days to reach the accumulated
 <p>Additional arguments:</p>
 <p><code>last.day</code>: an object (optional to <var>span</var>) of class <code>Date</code> or
  any other object that can be coerced to <code>Date</code> (e.g. integer, character 
- YYYY-MM-DD)  for the last day of the time series</p> 
+ YYYY-MM-DD) for the last day of the time series</p> 
 <p><code>span</code>: an integer (optional to <var>last.day</var>) or a vector with 
  integers (optional if <var>last.day</var> is given) for the length of 
  the time series to be captured</p>
@@ -282,60 +282,29 @@ to select if the function returns the number of days to reach the accumulated
 <code><a href='temperature.html'>temperature</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Using local data</span>
+    <pre class="examples"><span class='co'># Using local data</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"modis"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='fu'>GDD</span>(<span class='no'>modis</span>,
     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
     <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-    <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>100</span>)</div><div class='output co'>#&gt;       GDD
-#&gt;     &lt;int&gt;
-#&gt; 1:     10
-#&gt; 2:      9
-#&gt; 3:     10
-#&gt; 4:     13
-#&gt; 5:     11
-#&gt; 6:     13
-#&gt; 7:     11
-#&gt; 8:     13
-#&gt; 9:     13
-#&gt; 10:    13</div><div class='input'>
+    <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>100</span>)
+
 <span class='co'># change the equation to variant_b where </span>
 <span class='co'># Tmin = Tbase if (Tmax + Tmin) / 2 &lt; Tbase</span>
 <span class='fu'>GDD</span>(<span class='no'>modis</span>,
     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
     <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
     <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-    <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"variant_b"</span>)</div><div class='output co'>#&gt;       GDD
-#&gt;     &lt;int&gt;
-#&gt; 1:      9
-#&gt; 2:      9
-#&gt; 3:     10
-#&gt; 4:     12
-#&gt; 5:      9
-#&gt; 6:     12
-#&gt; 7:      9
-#&gt; 8:     10
-#&gt; 9:     10
-#&gt; 10:    11</div><div class='input'>
+    <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"variant_b"</span>)
+
 <span class='co'># return as degree days</span>
 <span class='fu'>GDD</span>(<span class='no'>modis</span>,
     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
     <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
     <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-    <span class='kw'>return.as</span> <span class='kw'>=</span> <span class='st'>"gdd"</span>)</div><div class='output co'>#&gt;         id       date   gdd
-#&gt;      &lt;int&gt;     &lt;date&gt; &lt;dbl&gt;
-#&gt; 1:       1 2013-10-28 10.70
-#&gt; 2:       1 2013-10-29 10.80
-#&gt; 3:       1 2013-10-30 10.90
-#&gt; 4:       1 2013-10-31 10.90
-#&gt; 5:       1 2013-11-01 10.90
-#&gt; ---                        
-#&gt; 126:    10 2013-11-05  6.00
-#&gt; 127:    10 2013-11-06  6.00
-#&gt; 128:    10 2013-11-07  6.10
-#&gt; 129:    10 2013-11-08  6.45
-#&gt; 130:    10 2013-11-09  6.95</div><div class='input'>
+    <span class='kw'>return.as</span> <span class='kw'>=</span> <span class='st'>"gdd"</span>)
+
 <span class='co'># \donttest{</span>
 <span class='co'># Using remote sources and sf method</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"lonlatsf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
@@ -348,18 +317,8 @@ to select if the function returns the number of days to reach the accumulated
     <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2019-06-30"</span>,
     <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>,
     <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>45</span>,
-    <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"variant_a"</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='output co'>#&gt; Simple feature collection with 5 features and 1 field
-#&gt; geometry type:  POINT
-#&gt; dimension:      XY
-#&gt; bbox:           xmin: 8.348298 ymin: 60.04717 xmax: 11.2378 ymax: 61.85709
-#&gt; CRS:            EPSG:4326
-#&gt;   GDD                  geometry
-#&gt; 1  91 POINT (8.348298 61.85709)
-#&gt; 2  53 POINT (8.539923 60.80166)
-#&gt; 3  27  POINT (11.2378 60.42888)
-#&gt; 4  51 POINT (8.513438 60.04717)
-#&gt; 5  46 POINT (11.20899 61.32374)</div><div class='input'># }
-</div></pre>
+    <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"variant_a"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -273,23 +273,13 @@ temperature &lt; 10th percentile</p></dd>
 <code><a href='GDD.html'>GDD</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Using local sources</span>
+    <pre class="examples"><span class='co'># Using local sources</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"modis"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='fu'>temperature</span>(<span class='no'>modis</span>,
             <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
-            <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>12</span>)</div><div class='output co'>#&gt;     maxDT minDT maxNT minNT   DTR    SU    TR   CFD  WSDI  CSDI  T10p  T90p
-#&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1:  33.50 33.20  8.40  8.20    25    12     0     0     5     2  8.21 33.50
-#&gt; 2:  34.90 34.60  9.50  8.90    25    12     0     0     6     2  8.91 34.90
-#&gt; 3:  32.30 31.70  8.50  8.00    23    12     0     0     8     2  8.01 32.00
-#&gt; 4:  27.50 26.90  2.10  1.50    25     0     0     0     2     5  1.60 27.40
-#&gt; 5:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58
-#&gt; 6:  27.60 26.90  6.50  5.90    20     0     0     0     2     2  6.01 27.40
-#&gt; 7:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58
-#&gt; 8:  31.90 31.00  4.90  4.60    26    12     0     0     2     2  4.61 31.57
-#&gt; 9:  32.60 31.30  5.10  4.30    27    12     0     0     2     3  4.30 32.27
-#&gt; 10: 28.70 28.00  4.40  2.70    24     0     0     0     2     2  2.81 28.50</div><div class='input'>
+            <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>12</span>)
+
 <span class='co'># \donttest{</span>
 <span class='co'>#####################################################</span>
 
@@ -306,45 +296,26 @@ temperature &lt; 10th percentile</p></dd>
 <span class='no'>temp1</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
                      <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
                      <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>temp1</span></div><div class='output co'>#&gt;    maxDT minDT maxNT minNT   DTR    SU    TR   CFD  WSDI  CSDI  T10p  T90p
-#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1: 17.25  3.35 10.62 -4.01     7     0     0     4     2     2 -2.42 15.70
-#&gt; 2: 21.68  9.54 12.97  0.41    10     0     0     0     1     2  1.15 20.81
-#&gt; 3: 27.51 14.61 16.31  4.32    11     0     0     0     1     2  5.91 26.39
-#&gt; 4: 22.59 11.12 13.06  0.47    10     0     0     0     3     2  2.28 21.98
-#&gt; 5: 24.81 11.74 14.68  0.10    11     0     0     0     2     2  2.63 23.74</div><div class='input'>
+                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>temp1</span>
+
 <span class='co'># get temperature indices from "2010-12-01" to "2011-01-31"</span>
 <span class='no'>temp2</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
                      <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2010-12-01"</span>,
                      <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2011-01-31"</span>,
-                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>temp2</span></div><div class='output co'>#&gt;    maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p
-#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1: -1.31 -20.80 -6.11 -24.51     4     0     0    62     2     4 -21.95 -3.06
-#&gt; 2: -0.82 -19.68 -5.69 -25.47     6     0     0    62     2     4 -23.02 -2.64
-#&gt; 3: -0.10 -17.83 -1.74 -27.12     6     0     0    62     3     2 -20.00 -0.88
-#&gt; 4: -0.06 -18.38 -5.35 -24.35     6     0     0    62     2     4 -22.39 -1.80
-#&gt; 5: -0.18 -18.92 -3.72 -27.22     6     0     0    62     3     2 -20.65 -3.27</div><div class='input'>
+                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>temp2</span>
+
 <span class='co'># indices from "2010-12-01" to "2011-01-31" with intervals of 7 days</span>
 <span class='no'>temp3</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
                      <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2010-12-01"</span>,
                      <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2011-01-31"</span>,
                      <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
                      <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>temp3</span></div><div class='output co'>#&gt;         id   lon   lat       date index  value
-#&gt;      &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;date&gt; &lt;chr&gt;  &lt;dbl&gt;
-#&gt; 1:       1  8.35 61.86 2010-12-01 maxDT -13.51
-#&gt; 2:       1  8.35 61.86 2010-12-01 minDT -18.89
-#&gt; 3:       1  8.35 61.86 2010-12-01 maxNT -16.03
-#&gt; 4:       1  8.35 61.86 2010-12-01 minNT -22.16
-#&gt; 5:       1  8.35 61.86 2010-12-01   DTR   3.41
-#&gt; ---                                           
-#&gt; 476:     5 11.21 61.32 2011-01-19   CFD   7.00
-#&gt; 477:     5 11.21 61.32 2011-01-19  WSDI   1.00
-#&gt; 478:     5 11.21 61.32 2011-01-19  CSDI   1.00
-#&gt; 479:     5 11.21 61.32 2011-01-19  T10p -13.34
-#&gt; 480:     5 11.21 61.32 2011-01-19  T90p  -1.52</div><div class='input'>
-# }
-</div></pre>
+                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>temp3</span>
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

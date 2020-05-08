@@ -4,11 +4,14 @@ print.clima_df <- function(x, ...){
   
   x <- as.data.frame(x, stringAsFactor = FALSE)
   
+  rownames(x) <- seq_len(dim(x)[[1]])
+  
   classes <- lapply(x, function(y){
     class(y)
   })
   
   classes <- as.vector(unlist(classes))
+  
   class_abb = c(list = "<list>", integer = "<int>", numeric = "<dbl>", 
                 character = "<chr>", Date = "<date>", complex = "<cpl>", 
                 factor = "<fct>", POSIXct = "<POSc>", logical = "<lgl>", 

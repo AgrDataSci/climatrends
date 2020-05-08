@@ -84,10 +84,9 @@ The number of days to reach the accumulated \var{degree.days} or the daily degre
   as defined with the argument \var{return.as}
 }
 \description{
-Compute Growing degree-days. This a heuristic tool in phenology 
-that measures heat accumulation and is used to predict plant and animal 
-development rates. Growing degree-days are calculated by taking the 
-integral of warmth above a base temperature.
+This a heuristic tool in phenology that measures heat accumulation and 
+is used to predict plant and animal development rates. Growing degree-days
+are calculated by taking the integral of warmth above a base temperature.
 }
 \details{
 The \code{array} method assumes that \var{object} contains climate data provided 

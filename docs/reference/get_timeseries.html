@@ -221,7 +221,7 @@ to download. See help("parameters", "nasapower") when <var>data.from</var> = "na
  included in the timespan.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Using local sources</span>
+    <pre class="examples"><span class='co'># Using local sources</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"modis"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>9271</span>)
@@ -243,56 +243,11 @@ to download. See help("parameters", "nasapower") when <var>data.from</var> = "na
 <span class='no'>g</span> <span class='kw'>&lt;-</span> <span class='fu'>get_timeseries</span>(<span class='no'>lonlatsf</span>,
                     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2018-05-16"</span>,
                     <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2018-05-30"</span>,
-                    <span class='kw'>pars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PRECTOT"</span>, <span class='st'>"T2M"</span>, <span class='st'>"T10M"</span>))</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'>
+                    <span class='kw'>pars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"PRECTOT"</span>, <span class='st'>"T2M"</span>, <span class='st'>"T10M"</span>))
 
-<span class='no'>g</span></div><div class='output co'>#&gt; $PRECTOT
-#&gt;        id       date value
-#&gt;     &lt;int&gt;     &lt;date&gt; &lt;dbl&gt;
-#&gt; 1:      1 2018-05-16  0.60
-#&gt; 2:      1 2018-05-17  0.02
-#&gt; 3:      1 2018-05-18  0.03
-#&gt; 4:      1 2018-05-19  0.00
-#&gt; 5:      1 2018-05-20  0.01
-#&gt; ---                       
-#&gt; 71:     5 2018-05-26  0.03
-#&gt; 72:     5 2018-05-27  0.18
-#&gt; 73:     5 2018-05-28  1.45
-#&gt; 74:     5 2018-05-29  0.06
-#&gt; 75:     5 2018-05-30  0.02
-#&gt; 
-#&gt; $T2M
-#&gt;        id       date value
-#&gt;     &lt;int&gt;     &lt;date&gt; &lt;dbl&gt;
-#&gt; 1:      1 2018-05-16  2.51
-#&gt; 2:      1 2018-05-17  0.00
-#&gt; 3:      1 2018-05-18  1.80
-#&gt; 4:      1 2018-05-19  3.62
-#&gt; 5:      1 2018-05-20  4.10
-#&gt; ---                       
-#&gt; 71:     5 2018-05-26 16.93
-#&gt; 72:     5 2018-05-27 16.62
-#&gt; 73:     5 2018-05-28 16.25
-#&gt; 74:     5 2018-05-29 18.11
-#&gt; 75:     5 2018-05-30 18.87
-#&gt; 
-#&gt; $T10M
-#&gt;        id       date value
-#&gt;     &lt;int&gt;     &lt;date&gt; &lt;dbl&gt;
-#&gt; 1:      1 2018-05-16  3.25
-#&gt; 2:      1 2018-05-17  0.38
-#&gt; 3:      1 2018-05-18  2.26
-#&gt; 4:      1 2018-05-19  4.39
-#&gt; 5:      1 2018-05-20  5.31
-#&gt; ---                       
-#&gt; 71:     5 2018-05-26 16.85
-#&gt; 72:     5 2018-05-27 16.73
-#&gt; 73:     5 2018-05-28 16.42
-#&gt; 74:     5 2018-05-29 18.19
-#&gt; 75:     5 2018-05-30 19.10
-#&gt; 
-#&gt; attr(,"class")
-#&gt; [1] "clima_ls" "list"    </div><div class='input'># }
-</div></pre>
+
+<span class='no'>g</span>
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
