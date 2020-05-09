@@ -176,11 +176,9 @@ temperature.array <- function(object, day.one,
   # coerce to data.frame
   day.one <- as.vector(t(day.one))
   
-  day <- get_timeseries(object[, , 1], day.one, span, ...)[[1]]
+  ts <- get_timeseries(object, day.one, span = span, last.day = last.day, ...)
   
-  night <- get_timeseries(object[, , 2], day.one, span, ...)[[1]]
-  
-  indices <- .temperature_indices(day, night, timeseries, intervals)
+  indices <- .temperature_indices(ts[[1]], ts[[2]], timeseries, intervals)
   
   return(indices)
   

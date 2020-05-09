@@ -5,9 +5,10 @@
 \alias{get_timeseries.default}
 \alias{get_timeseries.sf}
 \alias{get_timeseries.matrix}
+\alias{get_timeseries.array}
 \title{Time series climate data}
 \usage{
-get_timeseries(object, day.one, span = NULL, last.day = NULL, ...)
+get_timeseries(object, day.one, ...)
 
 \method{get_timeseries}{default}(
   object,
@@ -28,16 +29,21 @@ get_timeseries(object, day.one, span = NULL, last.day = NULL, ...)
 )
 
 \method{get_timeseries}{matrix}(object, day.one, span = NULL, last.day = NULL, ...)
+
+\method{get_timeseries}{array}(object, day.one, span = NULL, last.day = NULL, ...)
 }
 \arguments{
 \item{object}{a \code{data.frame} (or any other object that can be coerced to 
 data.frame) with geographical coordinates (lonlat), or an object of class 
 \code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
-climate data. See details.}
+climate data, or an array with two dimensions for max and min temperature.
+See details.}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
 day to capture the climate data}
+
+\item{...}{additional arguments passed to methods. See details.}
 
 \item{span}{an integer or a vector with integers (optional if \var{last.day} is 
 given) for the length of the time series to be captured}
@@ -45,8 +51,6 @@ given) for the length of the time series to be captured}
 \item{last.day}{optional to \var{span}, an object of class \code{Date} or
 any other object that can be coerced to \code{Date} (e.g. integer, character 
 YYYY-MM-DD)  for the last day of the time series}
-
-\item{...}{additional arguments passed to methods. See details.}
 
 \item{data.from}{character, for the source of climate data. See details.}
 }
@@ -77,18 +81,18 @@ to download. See help("parameters", "nasapower") when \var{data.from} = "nasapow
 }
 \examples{
 # Using local sources
+# an array with temperature data
 data("modis", package = "climatrends")
 
 set.seed(9271)
-span <- as.integer(runif(10, 6, 15)) 
+span <- as.integer(runif(10, 6, 15))
 
-g <- get_timeseries(modis[,,1], "2013-10-28", span = span)[[1]]
+get_timeseries(modis, "2013-10-28", span = span)
 
-# library("ggplot2")
-# 
-# ggplot(g, aes(x = date, y = value, group = factor(id), color = factor(id))) +
-#   geom_point() +
-#   geom_line()
+# matrix with precipitation data
+data("chirp", package = "climatrends")
+
+get_timeseries(chirp, "2013-10-28", span = span)
 
 ########################################################
 \donttest{

@@ -168,11 +168,9 @@ GDD.array <- function(object, day.one, base = 10,
     span <- dim(object)[[2]] - do
   }
   
-  day <- get_timeseries(object[, , 1], day.one, span, last.day)[[1]]
+  ts <- get_timeseries(object, day.one, span = span, last.day = last.day, ...)
   
-  night <- get_timeseries(object[, , 2], day.one, span, last.day)[[1]]
-  
-  result <- .gdd(day, night, base, degree.days, equation, return.as)
+  result <- .gdd(ts[[1]], ts[[2]], base, degree.days, equation, return.as)
   
   return(result)
 }

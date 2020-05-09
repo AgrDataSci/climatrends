@@ -178,11 +178,9 @@ ETo.array <- function(object, day.one, Kc = 1, lat = NULL, p = 0.27, ...){
     p <- .p_daytime(lat = lat, month = m)
   }
   
-  day <- get_timeseries(object[, , 1], day.one, span, last.day)[[1]]
+  ts <- get_timeseries(object, day.one, span, last.day)
   
-  night <- get_timeseries(object[, , 2], day.one, span, last.day)[[1]]
-  
-  result <- .eto(day, night, Kc, p)
+  result <- .eto(ts[[1]], ts[[2]], Kc, p)
   
   return(result)
   

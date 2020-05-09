@@ -100,6 +100,9 @@ Replicate part of the analysis in van Etten et al [-@vanEtten2019] with the bean
 
 Pick some random points in Norway (or Scandinavia??) and check how the trends on temperature indices over the last 20 years. 
 
+## Seed germination or some GDD related analysis
+
+Use the data from seed germination or crop growth to compute GDD. How many GDD a seed need to become a seedling?
 
 # Further development
 

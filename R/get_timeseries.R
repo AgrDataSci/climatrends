@@ -5,7 +5,8 @@
 #' @param object a \code{data.frame} (or any other object that can be coerced to 
 #'  data.frame) with geographical coordinates (lonlat), or an object of class 
 #'  \code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
-#'  climate data. See details.   
+#'  climate data, or an array with two dimensions for max and min temperature.
+#'  See details.   
 #' @param day.one a vector of class \code{Date} or any other object that can be 
 #'  coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
 #'  day to capture the climate data
@@ -39,18 +40,18 @@
 #' @family GET functions
 #' @examples 
 #' # Using local sources
+#' # an array with temperature data
 #' data("modis", package = "climatrends")
 #' 
 #' set.seed(9271)
-#' span <- as.integer(runif(10, 6, 15)) 
+#' span <- as.integer(runif(10, 6, 15))
 #' 
-#' g <- get_timeseries(modis[,,1], "2013-10-28", span = span)[[1]]
+#' get_timeseries(modis, "2013-10-28", span = span)
 #' 
-#' # library("ggplot2")
-#' # 
-#' # ggplot(g, aes(x = date, y = value, group = factor(id), color = factor(id))) +
-#' #   geom_point() +
-#' #   geom_line()
+#' # matrix with precipitation data
+#' data("chirp", package = "climatrends")
+#' 
+#' get_timeseries(chirp, "2013-10-28", span = span)
 #' 
 #' ########################################################
 #' \donttest{
@@ -69,7 +70,7 @@
 #' @importFrom sf st_centroid st_geometry_type st_as_sf
 #' @importFrom stats dist hclust cutree
 #' @export
-get_timeseries <- function(object, day.one, span = NULL, last.day = NULL, ...) {
+get_timeseries <- function(object, day.one, ...) {
   
   UseMethod("get_timeseries")
   
@@ -196,6 +197,24 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
   return(r)
 }
 
+
+#' @rdname get_timeseries
+#' @method get_timeseries array
+#' @export
+get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL, 
+                                  ...){
+  
+  
+  dm1 <- get_timeseries(object[,,1], day.one, span = span, last.day = last.day, ...)
+  
+  dm2 <- get_timeseries(object[,,2], day.one, span = span, last.day = last.day, ...)
+  
+  r <- c(dm1, dm2)
+  
+  class(r) <- union("clima_ls", class(r))
+  
+  return(r)
+}
 #' Set up span length and organise dates
 #' 
 #' @param day.one the first day
