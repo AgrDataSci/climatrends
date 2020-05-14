@@ -2,10 +2,11 @@
 #'
 #' Methods to compute temperature indices over a time series
 #'
+#' @family temperature functions
 #' @param object a data.frame (or any object that can be coerced to data.frame) 
 #'  with geographical coordinates (lonlat), or an object of class \code{sf}
 #'  with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-#'  containing the temperature data or a \code{clima_ls} with day and night 
+#'  containing the temperature data or a \code{clima_ls} with maximum and minimum 
 #'  temperature, in that order. See details 
 #' @inheritParams get_timeseries
 #' @param timeseries logical, \code{FALSE} for a single point time series
@@ -62,8 +63,6 @@
 #' temperature < 10th percentile}
 #' \item{T10p}{the 10th percentile of night tempeture (degree Celsius)}
 #' \item{T90p}{the 90th percentile of day tempeture (degree Celsius)}
-#' 
-#' @family temperature functions
 #' @references 
 #' Aguilar E., et al. (2005). Journal of Geophysical Research, 
 #' 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
@@ -430,7 +429,7 @@ temperature.clima_ls <- function(object,
 #' 
 #' @param x a numeric vector
 #' @return the maximum warm spell duration index
-#' 
+#' @examples
 #' set.seed(871)
 #' x <- rnorm(30, 34)
 #' 
@@ -475,7 +474,7 @@ temperature.clima_ls <- function(object,
 #' 
 #' @param x a numeric vector
 #' @return the maximum cool spell duration index
-#' 
+#' @examples
 #' set.seed(871)
 #' x <- runif(14, 6, 34)
 #' 

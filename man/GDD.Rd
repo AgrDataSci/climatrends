@@ -54,7 +54,7 @@ GDD(object, ..., base = 10)
 \item{object}{a data.frame (or any object that can be coerced to data.frame) 
 with geographical coordinates (lonlat), or an object of class \code{sf}
 with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data or a \code{clima_ls} with day and night 
+containing the temperature data or a \code{clima_ls} with maximum and minimum 
 temperature, in that order. See details}
 
 \item{...}{additional arguments passed to methods. See details}
@@ -169,6 +169,7 @@ Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117.
 \seealso{
 Other temperature functions: 
 \code{\link{ETo}()},
+\code{\link{anthesis}()},
 \code{\link{temperature}()}
 }
 \concept{temperature functions}

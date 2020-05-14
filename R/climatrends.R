@@ -3,7 +3,6 @@
 #' @name climatrends
 #' @author Kauê de Sousa and Jacob van Etten and Svein Ø. Solberg
 #' @docType package
-#'
 #' @import methods
 #' @seealso
 #'\strong{Useful links:}

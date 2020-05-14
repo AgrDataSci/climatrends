@@ -44,7 +44,7 @@ temperature(object, ...)
 \item{object}{a data.frame (or any object that can be coerced to data.frame) 
 with geographical coordinates (lonlat), or an object of class \code{sf}
 with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data or a \code{clima_ls} with day and night 
+containing the temperature data or a \code{clima_ls} with maximum and minimum 
 temperature, in that order. See details}
 
 \item{...}{additional arguments passed to methods. See details}
@@ -169,6 +169,7 @@ Aguilar E., et al. (2005). Journal of Geophysical Research,
 \seealso{
 Other temperature functions: 
 \code{\link{ETo}()},
-\code{\link{GDD}()}
+\code{\link{GDD}()},
+\code{\link{anthesis}()}
 }
 \concept{temperature functions}

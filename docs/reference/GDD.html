@@ -47,10 +47,9 @@
 
 
 <meta property="og:title" content="Growing degree-days — GDD" />
-<meta property="og:description" content="Compute Growing degree-days. This a heuristic tool in phenology 
-that measures heat accumulation and is used to predict plant and animal 
-development rates. Growing degree-days are calculated by taking the 
-integral of warmth above a base temperature." />
+<meta property="og:description" content="This a heuristic tool in phenology that measures heat accumulation and 
+is used to predict plant and animal development rates. Growing degree-days
+are calculated by taking the integral of warmth above a base temperature." />
 <meta property="og:image" content="/logo.svg" />
 
 
@@ -83,7 +82,7 @@ integral of warmth above a base temperature." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
       </span>
     </div>
 
@@ -140,10 +139,9 @@ integral of warmth above a base temperature." />
     </div>
 
     <div class="ref-description">
-    <p>Compute Growing degree-days. This a heuristic tool in phenology 
-that measures heat accumulation and is used to predict plant and animal 
-development rates. Growing degree-days are calculated by taking the 
-integral of warmth above a base temperature.</p>
+    <p>This a heuristic tool in phenology that measures heat accumulation and 
+is used to predict plant and animal development rates. Growing degree-days
+are calculated by taking the integral of warmth above a base temperature.</p>
     </div>
 
     <pre class="usage"><span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>)
@@ -200,7 +198,7 @@ integral of warmth above a base temperature.</p>
       <td><p>a data.frame (or any object that can be coerced to data.frame) 
 with geographical coordinates (lonlat), or an object of class <code>sf</code>
 with geometry 'POINT' or 'POLYGON', or an <code>array</code> with two dimensions 
-containing the temperature data or a <code>clima_ls</code> with day and night 
+containing the temperature data or a <code>clima_ls</code> with maximum and minimum 
 temperature, in that order. See details</p></td>
     </tr>
     <tr>
@@ -279,6 +277,7 @@ to select if the function returns the number of days to reach the accumulated
 
     <div class='dont-index'><p>Other temperature functions: 
 <code><a href='ETo.html'>ETo</a>()</code>,
+<code><a href='anthesis.html'>anthesis</a>()</code>,
 <code><a href='temperature.html'>temperature</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

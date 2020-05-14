@@ -28,14 +28,23 @@ citation_author: de Sousa et. al.
 date: "`r format(Sys.time(), '%d %B %Y')`"
 year: 2020
 bibliography: paper.bib
-#output: pdf_document
-output: rticles::joss_article
-journal: JOSS
+output: pdf_document
 ---
 
-# Summary
+>Kauê de Sousa^1,2[*]^, Jacob van Etten^2^, Svein Øivind Solberg^1^  
+^1^ Department of Agricultural Sciences, Inland Norway University of Applied Sciences, 2318 Hamar, Norway  
+^2^ Bioversity International, 00054 Maccarese, Rome, Italy  
+^[*]^Correspondence should be addressed to: <kaue.desousa@inn.no>
 
-Understand how climate variability drives ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the R [@RCoreTeam] toolkit to compute extreme precipitation and temperature indices that serves as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [@Prentice1992; @YLiu2018].
+\
+
+# Introduction
+
+Abiotic factors plays an important role in most ecological and crop systems that depends on certain levels of temperature, light and precipitation (and their interplay) to initiate important physiological events [@PlantEcology]. In the walk of climate change, understand how these factors drives the physiological processes is a key approach to provide recommendations for adaptation and biodiversity conservation. If translated to stress 
+
+Raw temperature and precipitation values are ... to describe how organisms interacts with the enviroment
+
+**climatrends** aims to provide the R [@RCoreTeam] toolkit to compute extreme precipitation and temperature indices that serves as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [@Prentice1992; @YLiu2018].
 
 [...continue...]
 
@@ -45,7 +54,11 @@ Understand how climate variability drives ecological processes is a key approach
 
 Four main functions are provided, `ETo()`, `GDD()`, `rainfall()` and `temperature()` with methods [@RCoreTeam] for classes 'data.frame', 'matrix' (or array), and 'sf' [@sf]. 
 
+say that the idea for the functions started with citizen science projects that is why `day.one` and `span` may be variable across locations. For time series analysis where fixed periods are defined across many locations the indices can be adjusted with last.day. 
+
 [...continue...]
+
+
 
 ## Growing degree-days
 
@@ -63,11 +76,11 @@ Equation [2]
 
 $$ GDD = max \left(\frac{T_{max} + T_{min}}{2} - T_{0}, \; 0 \right)$$
 
-The variant B, is calculated using Equation 1, but adjusts $T_{min}$ to $T_{0}$ if $T_{min} < T_{o}$, and is adjusted as follows.
+The variant B, is calculated using Equation 1, but adjusts $T_{min}$ to $T_{0}$ if $T_{min} < T_{0}$, and is adjusted as follows.
 
 Equation [3]
 
-$$ T_{min} < T_{o} \; \rightarrow \; T_{min} = T_{o} $$
+$$ T_{min} < T_{0} \; \rightarrow \; T_{min} = T_{0} $$
 
 In `GDD()` these equations are defined as 'default', 'variant_a' and 'variant_b', respectively, and can be selected using the argument `equation`.
 
@@ -80,7 +93,7 @@ $$\parallel GDD_{ndays} \parallel \: = \; \sum^{ggd_1}_{gdd_n}$$
 
 ## Reference evapotranspiration
 
-The reference evapotranspiration measures the influence of the climate on a given organism (generally a crop species) water needs [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle method, a general theoretical method used when only air-temperature is available locally. It should be noted that this method is not very accurate and aims to provide the order of magnitude of evapotranspitation. The reference evapotranspiration is calculated using the following equation.
+The reference evapotranspiration measures the influence of the climate on a given organism water needs, generally a crop species [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle method, a general theoretical method used when only air-temperature is available locally. It should be noted that this method is not very accurate and aims to provide the order of magnitude of evapotranspitation. The reference evapotranspiration is calculated using the following equation.
 
 Equation [5]
 

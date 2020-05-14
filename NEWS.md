@@ -3,6 +3,7 @@ climatrends 0.1.4 (2020-05-07)
 
 ### NEW FEATURES
 
+* New function `anthesis()` to compute crop sensitive indices.
 * Export function `get_timeseries()`
 * Enable future modular expansion of data sources using API clients by creating specific functions that are called with the argument `data.from` in `get_timeseries()`
 * Enable argument `last.day`, optional to `span`, when indices are retrieved with focus on time series analysis

@@ -10,7 +10,7 @@
   "codeRepository": "https://agrobioinfoservices.github.io/climatrends",
   "issueTracker": "https://github.com/agrobioinfoservices/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -76,6 +76,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=knitr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "MODISTools",
+      "name": "MODISTools",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=MODISTools"
     },
     {
       "@type": "SoftwareApplication",

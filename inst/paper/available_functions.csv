@@ -1,0 +1,6 @@
+﻿Name,Function,Input,Output
+get_timeseries(),General methods to concatenate climate data across a time series,"According to each 'object' method that can be an array, data.frame, sf, or a matrix",A list with concatenated time series climate data across a period of time
+Eto(),Reference evapotranspiration,"According to each 'object' method that can be an array, data.frame, sf, or a list",The reference evapotranspiration
+GDD(),Compute growing degree-days,"According to each 'object' method that can be an array, data.frame, sf, or a list",Either the days to reach the accumalated GDD or the daily growing degree-days
+rainfall(),Precipitation indices,"According to each 'object' method that can be an array, data.frame, sf, or a matrix","Either the indices for a single time period, or time series indices across intervals of days"
+temperature(),Temperature indices,"According to each 'object' method that can be an array, data.frame, sf, or a list","Either the indices for a single time period, or time series indices across intervals of days"

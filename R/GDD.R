@@ -246,23 +246,19 @@ GDD.clima_ls <- function(object,
     
     if (isTRUE(equation == "default")) {
       
-      y <- ((x$tmax + x$tmin) / 2) - base
+      y <- .gdd_eq_default(x$tmax, x$tmin, base)
     
     }
     
     if (isTRUE(equation == "variant_a")) {
-      # take the maximum between y and base
-      y <- ((x$tmax + x$tmin) / 2) - base
       
-      y <- max(y, 0)
+      y <- .gdd_eq_variant_a(x$tmax, x$tmin, base)
       
     }
     
     if (isTRUE(equation == "variant_b")) {
-      # set Tmin = base if Tmin < base
-      tadj <- ifelse(x$tmin < base, base, x$tmin)
       
-      y <- ((x$tmax + tadj) / 2) - base
+      y <- .gdd_eq_variant_b(x$tmax, x$tmin, base)
       
     }
     
@@ -286,7 +282,8 @@ GDD.clima_ls <- function(object,
       
       y <- data.frame(id = x$id,
                       date = x$date,
-                      gdd = y)
+                      gdd = y,
+                      stringsAsFactors = FALSE)
       
       return(y)
       
@@ -294,6 +291,7 @@ GDD.clima_ls <- function(object,
   
   })
   )
+  
   result <- do.call("rbind", Y)
   
   if (isTRUE(return.as == "ndays")) {
@@ -309,3 +307,48 @@ GDD.clima_ls <- function(object,
   return(result)
   
 }
+
+.gdd_eq_default <- function(x, y, base) {
+  
+  g <- ((x + y) / 2) - base
+  
+  return(g)
+}
+
+
+.gdd_eq_variant_a <- function(x, y, base) {
+  
+  # take the maximum between y and base
+  g <- ((x + y) / 2) - base
+  
+  g[g < 0] <- 0
+  
+  return(g)
+  
+}
+
+
+.gdd_eq_variant_b <- function(x, y, base){
+  # set Tmin = base if Tmin < base
+  tadj <- y
+  
+  tadj[tadj < base] <- base
+  
+  g <- ((x + tadj) / 2) - base
+  
+  return(g)
+}
+
+
+# // [[Rcpp::export]]
+# NumericVector gdd_variant_aC(NumericVector x, NumericVector y, double base) {
+#   
+#   NumericVector result = clone(x);
+#   
+#   result = ((x + y) / 2) - base;
+#   
+#   result = ifelse(result < 0, 0, result);
+#   
+#   return result;
+#   
+# }

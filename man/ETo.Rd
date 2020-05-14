@@ -19,7 +19,7 @@ ETo(object, day.one, Kc = 1, ...)
 \item{object}{a data.frame (or any object that can be coerced to data.frame) 
 with geographical coordinates (lonlat), or an object of class \code{sf}
 with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data or a \code{clima_ls} with day and night 
+containing the temperature data or a \code{clima_ls} with maximum and minimum 
 temperature, in that order. See details}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
@@ -127,6 +127,7 @@ United Nations, Rome, Italy.
 \seealso{
 Other temperature functions: 
 \code{\link{GDD}()},
+\code{\link{anthesis}()},
 \code{\link{temperature}()}
 }
 \concept{temperature functions}
