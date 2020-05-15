@@ -1,21 +1,23 @@
-#' Crop sensitive indices during anthesis
+#' Crop sensitive indices
 #' 
 #' Compute crop sensitive indices. These indices are intended to capture 
-#'  the changes in temperature extremes during anthesis, but can also be 
-#'  applied to other phenological stages.
+#'  the changes in temperature extremes during key phenological stages 
+#'  (e.g. anthesis), but can also be applied to other phenological stages.
 #' 
 #' @family temperature functions
 #' @inheritParams temperature
 #' @details 
 #' 
 #' The function uses pre-defined threshold to compute the indices. For hts_mean (32,
-#'  35, 38 Celsius), for hts_max (36, 39, 42 Celsius) and for hse (31 Celsius). 
-#'  See Additional arguments 
+#'  35, 38 Celsius), for hts_max (36, 39, 42 Celsius), for hse (31 Celsius), for 
+#'  cdi_mean (22, 23, 24 Celsius), for cdi_max (27, 28, 29 Celsius) and for 
+#'  lethal (43, 46, 49 Celsius). 
 #' 
 #' Additional arguments:
 #' 
 #' The thresholds can be adjusted using the arguments \code{hts_mean.threshold}, 
-#'  \code{hts_max.threshold} and \code{hse.threshold}, which are a numeric (or
+#'  \code{hts_max.threshold}, \code{hse.threshold}, \code{cdi_mean.threshold}, 
+#'  \code{cdi_max.threshold} and \code{lethal.threshold} which are a numeric (or
 #'  vector of numeric)
 #' 
 #' \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
@@ -36,6 +38,12 @@
 #'  a certain threshold is exceeded for at least two consecutive days}
 #' \item{hse_ms}{heat stress event, and given the maximum number of days 
 #'  a certain threshold is exceeded for at least two consecutive days}
+#' \item{cdi_mean}{crop duration index using daily MEAN temperature, 
+#'  and given as max(Tmean - threshold, 0)}
+#' \item{cdi_max}{crop duration index using daily MAX temperature, 
+#'  and given as max(Tmax - threshold, 0)}
+#' \item{lethal}{lethal temperatures, defined as percentage of days during the 
+#'  timeseries where daily MEAN temperature exceeds a given threshold}
 #' @source 
 #' Challinor et al. (2016). Nature Climate Change 6(10):6954-958
 #' \cr\url{https://doi.org/10.1038/nclimate3061}
@@ -45,34 +53,43 @@
 #' 
 #' @examples 
 #' data("modis", package = "climatrends")
-#'  
-#' anthesis(modis, 
-#'          day.one = "2013-10-27", 
-#'          last.day = "2013-11-04", 
-#'          hse.threshold = c(33.5))
+#' 
+#' # use the default thresholds
+#' crop_sensitive(modis,
+#'                day.one = "2013-10-27",
+#'                last.day = "2013-11-04")
+#' 
+#' # or change the thresholds based on the crop
+#' crop_sensitive(modis,
+#'                day.one = "2013-10-27",
+#'                last.day = "2013-11-04",
+#'                hts_mean.threshold = c(24),
+#'                hts_max.threshold = c(31, 33))
 #' 
 #' @export
-anthesis <- function(object, ...){
-  UseMethod("anthesis")
+crop_sensitive <- function(object, ...){
+  UseMethod("crop_sensitive")
 }
 
-#' @rdname anthesis
-#' @method anthesis default
+#' @rdname crop_sensitive
+#' @method crop_sensitive default
 #' @export
-anthesis.default <- function(object, day.one, ...) {
+crop_sensitive.default <- function(object, day.one, ...) {
   
   dots <- list(...)
   pars <- dots[["pars"]]
   hts_mean <- dots[["hts_mean.threshold"]]
   hts_max <- dots[["hts_max.threshold"]]
   hse <- dots[["hse.threshold"]]
-  
+  cdi_mean <- dots[["cdi_mean.threshold"]]
+  cdi_max <- dots[["cdi_max.threshold"]]
+  lethal <- dots[["lethal.threshold"]]
   
   # coerce inputs to data.frame
   object <- as.data.frame(object)
   
   if(dim(object)[[2]] != 2) {
-    stop("Subscript out of bounds. In anthesis.default(),",
+    stop("Subscript out of bounds. In crop_sensitive.default(),",
          " only lonlat should be provided. \n")
   }
   
@@ -86,30 +103,36 @@ anthesis.default <- function(object, day.one, ...) {
   
   temp <- cbind(dat[[1]], min = dat[[2]]$value)
   
-  result <- .anthesis(temp = temp, 
+  result <- .crop_sensitive(temp = temp, 
                       hts_mean.threshold = hts_mean,
                       hts_max.threshold = hts_max,
-                      hse.threshold = hse)
+                      hse.threshold = hse,
+                      cdi_mean.threshold = cdi_mean,
+                      cdi_max.threshold = cdi_max,
+                      lethal.threshold = lethal)
   
   return(result)
   
 }
 
 
-#' @rdname anthesis
-#' @method anthesis array
+#' @rdname crop_sensitive
+#' @method crop_sensitive array
 #' @export
-anthesis.array <- function(object, day.one, ...){
+crop_sensitive.array <- function(object, day.one, ...){
   
   
   if (dim(object)[[2]] == 2) {
-    UseMethod("anthesis", "default")
+    UseMethod("crop_sensitive", "default")
   }
   
   dots <- list(...)
   hts_mean <- dots[["hts_mean.threshold"]]
   hts_max <- dots[["hts_max.threshold"]]
   hse <- dots[["hse.threshold"]]
+  cdi_mean <- dots[["cdi_mean.threshold"]]
+  cdi_max <- dots[["cdi_max.threshold"]]
+  lethal <- dots[["lethal.threshold"]]
   
   # coerce to data.frame
   day.one <- as.vector(t(day.one))
@@ -118,46 +141,58 @@ anthesis.array <- function(object, day.one, ...){
   
   temp <- cbind(ts[[1]], min = ts[[2]]$value)
   
-  result <- .anthesis(temp = temp,
+  result <- .crop_sensitive(temp = temp, 
                       hts_mean.threshold = hts_mean,
                       hts_max.threshold = hts_max,
-                      hse.threshold = hse)
+                      hse.threshold = hse,
+                      cdi_mean.threshold = cdi_mean,
+                      cdi_max.threshold = cdi_max,
+                      lethal.threshold = lethal)
   
   return(result)
   
 }
 
-#' @rdname anthesis
-#' @method anthesis clima_ls
+#' @rdname crop_sensitive
+#' @method crop_sensitive clima_ls
 #' @export
-anthesis.clima_ls <- function(object, ...) {
+crop_sensitive.clima_ls <- function(object, ...) {
   
   dots <- list(...)
   hts_mean <- dots[["hts_mean.threshold"]]
   hts_max <- dots[["hts_max.threshold"]]
   hse <- dots[["hse.threshold"]]
+  cdi_mean <- dots[["cdi_mean.threshold"]]
+  cdi_max <- dots[["cdi_max.threshold"]]
+  lethal <- dots[["lethal.threshold"]]
   
   temp <- cbind(object[[1]], min = object[[2]]$value)
   
-  result <- .anthesis(temp = temp,
+  result <- .crop_sensitive(temp = temp, 
                       hts_mean.threshold = hts_mean,
                       hts_max.threshold = hts_max,
-                      hse.threshold = hse)
+                      hse.threshold = hse,
+                      cdi_mean.threshold = cdi_mean,
+                      cdi_max.threshold = cdi_max,
+                      lethal.threshold = lethal)
   
   return(result)
   
 }
 
-#' @rdname anthesis
-#' @method anthesis sf
+#' @rdname crop_sensitive
+#' @method crop_sensitive sf
 #' @export
-anthesis.sf <- function(object, day.one, ..., as.sf = TRUE){
+crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
   
   dots <- list(...)
   pars <- dots[["pars"]]
   hts_mean <- dots[["hts_mean.threshold"]]
   hts_max <- dots[["hts_max.threshold"]]
   hse <- dots[["hse.threshold"]]
+  cdi_mean <- dots[["cdi_mean.threshold"]]
+  cdi_max <- dots[["cdi_max.threshold"]]
+  lethal <- dots[["lethal.threshold"]]
   
   
   day.one <- as.vector(t(day.one))
@@ -170,10 +205,13 @@ anthesis.sf <- function(object, day.one, ..., as.sf = TRUE){
   
   temp <- cbind(dat[[1]], min = dat[[2]]$value)
   
-  result <- .anthesis(temp = temp, 
+  result <- .crop_sensitive(temp = temp, 
                       hts_mean.threshold = hts_mean,
                       hts_max.threshold = hts_max,
-                      hse.threshold = hse)
+                      hse.threshold = hse,
+                      cdi_mean.threshold = cdi_mean,
+                      cdi_max.threshold = cdi_max,
+                      lethal.threshold = lethal)
   
   if (isTRUE(as.sf)) {
     
@@ -186,10 +224,13 @@ anthesis.sf <- function(object, day.one, ..., as.sf = TRUE){
 }
 
 # general function
-.anthesis <- function(temp, 
-                      hts_mean.threshold = NULL,
-                      hts_max.threshold = NULL,
-                      hse.threshold = NULL) {
+.crop_sensitive <- function(temp, 
+                            hts_mean.threshold = NULL,
+                            hts_max.threshold = NULL,
+                            hse.threshold = NULL,
+                            cdi_mean.threshold = NULL,
+                            cdi_max.threshold = NULL,
+                            lethal.threshold = NULL) {
   
   if (is.null(hts_mean.threshold)) {
     hts_mean.threshold <- c(32, 35, 38)
@@ -203,13 +244,28 @@ anthesis.sf <- function(object, day.one, ..., as.sf = TRUE){
     hse.threshold <- c(31)
   }
   
+  if (is.null(cdi_mean.threshold)) {
+    cdi_mean.threshold <- c(22, 23, 24)
+  }
+  
+  if (is.null(cdi_max.threshold)) {
+    cdi_max.threshold <- c(27, 28, 29)
+  }
+  
+  if (is.null(lethal.threshold)) {
+    lethal.threshold <- c(43, 46, 49)
+  }
+  
   
   X <- split(temp, temp$id)
   
   names_r <- c(paste0("hts_mean_", hts_mean.threshold),
                paste0("hts_max_", hts_max.threshold),
                paste0("hse_", hse.threshold),
-               paste0("hse_ms_", hse.threshold))
+               paste0("hse_ms_", hse.threshold),
+               paste0("cdi_mean_", cdi_mean.threshold),
+               paste0("cdi_max_", cdi_max.threshold),
+               paste0("lethal_", lethal.threshold))
   
   X <- lapply(X, function(y){
     
@@ -220,17 +276,29 @@ anthesis.sf <- function(object, day.one, ..., as.sf = TRUE){
       sapply(hts_mean.threshold, function(x){
         .hts(max, min, threshold = x)
       }),
-
+      
       sapply(hts_max.threshold, function(x){
         .hts(max, NULL, threshold = x)
       }),
-
+      
       sapply(hse.threshold, function(x){
         .hse2(max, threshold = x)
       }),
       
       sapply(hse.threshold, function(x){
         .hse(max, threshold = x)
+      }),
+      
+      sapply(cdi_mean.threshold, function(x){
+        .cdi(max, NULL, threshold = x)
+      }),
+      
+      sapply(cdi_max.threshold, function(x){
+        .cdi(max, min, threshold = x)
+      }),
+      
+      sapply(lethal.threshold, function(x){
+        .hts(max, min, threshold = x)
       })
     )
     
@@ -245,7 +313,7 @@ anthesis.sf <- function(object, day.one, ..., as.sf = TRUE){
   class(X) <- union("clima_df", class(X))
   
   return(X)
-
+  
 }
 
 #' High temperature stress
@@ -339,8 +407,6 @@ anthesis.sf <- function(object, day.one, ..., as.sf = TRUE){
   
 }
 
-
-
 #' Heat stress event proportion
 #' 
 #' When the Tmax is above threshold for at least two days
@@ -389,5 +455,46 @@ anthesis.sf <- function(object, day.one, ..., as.sf = TRUE){
   }
   
   return(a)
+  
+}
+
+
+#' Crop duration index
+#' 
+#' Calculated using the mean growing season temperature (or the mean daily
+#'  maximum growing season temperature). If Tmean > threshold then 
+#'  CDI = Tmean - threshold, otherwise CDI = 0
+#' 
+#' @param x maximum day temperature
+#' @param y optional, minimum temperature
+#' @return the HTS index
+#' @examples 
+#' # cdi with mean daily maximum temperature
+#' x <- modis[3, ,1]
+#' .cdi(x, threshold = 32)
+#' 
+#' # cdi with mean temperature
+#' x <- modis[1,,1]
+#' y <- modis[1,,2]
+#' .cdi(x,y, threshold = 32)
+#' 
+#' @noRd
+.cdi <- function(x, y = NULL, threshold = NULL){
+  
+  # if y is provided than take the mean of x and y
+  if (isFALSE(is.null(y))) {
+    x <- (x + y) / 2
+  }
+  
+  # take the mean
+  tmean <- mean(x, na.rm = TRUE)
+  
+  # the mean minus the threshold
+  tmean <- tmean - threshold
+  
+  # take the max between tmean and 0
+  r <- max(tmean, 0)
+  
+  return(r)
   
 }

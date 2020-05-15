@@ -170,6 +170,6 @@ Aguilar E., et al. (2005). Journal of Geophysical Research,
 Other temperature functions: 
 \code{\link{ETo}()},
 \code{\link{GDD}()},
-\code{\link{anthesis}()}
+\code{\link{crop_sensitive}()}
 }
 \concept{temperature functions}

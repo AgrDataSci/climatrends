@@ -59,8 +59,7 @@ temperature, in that order. See details}
 
 \item{...}{additional arguments passed to methods. See details}
 
-\item{base}{an integer for the minimum temperature for growth (as per the physiology 
-of the focal organism)}
+\item{base}{an integer for the minimum temperature for growth}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -102,7 +101,7 @@ The \code{"default"} \var{equation} uses the average of the daily maximum (Tmax)
  minimum (Tmin) temperatures compared to a \var{base} temperature (Tbase). If Tmin 
  is below Tbase there are two variants: 
  
- \code{"variant_a"}: set Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
+ \code{"variant_a"}: set max(GDD, 0)
  
  \code{"variant_b"}: set Tmin = Tbase if Tmin < Tbase
 
@@ -169,7 +168,11 @@ Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117.
 \seealso{
 Other temperature functions: 
 \code{\link{ETo}()},
-\code{\link{anthesis}()},
+\code{\link{crop_sensitive}()},
 \code{\link{temperature}()}
+
+Other GDD functions: 
+\code{\link{late_frost}()}
 }
+\concept{GDD functions}
 \concept{temperature functions}

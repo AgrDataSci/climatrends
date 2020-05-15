@@ -127,7 +127,7 @@ United Nations, Rome, Italy.
 \seealso{
 Other temperature functions: 
 \code{\link{GDD}()},
-\code{\link{anthesis}()},
+\code{\link{crop_sensitive}()},
 \code{\link{temperature}()}
 }
 \concept{temperature functions}

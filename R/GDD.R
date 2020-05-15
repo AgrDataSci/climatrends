@@ -4,9 +4,10 @@
 #' is used to predict plant and animal development rates. Growing degree-days
 #' are calculated by taking the integral of warmth above a base temperature.
 #' 
+#' @family temperature functions
+#' @family GDD functions
 #' @inheritParams temperature
-#' @param base an integer for the minimum temperature for growth (as per the physiology 
-#'  of the focal organism)
+#' @param base an integer for the minimum temperature for growth
 #' @param degree.days an integer for the accumulated degree-days required by the 
 #'  organism (as per the physiology of the focal organism). Optional if 
 #'  \var{return.as} = \code{"gdd"}
@@ -18,7 +19,6 @@
 #' @return 
 #'  The number of days to reach the accumulated \var{degree.days} or the daily degree-days 
 #'   as defined with the argument \var{return.as}
-#' @family temperature functions
 #' @details 
 #' The \code{array} method assumes that \var{object} contains climate data provided 
 #'  from a local source; this requires an array with two dimensions, 1st dimension 
@@ -33,7 +33,7 @@
 #'  minimum (Tmin) temperatures compared to a \var{base} temperature (Tbase). If Tmin 
 #'  is below Tbase there are two variants: 
 #'  
-#'  \code{"variant_a"}: set Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
+#'  \code{"variant_a"}: set max(GDD, 0)
 #'  
 #'  \code{"variant_b"}: set Tmin = Tbase if Tmin < Tbase
 #'
@@ -129,11 +129,11 @@ GDD.default <- function(object, day.one, base = 10,
   
   dat <- get_timeseries(object, day.one, pars = pars, ...)
   
-  day <- dat[[pars[[1]]]]
+  temp <- cbind(dat[[1]], tmin = dat[[2]]$value)
   
-  night <- dat[[pars[[2]]]]
+  names(temp)[names(temp)=="value"] <- "tmax"
   
-  result <- .gdd(day, night, base, degree.days, equation, return.as)
+  result <- .gdd(temp, base, degree.days, equation, return.as)
   
   return(result)
 }
@@ -170,7 +170,11 @@ GDD.array <- function(object, day.one, base = 10,
   
   ts <- get_timeseries(object, day.one, span = span, last.day = last.day, ...)
   
-  result <- .gdd(ts[[1]], ts[[2]], base, degree.days, equation, return.as)
+  temp <- cbind(ts[[1]], tmin = ts[[2]]$value)
+  
+  names(temp)[names(temp)=="value"] <- "tmax"
+  
+  result <- .gdd(temp, base, degree.days, equation, return.as)
   
   return(result)
 }
@@ -196,11 +200,11 @@ GDD.sf <- function(object, day.one, base = 10,
   
   dat <- get_timeseries(object, day.one, pars = pars, ...)
   
-  day <- dat[[pars[[1]]]]
+  temp <- cbind(dat[[1]], tmin = dat[[2]]$value)
   
-  night <- dat[[pars[[2]]]]
+  names(temp)[names(temp)=="value"] <- "tmax"
   
-  result <- .gdd(day, night, base, degree.days, equation, return.as)
+  result <- .gdd(temp, base, degree.days, equation, return.as)
   
   if (isTRUE(as.sf)) {
     result <- suppressWarnings(sf::st_bind_cols(object, result))
@@ -220,24 +224,21 @@ GDD.clima_ls <- function(object,
                          equation = "default",
                          return.as = "ndays", ...){
   
-  day <- object[[1]]
-  night <- object[[2]]
+  temp <- cbind(object[[1]], tmin = object[[2]]$value)
   
-  result <- .gdd(day, night, base, degree.days, equation, return.as)
+  names(temp)[names(temp)=="value"] <- "tmax"
+  
+  result <- .gdd(temp, base, degree.days, equation, return.as)
   
   return(result)
   
 }
 
-.gdd <- function(day, night, base, degree.days, equation = "default", return.as = "ndays"){
+.gdd <- function(temp, base, degree.days = NULL, equation = "default", return.as = "ndays"){
   
   if (all(return.as == "ndays", is.null(degree.days))) {
     stop("argument degree.days is missing with no default \n")
   }
-  
-  temp <- cbind(day, tmin = night$value)
-  
-  names(temp)[names(temp)=="value"] <- "tmax"
   
   temp <- split(temp, temp$id)
   
