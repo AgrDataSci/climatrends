@@ -44,7 +44,7 @@
 #'  and given as max(Tmax - threshold, 0)}
 #' \item{lethal}{lethal temperatures, defined as percentage of days during the 
 #'  timeseries where daily MEAN temperature exceeds a given threshold}
-#' @source 
+#' @references
 #' Challinor et al. (2016). Nature Climate Change 6(10):6954-958
 #' \cr\url{https://doi.org/10.1038/nclimate3061}
 #' 

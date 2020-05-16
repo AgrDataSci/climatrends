@@ -207,8 +207,7 @@ temperature, in that order. See details</p></td>
     </tr>
     <tr>
       <th>base</th>
-      <td><p>an integer for the minimum temperature for growth (as per the physiology 
-of the focal organism)</p></td>
+      <td><p>an integer for the minimum temperature for growth</p></td>
     </tr>
     <tr>
       <th>day.one</th>
@@ -255,7 +254,7 @@ to select if the function returns the number of days to reach the accumulated
 <p>The <code>"default"</code> <var>equation</var> uses the average of the daily maximum (Tmax) and 
  minimum (Tmin) temperatures compared to a <var>base</var> temperature (Tbase). If Tmin 
  is below Tbase there are two variants:</p> 
-<p><code>"variant_a"</code>: set Tmean = Tbase if (Tmax + Tmin) / 2 &lt; Tbase</p> 
+<p><code>"variant_a"</code>: set max(GDD, 0)</p> 
 <p><code>"variant_b"</code>: set Tmin = Tbase if Tmin &lt; Tbase</p>
 <p>Additional arguments:</p>
 <p><code>last.day</code>: an object (optional to <var>span</var>) of class <code>Date</code> or
@@ -277,8 +276,10 @@ to select if the function returns the number of days to reach the accumulated
 
     <div class='dont-index'><p>Other temperature functions: 
 <code><a href='ETo.html'>ETo</a>()</code>,
-<code><a href='anthesis.html'>anthesis</a>()</code>,
-<code><a href='temperature.html'>temperature</a>()</code></p></div>
+<code><a href='crop_sensitive.html'>crop_sensitive</a>()</code>,
+<code><a href='temperature.html'>temperature</a>()</code></p>
+<p>Other GDD functions: 
+<code><a href='late_frost.html'>late_frost</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># Using local data</span>

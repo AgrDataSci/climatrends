@@ -22,112 +22,258 @@
 #'  the time series to be captured
 #' @return a data.frame with the late frost events
 #' \item{id}{the \var{object} id}
-#' \item{date}{the first day of the frost event}
-#' \item{gdd}{the growing degree-days accumulated before the frost event}
-#' \item{duration}{the number of days the frost event spanned}
-#' @source 
+#' \item{date}{the first day of the frost or warming event}
+#' \item{gdd}{the growing degree-days accumulated during the event}
+#' \item{duration}{the number of days the frost or warming event spanned}
+#' 
+#' Latency periods (where there is no frost event, but also there is no GDD)
+#'  are ignored.
+#' 
+#' @references  
 #' Trnka et al. (2014). Nature Climate Change 4(7):637–43.
 #' \cr\url{https://doi.org/10.1038/nclimate2242}
 #' 
 #' Zohner et al. (2020). PNAS.
 #' \cr\url{https://doi.org/10.1073/pnas.1920816117}
 #' 
+#' @examples 
+#' 
+#' # demo of the array method but no frost event is returned 
+#' # because the data comes from the tropics
+#' 
+#' late_frost(modis, day.one = "2013-10-27")
+#' 
+#' 
+#' \donttest{
+#' # Some random points in Norway
+#' # get data from NASA Power
+#' data("lonlatsf", package = "climatrends")
+#'   
+#' late_frost(lonlatsf, day.one = "2019-01-01", last.day = "2019-07-01")
+#'   
+#' }
+#' 
 #' @export
-late_frost <- function(object, ..., base = 5, tfrost = -2) {
+late_frost <- function(object, ..., base = 4, tfrost = -2) {
   UseMethod("late_frost")
 }
 
-# ts <- get_timeseries(lonlatsf,
-#                      day.one = "2019-01-01",
-#                      last.day = "2019-06-30",
-#                      pars = c("T2M_MAX","T2M_MIN"))
-# 
-# 
-# ts
-# 
-# object <- ts
-# base <- 5
-# tfrost <- -2
-# equation = "variant_a"
-# 
-# obj <- cbind(ts[[1]], tmin = ts[[2]]$value)
-# names(obj)[names(obj) == "value"] <- "tmax"
-# 
-# .late_frost(obj, base, tfrost, equation)
-# 
-# .late_frost <- function(obj, base, tfrost, equation = "variant_a") {
-# 
-#   obj <- split(obj, obj$id)
-# 
-#   result <- lapply(obj, function(temp){
-#     # get tmin
-#     tmin <- temp$tmin
-# 
-#     # calculate GDD
-#     g <- climatrends:::.gdd(temp,
-#               base = base,
-#               equation = equation,
-#               return.as = "gdd")$gdd
-# 
-#     # get a vector where 1 are the freeze events and 0 are the non-freeze
-#     freeze <- as.integer(tmin <= tfrost) & g == 0
-# 
-#     # apply rle function to find the lengths of
-#     # each event (freeze and non-freeze)
-#     r <- rle(freeze)
-# 
-#     # rep the lengths to create an id for each event
-#     rids <- r$lengths
-#     rids <- rep(1:length(rids), rids)
-# 
-#     # get only the freeze events which are the 1's
-#     isfreeze <- which(r$values == 1)
-# 
-#     # create a data frame with this data
-#     dat <- data.frame(date = temp$date,
-#                       gdd = g,
-#                       freeze_id = rids,
-#                       freeze = freeze,
-#                       stringsAsFactors = FALSE)
-# 
-#     # and split it to get the summaries of each event
-#     dat <- split(dat, dat$freeze_id)
-# 
-#     dat <- lapply(dat, function(x){
-#       data.frame(date = x$date[1],
-#                  freeze_id = x$freeze_id[1],
-#                  gdd = sum(x$gdd, na.rm = TRUE),
-#                  duration = length(x$freeze_id))
-#     })
-# 
-#     dat <- do.call("rbind", dat)
-# 
-#     # here we should place the accumalated gdd in following frost event
-#     # so it will show how many gdd was accumulated before the frost event started
-#     dat[isfreeze[-1], "gdd"] <- dat[isfreeze -1, "gdd"]
-# 
-#     # keep only the values for the frost events plut the last row wich shows how
-#     # the season continued accumulating gdd
-#     dat <- dat[c(isfreeze, nrow(dat)), ]
-# 
-#     # put NA in the last row as it do not represent a frost event
-#     dat[!dat$freeze_id %in% isfreeze, "duration"] <- NA
-# 
-#     # put the id for the row
-#     dat <- cbind(id = temp$id[1], dat)
-# 
-#   })
-# 
-#   result <- do.call("rbind", result)
-# 
-#   result <- result[result$gdd != 0, -which(names(result) == "freeze_id")]
-# 
-#   rownames(result) <- 1:dim(result)[[1]]
-# 
-#   class(result) <- union("clima_df", class(result))
-# 
-#   return(result)
-# 
-# 
-# }
-# 
+#' @rdname late_frost
+#' @method late_frost default
+#' @export
+late_frost.default <- function(object, 
+                               day.one, 
+                               ..., 
+                               base = 4, 
+                               tfrost = -2){
+  
+  dots <- list(...)
+  pars <- dots[["pars"]]
+  equation <- dots[["equation"]]
+  
+  if (is.null(equation)) {
+    equation <- "variant_a"
+  }
+  
+  # coerce inputs to data.frame
+  object <- as.data.frame(object)
+  
+  if(dim(object)[[2]] != 2) {
+    stop("Subscript out of bounds. In late_frost.default(),",
+         " only lonlat should be provided. \n")
+  }
+  
+  day.one <- as.data.frame(day.one)[, 1]
+  
+  if (is.null(pars)) {
+    pars <- c("T2M_MAX", "T2M_MIN")
+  }
+  
+  dat <- get_timeseries(object, day.one, pars = pars, ...)
+  
+  temp <- cbind(dat[[1]], tmin = dat[[2]]$value)
+  
+  names(temp)[names(temp)=="value"] <- "tmax"
+  
+  result <- .late_frost(temp, base, tfrost, equation)
+  
+  return(result)
+}
+
+#' @rdname late_frost
+#' @method late_frost array
+#' @export
+late_frost.array <- function(object, 
+                             day.one, 
+                             ..., 
+                             base = 4, 
+                             tfrost = -2){
+  
+  if(dim(object)[[2]] == 2) {
+    UseMethod("late_frost", "default")
+  }
+  
+  dots <- list(...)
+  span <- dots[["span"]]
+  last.day <- dots[["last.day"]]
+  equation <- dots[["equation"]]
+  
+  if (is.null(equation)) {
+    equation <- "variant_a"
+  }
+  
+  day.one <- as.vector(t(day.one))
+  
+  # check if day.one is a 'Date' else try to coerce to Date
+  if (isFALSE(.is_Date(day.one))) {
+    day.one <- .coerce2Date(day.one)
+  }
+  
+  if (all(is.null(span), is.null(last.day))) {
+    do <- as.character(max(day.one))
+    do <- match(do, dimnames(object[,,1])[[2]])
+    span <- dim(object)[[2]] - do
+  }
+  
+  ts <- get_timeseries(object, day.one, span = span, last.day = last.day, ...)
+  
+  temp <- cbind(ts[[1]], tmin = ts[[2]]$value)
+  
+  names(temp)[names(temp)=="value"] <- "tmax"
+  
+  result <- .late_frost(temp, base, tfrost, equation)
+  
+  return(result)
+}
+
+
+#' @rdname late_frost
+#' @method late_frost sf
+#' @export
+late_frost.sf <- function(object, 
+                          day.one, 
+                          ..., 
+                          base = 4, 
+                          tfrost = -2){
+  
+  dots <- list(...)
+  pars <- dots[["pars"]]
+  equation <- dots[["equation"]]
+  
+  if (is.null(equation)) {
+    equation <- "variant_a"
+  }
+  
+  day.one <- as.data.frame(day.one)[, 1]
+  
+  if (is.null(pars)) {
+    pars <- c("T2M_MAX", "T2M_MIN")
+  }
+  
+  dat <- get_timeseries(object, day.one, pars = pars, ...)
+  
+  temp <- cbind(dat[[1]], tmin = dat[[2]]$value)
+  
+  names(temp)[names(temp)=="value"] <- "tmax"
+  
+  result <- .late_frost(temp, base, tfrost, equation)
+  
+  
+  return(result)
+}
+
+
+
+#' @rdname late_frost
+#' @method late_frost clima_ls
+#' @export
+late_frost.clima_ls <- function(object, 
+                                day.one, 
+                                ..., 
+                                base = 4, 
+                                tfrost = -2){
+  
+  dots <- list(...)
+  equation <- dots[["equation"]]
+  
+  if (is.null(equation)) {
+    equation <- "variant_a"
+  }
+  
+  temp <- cbind(object[[1]], tmin = object[[2]]$value)
+  
+  names(temp)[names(temp)=="value"] <- "tmax"
+  
+  result <- .late_frost(temp, base, tfrost, equation)
+  
+  return(result)
+  
+}
+
+
+.late_frost <- function(obj, base, tfrost, equation = "variant_a") {
+
+  obj <- split(obj, obj$id)
+
+  result <- lapply(obj, function(temp){
+    # get tmin
+    tmin <- temp$tmin
+
+    # calculate GDD
+    g <- .gdd(temp,
+              base = base,
+              equation = equation,
+              return.as = "gdd")$gdd
+
+    # get a vector where 1 are the frost events and 0 are the non-frost
+    frost <- as.integer(tmin <= tfrost & g == 0)
+
+    # apply rle function to find the lengths of
+    # each event (freeze and non-frost)
+    r <- rle(frost)
+
+    # rep the lengths to create an id for each event
+    rids <- r$lengths
+    rids <- rep(1:length(rids), rids)
+    
+    isfrost <- which(r$values == 1)
+
+    # create a data frame with this data
+    dat <- data.frame(id = temp$id[1],
+                      frost_id = rids,
+                      date = temp$date,
+                      gdd = g,
+                      frost = frost,
+                      stringsAsFactors = FALSE)
+
+    # and split it to get the summaries of each event
+    dat <- split(dat, dat$frost_id)
+
+    dat <- lapply(dat, function(x){
+      data.frame(id = x$id[1],
+                 frost_id = x$frost_id[1],
+                 date = x$date[1],
+                 gdd = sum(x$gdd, na.rm = TRUE),
+                 duration = length(x$frost_id))
+    })
+
+    dat <- do.call("rbind", dat)
+    
+    out <- !dat$frost_id %in% isfrost & dat$gdd == 0
+    
+    dat[!out, ]
+
+  })
+
+  result <- do.call("rbind", result)
+
+  result <- result[, -which(names(result) == "frost_id")]
+
+  rownames(result) <- 1:dim(result)[[1]]
+
+  class(result) <- union("clima_df", class(result))
+
+  return(result)
+
+
+}

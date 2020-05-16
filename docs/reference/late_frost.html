@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Reference evapotranspiration — ETo • climatrends</title>
+<title>Late spring frost — late_frost • climatrends</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,10 +46,9 @@
 
 
 
-<meta property="og:title" content="Reference evapotranspiration — ETo" />
-<meta property="og:description" content="Reference evapotranspiration using the Blaney-Criddle method. This is general  
-theoretical method used when no measured data on pan evaporation 
-is available locally." />
+<meta property="og:title" content="Late spring frost — late_frost" />
+<meta property="og:description" content="Compute late spring frost, which is a freezing event occurring after
+ a substantial accumulation of warmth" />
 <meta property="og:image" content="/logo.svg" />
 
 
@@ -133,27 +132,29 @@ is available locally." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Reference evapotranspiration</h1>
-    <small class="dont-index">Source: <a href='https://github.com/agrobioinfoservices/climatrends/blob/master/R/ETo.R'><code>R/ETo.R</code></a></small>
-    <div class="hidden name"><code>ETo.Rd</code></div>
+    <h1>Late spring frost</h1>
+    <small class="dont-index">Source: <a href='https://github.com/agrobioinfoservices/climatrends/blob/master/R/late_frost.R'><code>R/late_frost.R</code></a></small>
+    <div class="hidden name"><code>late_frost.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Reference evapotranspiration using the Blaney-Criddle method. This is general  
-theoretical method used when no measured data on pan evaporation 
-is available locally.</p>
+    <p>Compute late spring frost, which is a freezing event occurring after
+ a substantial accumulation of warmth</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ETo</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>ETo</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)
+<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for array</span>
-<span class='fu'>ETo</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>p</span> <span class='kw'>=</span> <span class='fl'>0.27</span>, <span class='no'>...</span>)
+<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for sf</span>
-<span class='fu'>ETo</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
+
+<span class='co'># S3 method for clima_ls</span>
+<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,113 +168,73 @@ containing the temperature data or a <code>clima_ls</code> with maximum and mini
 temperature, in that order. See details</p></td>
     </tr>
     <tr>
+      <th>...</th>
+      <td><p>additional arguments passed to methods. See details</p></td>
+    </tr>
+    <tr>
+      <th>base</th>
+      <td><p>an integer for the minimum temperature for growth</p></td>
+    </tr>
+    <tr>
+      <th>tfrost</th>
+      <td><p>an integer for the freezing threshold</p></td>
+    </tr>
+    <tr>
       <th>day.one</th>
       <td><p>a vector of class <code>Date</code> or any other object that can be 
 coerced to <code>Date</code> (e.g. integer, character YYYY-MM-DD) for the starting 
 day to capture the climate data</p></td>
     </tr>
-    <tr>
-      <th>Kc</th>
-      <td><p>a numeric value for the crop factor for water requirement</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>additional arguments passed to methods. See details</p></td>
-    </tr>
-    <tr>
-      <th>lat</th>
-      <td><p>a vector for the latitude (in Decimal degrees), used to compute 
-mean daily percentage of annual daytime hours based on the latitude and month.
-This is extracted automatically in the <code>sf</code> method. See details</p></td>
-    </tr>
-    <tr>
-      <th>p</th>
-      <td><p>optional if <var>lat</var> is given, a numeric for the mean daily percentage 
-of annual daytime hours (p = 0.27 by default)</p></td>
-    </tr>
-    <tr>
-      <th>as.sf</th>
-      <td><p>logical, to return an object of class 'sf'</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The evapotranspiration in mm/day</p>
+    <p>a data.frame with the late frost events</p>
+<dt>id</dt><dd><p>the <var>object</var> id</p></dd>
+<dt>date</dt><dd><p>the first day of the frost or warming event</p></dd>
+<dt>gdd</dt><dd><p>the growing degree-days accumulated during the event</p></dd>
+<dt>duration</dt><dd><p>the number of days the frost or warming event spanned</p></dd>
+
+Latency periods (where there is no frost event, but also there is no GDD)
+ are ignored.
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>When <var>lat</var> is provided, it is combined with the month provided in 
- <var>day.one</var> to call for the system data <code>daylight</code> to find
- the correct value for <var>p</var> which represents the daily percentage
- of daytime hours in the given month and latitude. Otherwise <var>p</var> is set 
- to 0.27 as default.</p> 
-<p>The <code>array</code> method assumes that <var>object</var> contains climate data provided 
- from a local source; this requires an array with two dimensions, 1st dimension 
- contains the day temperature and 2nd dimension the night temperature, 
- see help("modis", "climatrends") for an example on input structure.</p>
-<p>The <code>default</code> method and the <code>sf</code> method assumes that the climate data
- will e fetched from a remote (cloud) source that be adjusted using the argument 
- <var>data.from</var>.</p>
-<p>Additional arguments:</p>
+    <p>Additional arguments:</p>
+<p><code>equation</code>: character to specify the equation to be used, <code>"variant_a"</code> 
+ is set by default. See GDD()</p>
 <p><code>last.day</code>: an object (optional to <var>span</var>) of class <code>Date</code> or
  any other object that can be coerced to <code>Date</code> (e.g. integer, character 
  YYYY-MM-DD) for the last day of the time series</p> 
 <p><code>span</code>: an integer (optional to <var>last.day</var>) or a vector with 
  integers (optional if <var>last.day</var> is given) for the length of 
  the time series to be captured</p>
-<p><code>data.from</code>: character for the source of climate data. Current remote data 
- is: 'nasapower'</p>
-<p><code>pars</code>: character vector for the temperature data to be fetched. If 
- <code>data.from</code> is 'nasapower'. The temperature can be adjusted to 2 m, the default,
- c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN")</p>
-<p><code>days.before</code>: optional, an integer for the number of days before 
- <var>day.one</var> to be included in the timespan.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Brouwer C. &amp; Heibloem M. (1986). Irrigation water management: 
-Irrigation water needs. Food and Agriculture Organization of The 
-United Nations, Rome, Italy. 
-<a href='http://www.fao.org/3/S2022E/s2022e00.htm'>http://www.fao.org/3/S2022E/s2022e00.htm</a></p>
+    <p>Trnka et al. (2014). Nature Climate Change 4(7):637–43.
+<br /><a href='https://doi.org/10.1038/nclimate2242'>https://doi.org/10.1038/nclimate2242</a></p>
+<p>Zohner et al. (2020). PNAS.
+<br /><a href='https://doi.org/10.1073/pnas.1920816117'>https://doi.org/10.1073/pnas.1920816117</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other temperature functions: 
-<code><a href='GDD.html'>GDD</a>()</code>,
-<code><a href='crop_sensitive.html'>crop_sensitive</a>()</code>,
-<code><a href='temperature.html'>temperature</a>()</code></p></div>
+    <div class='dont-index'><p>Other GDD functions: 
+<code><a href='GDD.html'>GDD</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># Using local data</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"modis"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+    <pre class="examples">
+<span class='co'># demo of the array method but no frost event is returned </span>
+<span class='co'># because the data comes from the tropics</span>
 
-<span class='fu'>ETo</span>(<span class='no'>modis</span>,
-    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
-    <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-    <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>0.92</span>)
+<span class='fu'>late_frost</span>(<span class='no'>modis</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-27"</span>)
+
 
 <span class='co'># \donttest{</span>
-<span class='co'>######################################</span>
-
-<span class='co'># Using remote data</span>
-<span class='co'># random geographic locations around bbox(11, 12, 55, 58)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>826128</span>)
-<span class='no'>lonlat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>2</span>, <span class='fl'>11</span>, <span class='fl'>12</span>),
-                     <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>2</span>, <span class='fl'>55</span>, <span class='fl'>58</span>))
-
-<span class='co'># the evapotranspiration in the 30 days</span>
-<span class='fu'>ETo</span>(<span class='no'>lonlat</span>,
-    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2018-05-15"</span>,
-    <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2018-06-15"</span>,
-    <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
-
-<span class='co'>#######################################</span>
-
-<span class='co'># Objects of class 'sf'</span>
+<span class='co'># Some random points in Norway</span>
+<span class='co'># get data from NASA Power</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"lonlatsf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
-<span class='fu'>ETo</span>(<span class='no'>lonlatsf</span>,
-    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2015-04-22"</span>,
-    <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2015-06-22"</span>,
-    <span class='kw'>pars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"T10M_MAX"</span>, <span class='st'>"T10M_MIN"</span>))
+<span class='fu'>late_frost</span>(<span class='no'>lonlatsf</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2019-01-01"</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2019-07-01"</span>)
+
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

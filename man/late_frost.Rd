@@ -2,16 +2,21 @@
 % Please edit documentation in R/late_frost.R
 \name{late_frost}
 \alias{late_frost}
+\alias{late_frost.default}
+\alias{late_frost.array}
+\alias{late_frost.sf}
+\alias{late_frost.clima_ls}
 \title{Late spring frost}
-\source{
-Trnka et al. (2014). Nature Climate Change 4(7):637–43.
-\cr\url{https://doi.org/10.1038/nclimate2242}
-
-Zohner et al. (2020). PNAS.
-\cr\url{https://doi.org/10.1073/pnas.1920816117}
-}
 \usage{
-late_frost(object, ..., base = 5, tfrost = -2)
+late_frost(object, ..., base = 4, tfrost = -2)
+
+\method{late_frost}{default}(object, day.one, ..., base = 4, tfrost = -2)
+
+\method{late_frost}{array}(object, day.one, ..., base = 4, tfrost = -2)
+
+\method{late_frost}{sf}(object, day.one, ..., base = 4, tfrost = -2)
+
+\method{late_frost}{clima_ls}(object, day.one, ..., base = 4, tfrost = -2)
 }
 \arguments{
 \item{object}{a data.frame (or any object that can be coerced to data.frame) 
@@ -25,13 +30,20 @@ temperature, in that order. See details}
 \item{base}{an integer for the minimum temperature for growth}
 
 \item{tfrost}{an integer for the freezing threshold}
+
+\item{day.one}{a vector of class \code{Date} or any other object that can be 
+coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
+day to capture the climate data}
 }
 \value{
 a data.frame with the late frost events
 \item{id}{the \var{object} id}
-\item{date}{the first day of the frost event}
-\item{gdd}{the growing degree-days accumulated before the frost event}
-\item{duration}{the number of days the frost event spanned}
+\item{date}{the first day of the frost or warming event}
+\item{gdd}{the growing degree-days accumulated during the event}
+\item{duration}{the number of days the frost or warming event spanned}
+
+Latency periods (where there is no frost event, but also there is no GDD)
+ are ignored.
 }
 \description{
 Compute late spring frost, which is a freezing event occurring after
@@ -50,6 +62,31 @@ Additional arguments:
 \code{span}: an integer (optional to \var{last.day}) or a vector with 
  integers (optional if \var{last.day} is given) for the length of 
  the time series to be captured
+}
+\examples{
+
+# demo of the array method but no frost event is returned 
+# because the data comes from the tropics
+
+late_frost(modis, day.one = "2013-10-27")
+
+
+\donttest{
+# Some random points in Norway
+# get data from NASA Power
+data("lonlatsf", package = "climatrends")
+  
+late_frost(lonlatsf, day.one = "2019-01-01", last.day = "2019-07-01")
+  
+}
+
+}
+\references{
+Trnka et al. (2014). Nature Climate Change 4(7):637–43.
+\cr\url{https://doi.org/10.1038/nclimate2242}
+
+Zohner et al. (2020). PNAS.
+\cr\url{https://doi.org/10.1073/pnas.1920816117}
 }
 \seealso{
 Other GDD functions: 
