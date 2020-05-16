@@ -21,13 +21,12 @@
 #'  integers (optional if \var{last.day} is given) for the length of 
 #'  the time series to be captured
 #' @return a data.frame with the late frost events
-#' \item{id}{the \var{object} id}
-#' \item{date}{the first day of the frost or warming event}
+#' \item{id}{the id generated using the indices for the rows in \var{object}}
+#' \item{date}{the first day of the event}
 #' \item{gdd}{the growing degree-days accumulated during the event}
-#' \item{duration}{the number of days the frost or warming event spanned}
-#' 
-#' Latency periods (where there is no frost event, but also there is no GDD)
-#'  are ignored.
+#' \item{event}{a factor for the observed event, frost, latent (where there is no frost event, 
+#'  but also there is no GDD), and warming (where GDD is accumulated)}
+#' \item{duration}{the number of days the event spanned}
 #' 
 #' @references  
 #' Trnka et al. (2014). Nature Climate Change 4(7):637–43.
@@ -188,7 +187,6 @@ late_frost.sf <- function(object,
 #' @method late_frost clima_ls
 #' @export
 late_frost.clima_ls <- function(object, 
-                                day.one, 
                                 ..., 
                                 base = 4, 
                                 tfrost = -2){
@@ -254,15 +252,22 @@ late_frost.clima_ls <- function(object,
                  frost_id = x$frost_id[1],
                  date = x$date[1],
                  gdd = sum(x$gdd, na.rm = TRUE),
+                 event = NA,
                  duration = length(x$frost_id))
     })
 
     dat <- do.call("rbind", dat)
     
-    out <- !dat$frost_id %in% isfrost & dat$gdd == 0
+    l <- !dat$frost_id %in% isfrost & dat$gdd == 0
     
-    dat[!out, ]
-
+    dat$event[l] <- "latent"
+    
+    dat$event[dat$frost_id %in% isfrost] <- "frost"
+    
+    dat$event[is.na(dat$event)] <- "warming"
+    
+    return(dat)
+    
   })
 
   result <- do.call("rbind", result)
@@ -270,6 +275,8 @@ late_frost.clima_ls <- function(object,
   result <- result[, -which(names(result) == "frost_id")]
 
   rownames(result) <- 1:dim(result)[[1]]
+  
+  result$event <- factor(result$event, levels = c("frost","latent","warming"))
 
   class(result) <- union("clima_df", class(result))
 

@@ -154,7 +154,7 @@
 <span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for clima_ls</span>
-<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)</pre>
+<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -190,13 +190,12 @@ day to capture the climate data</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a data.frame with the late frost events</p>
-<dt>id</dt><dd><p>the <var>object</var> id</p></dd>
-<dt>date</dt><dd><p>the first day of the frost or warming event</p></dd>
+<dt>id</dt><dd><p>the id generated using the indices for the rows in <var>object</var></p></dd>
+<dt>date</dt><dd><p>the first day of the event</p></dd>
 <dt>gdd</dt><dd><p>the growing degree-days accumulated during the event</p></dd>
+<dt>event</dt><dd><p>a factor for the observed event, frost, latent (where there is no frost event, 
+ but also there is no GDD), and warming (where GDD is accumulated)</p></dd>
 <dt>duration</dt><dd><p>the number of days the frost or warming event spanned</p></dd>
-
-Latency periods (where there is no frost event, but also there is no GDD)
- are ignored.
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 

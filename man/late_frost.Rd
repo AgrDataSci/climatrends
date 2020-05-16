@@ -16,7 +16,7 @@ late_frost(object, ..., base = 4, tfrost = -2)
 
 \method{late_frost}{sf}(object, day.one, ..., base = 4, tfrost = -2)
 
-\method{late_frost}{clima_ls}(object, day.one, ..., base = 4, tfrost = -2)
+\method{late_frost}{clima_ls}(object, ..., base = 4, tfrost = -2)
 }
 \arguments{
 \item{object}{a data.frame (or any object that can be coerced to data.frame) 
@@ -37,13 +37,12 @@ day to capture the climate data}
 }
 \value{
 a data.frame with the late frost events
-\item{id}{the \var{object} id}
-\item{date}{the first day of the frost or warming event}
+\item{id}{the id generated using the indices for the rows in \var{object}}
+\item{date}{the first day of the event}
 \item{gdd}{the growing degree-days accumulated during the event}
+\item{event}{a factor for the observed event, frost, latent (where there is no frost event, 
+ but also there is no GDD), and warming (where GDD is accumulated)}
 \item{duration}{the number of days the frost or warming event spanned}
-
-Latency periods (where there is no frost event, but also there is no GDD)
- are ignored.
 }
 \description{
 Compute late spring frost, which is a freezing event occurring after
