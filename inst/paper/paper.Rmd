@@ -68,7 +68,7 @@ Equation [1]
 
 $$GDD = \frac{T_{max} + T_{min}}{2} - T_{0}$$
 
-Where $T_{max}$ is the maximum temperature in the given day, $T_{min}$ is the minimum temperature in the given day and $T_{0}$ is the minimum temperature for growth (as per the physiology of the focal organism). 
+Where $T_{max}$ is the maximum temperature in the given day, $T_{min}$ is the minimum temperature in the given day and $T_{0}$ is the minimum temperature for growth (as per the physiology of the focal organism or ecosystem averages). 
 
 For cold environments, where $T_{min}$ may be lower than $T_{0}$, there are two variants of the previous equation to adjust either $T_{mean}$ (variant A) or $T_{min}$ (variant B). The variant A changes $T_{mean}$ to $T_{0}$ if $T_{mean} < T_{0}$ and is expressed as follows.
 
@@ -84,11 +84,11 @@ $$ T_{min} < T_{0} \; \rightarrow \; T_{min} = T_{0} $$
 
 In `GDD()` these equations are defined as 'default', 'variant_a' and 'variant_b', respectively, and can be selected using the argument `equation`.
 
-Additionally, the function may return the number of days that a given organism required to reach a certain number of accumulated degree-days or the raw gdd in each observed day. These values are defined by 'ndays' or 'gdd' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset of photosynthesis [@JWu2013]. In that case, the function will calculate the growing degree-days ($gdd$) and sum up the values until it reaches the defined gdd (105 $^\circ C$) and return the number of days needed in the given season ($GDD_{ndays}$), as follows.
+By default, the function returns the degree-days that is accumulated over the time series. Additionally, the function may return the daily values of degree-days or the number of days that a given organism required to reach a certain number of accumulated degree-days. These values are defined by 'acc', 'daily' or 'ndays' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset of photosynthesis [@JWu2013]. In that case, the function will calculate the growing degree-days ($gdd$) and sum up the values until it reaches the defined gdd (105 $^\circ C$) and return the number of days needed in the given season ($GDD_{ndays}$), as follows.
 
 Equation [4]
 
-$$\parallel GDD_{ndays} \parallel \: = \; \sum^{ggd_1}_{gdd_n}$$
+$$\parallel GDD_{ndays} \parallel \: = \; ggd_1 \;+ \; ...  \; +  \; gdd_n$$
 
 
 ## Reference evapotranspiration

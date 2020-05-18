@@ -14,13 +14,14 @@
 #' @details 
 #' Additional arguments:
 #' 
-#' \code{return.as} character (one of, the default, \code{"gdd"} or \code{"ndays"})
-#'  to select if the function returns the number of days to reach the accumulated 
-#'  \var{degree.days} or the daily values of the GDD
+#' \code{return.as} character (one of, the default, \code{"acc"} or \code{"daily"},
+#'  \code{"ndays"}) to select if the function returns the accumulated gdd, or the 
+#'  daily values of gdd across the series of the number of days required to reach a
+#'  certain number of \code{degree.days}
 #'  
 #' \code{degree.days} an integer for the accumulated degree-days required by the 
 #'  organism (as per the physiology of the focal organism). Optional if 
-#'  \var{return.as} = \code{"gdd"}
+#'  \var{return.as} = \code{"gdd"} or \var{return.as} = \code{"acc"} 
 #' 
 #' \code{equation} character to specify the equation to be used, one of \code{"default"},
 #' \code{"variant_a"} or \code{"variant_b"}. See Equations below 
@@ -102,7 +103,7 @@ GDD.default <- function(tmax, tmin, dates = NULL, ..., base = 10) {
   degree.days <- dots[["degree.days"]]
   
   if (is.null(return.as)) {
-    return.as <- "gdd" 
+    return.as <- "acc" 
   }
   
   if (is.null(equation)) {
@@ -148,7 +149,7 @@ GDD.data.frame <- function(object, day.one, ..., base = 10){
   degree.days <- dots[["degree.days"]]
   
   if (is.null(return.as)) {
-    return.as <- "gdd" 
+    return.as <- "acc" 
   }
   
   if (is.null(equation)) {
@@ -195,7 +196,7 @@ GDD.array <- function(object, day.one, ..., base = 10){
   degree.days <- dots[["degree.days"]]
   
   if (is.null(return.as)) {
-    return.as <- "gdd" 
+    return.as <- "acc" 
   }
   
   if (is.null(equation)) {
@@ -239,7 +240,7 @@ GDD.sf <- function(object, day.one, ..., base = 10, as.sf = TRUE){
   degree.days <- dots[["degree.days"]]
   
   if (is.null(return.as)) {
-    return.as <- "gdd" 
+    return.as <- "acc" 
   }
   
   if (is.null(equation)) {
@@ -267,8 +268,6 @@ GDD.sf <- function(object, day.one, ..., base = 10, as.sf = TRUE){
   return(result)
 }
 
-
-
 #' @rdname GDD
 #' @method GDD clima_ls
 #' @export
@@ -280,7 +279,7 @@ GDD.clima_ls <- function(object, ..., base = 10){
   degree.days <- dots[["degree.days"]]
   
   if (is.null(return.as)) {
-    return.as <- "gdd" 
+    return.as <- "acc" 
   }
   
   if (is.null(equation)) {
@@ -297,7 +296,22 @@ GDD.clima_ls <- function(object, ..., base = 10){
   
 }
 
-.gdd <- function(temp, base, degree.days = NULL, equation = "default", return.as = "ndays"){
+
+#' Growing degree-days
+#' 
+#' This is the main function, the others are adaptation of handling methods
+#' 
+#' @param temp data.frame with following values id, tmax, tmin and date
+#' @param base the tbase
+#' @param degree.days number of accumulated gdd required if return.as = "ndays"
+#' @param equation the equation to adjust gdd calculation
+#' @param return.as how the values will be returned
+#' @examples 
+#' temp <- as.data.frame(innlandet)
+#' temp$id <- 1
+#' .gdd(temp, base = 3, equation = "variant_a")
+#' @noRd
+.gdd <- function(temp, base, degree.days = NULL, equation = "default", return.as = "acc"){
   
   if (all(return.as == "ndays", is.null(degree.days))) {
     stop("argument degree.days is missing with no default \n")
@@ -326,23 +340,17 @@ GDD.clima_ls <- function(object, ..., base = 10){
       
     }
     
+    # sum temperature values until reach the defined degree days
     if (isTRUE(return.as == "ndays")) {
-      
       y[is.na(y)] <- 0
+      y <- cumsum(y)
+      y <- sum(y <= degree.days)
       
-      # sum temperature values until reach the defined degree days
-      for (d in seq_along(y)) {
-        
-        i <- d
-        
-        if (sum(y[1:d], na.rm = TRUE) >= degree.days) {break}
-      }
-      
-      return(i)
+      return(y)
       
     }
     
-    if (isTRUE(return.as == "gdd")) {
+    if (isTRUE(return.as == "daily")) {
       
       y <- data.frame(id = as.integer(x$id),
                       date = x$date,
@@ -350,6 +358,18 @@ GDD.clima_ls <- function(object, ..., base = 10){
                       stringsAsFactors = FALSE)
       
       return(y)
+      
+    }
+    
+    if(isTRUE(return.as == "acc")) {
+      
+      y <- data.frame(id = as.integer(x$id),
+                      date = x$date,
+                      gdd = cumsum(y),
+                      stringsAsFactors = FALSE)
+      
+      return(y)
+      
       
     }
   
@@ -360,7 +380,7 @@ GDD.clima_ls <- function(object, ..., base = 10){
   
   if (isTRUE(return.as == "ndays")) {
     
-    result <- data.frame(GDD = result, stringsAsFactors = FALSE)
+    result <- data.frame(gdd = result, stringsAsFactors = FALSE)
   
   }
   
@@ -372,18 +392,17 @@ GDD.clima_ls <- function(object, ..., base = 10){
   
 }
 
-.gdd_eq_default <- function(x, y, base) {
+.gdd_eq_default <- function(tmax, tmin, base) {
   
-  g <- ((x + y) / 2) - base
+  g <- ((tmax + tmin) / 2) - base
   
   return(g)
 }
 
-
-.gdd_eq_variant_a <- function(x, y, base) {
+.gdd_eq_variant_a <- function(tmax, tmin, base) {
   
   # take the maximum between y and base
-  g <- ((x + y) / 2) - base
+  g <- ((tmax + tmin) / 2) - base
   
   g[g < 0] <- 0
   
@@ -391,28 +410,26 @@ GDD.clima_ls <- function(object, ..., base = 10){
   
 }
 
-
-.gdd_eq_variant_b <- function(x, y, base){
+.gdd_eq_variant_b <- function(tmax, tmin, base){
   # set Tmin = base if Tmin < base
-  tadj <- y
+  tadj <- tmin
   
   tadj[tadj < base] <- base
   
-  g <- ((x + tadj) / 2) - base
+  g <- ((tmax + tadj) / 2) - base
   
   return(g)
 }
 
-
-# // [[Rcpp::export]]
-# NumericVector gdd_variant_aC(NumericVector x, NumericVector y, double base) {
+# .gdd_eq_variant_c <- function(tmax, tmin, base, base_max){
+#   # set Tmin = base if Tmin < base
+#   # set Tmin = base if Tmin < base
+#   tmin_adj <- tmin
 #   
-#   NumericVector result = clone(x);
+#   tmin_adj[tadj < base] <- base
 #   
-#   result = ((x + y) / 2) - base;
+#   g <- ((tmax + tadj) / 2) - base
 #   
-#   result = ifelse(result < 0, 0, result);
-#   
-#   return result;
-#   
+#   return(g)
 # }
+# 

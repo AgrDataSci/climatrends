@@ -247,7 +247,7 @@ late_frost.clima_ls <- function(object, ..., base = 4, tfrost = -2){
     g <- .gdd(temp,
               base = base,
               equation = equation,
-              return.as = "gdd")$gdd
+              return.as = "daily")$gdd
 
     # get a vector where 1 are the frost events and 0 are the non-frost
     frost <- as.integer(tmin <= tfrost & g == 0)

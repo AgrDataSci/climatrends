@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
 
-Methods to calculate precipitation and temperature indices in 
+Methods to calculate precipitation and temperature indices for 
     crop modelling, ecological modelling and trends in climate change.
 }
 \seealso{

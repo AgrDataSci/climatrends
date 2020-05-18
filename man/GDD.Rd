@@ -57,13 +57,14 @@ are calculated by taking the integral of warmth above a base temperature.
 \details{
 Additional arguments:
 
-\code{return.as} character (one of, the default, \code{"gdd"} or \code{"ndays"})
- to select if the function returns the number of days to reach the accumulated 
- \var{degree.days} or the daily values of the GDD
+\code{return.as} character (one of, the default, \code{"acc"} or \code{"daily"},
+ \code{"ndays"}) to select if the function returns the accumulated gdd, or the 
+ daily values of gdd across the series of the number of days required to reach a
+ certain number of \code{degree.days}
  
 \code{degree.days} an integer for the accumulated degree-days required by the 
  organism (as per the physiology of the focal organism). Optional if 
- \var{return.as} = \code{"gdd"}
+ \var{return.as} = \code{"gdd"} or \var{return.as} = \code{"acc"} 
 
 \code{equation} character to specify the equation to be used, one of \code{"default"},
 \code{"variant_a"} or \code{"variant_b"}. See Equations below 
