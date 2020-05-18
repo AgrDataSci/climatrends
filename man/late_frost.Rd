@@ -3,14 +3,17 @@
 \name{late_frost}
 \alias{late_frost}
 \alias{late_frost.default}
+\alias{late_frost.data.frame}
 \alias{late_frost.array}
 \alias{late_frost.sf}
 \alias{late_frost.clima_ls}
 \title{Late spring frost}
 \usage{
-late_frost(object, ..., base = 4, tfrost = -2)
+late_frost(..., base = 4, tfrost = -2)
 
-\method{late_frost}{default}(object, day.one, ..., base = 4, tfrost = -2)
+\method{late_frost}{default}(tmax, tmin, dates = NULL, ..., base = 4, tfrost = -2)
+
+\method{late_frost}{data.frame}(object, day.one, ..., base = 4, tfrost = -2)
 
 \method{late_frost}{array}(object, day.one, ..., base = 4, tfrost = -2)
 
@@ -19,17 +22,24 @@ late_frost(object, ..., base = 4, tfrost = -2)
 \method{late_frost}{clima_ls}(object, ..., base = 4, tfrost = -2)
 }
 \arguments{
-\item{object}{a data.frame (or any object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf}
-with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data or a \code{clima_ls} with maximum and minimum 
-temperature, in that order. See details}
-
 \item{...}{additional arguments passed to methods. See details}
 
 \item{base}{an integer for the minimum temperature for growth}
 
 \item{tfrost}{an integer for the freezing threshold}
+
+\item{tmax}{a numeric vector with the maximum temperature}
+
+\item{tmin}{a numeric vector with the minimum temperature}
+
+\item{dates}{optional, a character (or Date or numeric) vector for the dates in 
+\var{tmax} and \var{tmin}}
+
+\item{object}{a data.frame with geographical coordinates (lonlat), 
+or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
+or an \code{array} with two dimensions containing the temperature data 
+or a \code{clima_ls} with maximum and minimum temperature, 
+in that order. See details}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -42,7 +52,7 @@ a data.frame with the late frost events
 \item{gdd}{the growing degree-days accumulated during the event}
 \item{event}{a factor for the observed event, frost, latent (where there is no frost event, 
  but also there is no GDD), and warming (where GDD is accumulated)}
-\item{duration}{the number of days the frost or warming event spanned}
+\item{duration}{the number of days the event spanned}
 }
 \description{
 Compute late spring frost, which is a freezing event occurring after
@@ -64,15 +74,26 @@ Additional arguments:
 }
 \examples{
 
+# default method
+data("innlandet", package = "climatrends")
+
+tmax <- innlandet[, "tmax"]
+tmin <- innlandet[, "tmin"]
+date <- innlandet[, "dates"]
+
+late_frost(tmax, tmin, dates = date)
+
 # demo of the array method but no frost event is returned 
 # because the data comes from the tropics
+data("temp_dat", package = "climatrends")
 
-late_frost(modis, day.one = "2013-10-27")
+late_frost(temp_dat, day.one = "2013-10-27")
 
 
 \donttest{
 # Some random points in Norway
 # get data from NASA Power
+library("nasapower")
 data("lonlatsf", package = "climatrends")
   
 late_frost(lonlatsf, day.one = "2019-01-01", last.day = "2019-07-01")

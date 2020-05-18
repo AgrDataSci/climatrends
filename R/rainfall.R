@@ -4,18 +4,20 @@
 #'
 #' @family precipitation functions
 #' @inheritParams get_timeseries
-#' @param object a \code{data.frame} (or any other object that can be coerced to 
-#'  data.frame) with geographical coordinates (lonlat), or an object of class 
-#'  \code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
-#'  precipitation data, or a data.frame of class \code{clima_df}. See details.   
+#' @param object a numeric vector with precipitation data or a \code{data.frame}
+#'  with geographical coordinates (lonlat), or an object of class \code{sf} 
+#'  with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
+#'  precipitation data. See details.   
 #' @param timeseries logical, \code{FALSE} for a single point time series
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
 #' @param intervals integer (no lower than 5), for the days intervals when
 #'  \var{timeseries} = \code{TRUE}
+#' @param dates optional, a character (or Date or numeric) vector for the dates in 
+#'  \var{object} in the dafault method
 #' @param as.sf logical, to return an object of class 'sf'
 #' @details 
-#' The \code{matrix} method assumes that \var{object} contains climate data provided 
-#'  from a local source; see help("chirp", package = "climatrends") for an example on input 
+#' The \code{matrix} method assumes that \var{object} contains climate data available in your 
+#'  R section; see help("rain_dat", package = "climatrends") for an example on input 
 #'  structure.
 #' 
 #' The \code{default} method and the \code{sf} method assumes that the climate data
@@ -62,17 +64,29 @@
 #' 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
 #' 
 #' @examples
-#' # Using local sources
-#' data("chirp", package = "climatrends")
+#' # A vector with precipitation data
+#' set.seed(987219)
+#' rain <- runif(50, min = 0, max = 6)
 #' 
-#' rainfall(chirp,
+#' rainfall(rain)
+#' 
+#' # Return as timeseries with intervals of 7 days
+#' dates <- 17650:17699
+#' rainfall(rain, dates = dates, timeseries = TRUE, intervals = 7)
+#' 
+#' ######################################################
+#' 
+#' # the matrix method
+#' data("rain_dat", package = "climatrends")
+#' 
+#' rainfall(rain_dat,
 #'          day.one = "2013-10-28",
 #'          span = 12)
 #' 
 #' #####################################################
 #' \donttest{
 #' # Using remote sources of climate data
-#' 
+#' library("nasapower")
 #' data("lonlatsf", package = "climatrends")
 #' 
 #' # some random dates provided as integers and coerced to Dates internally
@@ -93,33 +107,53 @@
 #'                   last.day = "2011-01-31",
 #'                   as.sf = FALSE)
 #' rain2
+#' }
 #' 
-#' # indices from "2010-12-01" to "2011-01-31" with intervals of 7 days
-#' rain3 <- rainfall(lonlatsf,
-#'                   day.one = "2010-12-01",
-#'                   last.day = "2011-01-31",
-#'                   timeseries = TRUE,
-#'                   intervals = 7,
-#'                   as.sf = FALSE)
-#' rain3
-#' 
-#'}       
-#'          
 #' @importFrom stats quantile
 #' @export
 rainfall <- function(object, ...)
 {
   UseMethod("rainfall")
 }
-
-
 #' @rdname rainfall
 #' @method rainfall default
 #' @export
-rainfall.default <- function(object, day.one, span = NULL, 
-                             timeseries = FALSE,
-                             intervals = 5,
-                             ...){
+rainfall.default <- function(object, dates = NULL, ..., 
+                             timeseries = FALSE, intervals = 5){
+  
+  dots <- list(...)
+  
+  if (!is.null(dates)) {
+    dates <- .coerce2Date(dates)
+  }
+  
+  setnulldate <- FALSE
+  if (is.null(dates)) {
+    dates <- .coerce2Date(1:length(object))
+    
+    if (isTRUE(timeseries)) {
+      setnulldate <- TRUE
+    }
+  }
+  
+  rain <- data.frame(id = 1, value = object, date = dates, stringsAsFactors = FALSE)
+  
+  indices <- .rainfall_indices(rain, timeseries, intervals)
+  
+  if (isTRUE(setnulldate)) {
+    message("Intervals set with no visible dates, returning NAs \n")
+    indices$date <- NA 
+  }
+  
+  return(indices)
+  
+}
+
+#' @rdname rainfall
+#' @method rainfall data.frame
+#' @export
+rainfall.data.frame <- function(object, day.one, span = NULL, ...,
+                                timeseries = FALSE, intervals = 5){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -127,7 +161,7 @@ rainfall.default <- function(object, day.one, span = NULL,
   # coerce inputs to data.frame
   object <- as.data.frame(object)
   if(dim(object)[[2]] != 2) {
-    stop("Subscript out of bounds. In rainfall.default(),",
+    stop("Subscript out of bounds. In rainfall.data.frame(),",
          " only lonlat should be provided. \n")
   }
   
@@ -148,13 +182,8 @@ rainfall.default <- function(object, day.one, span = NULL,
 #' @rdname rainfall
 #' @method rainfall matrix
 #' @export
-rainfall.matrix <- function(object, day.one, span = NULL,
-                            timeseries = FALSE,
-                            intervals = 5, ...){
-  
-  if(dim(object)[[2]] == 2) {
-    UseMethod("rainfall", "default")
-  }
+rainfall.matrix <- function(object, day.one, span = NULL, ...,
+                            timeseries = FALSE, intervals = 5){
   
   # coerce to data.frame
   day.one <- as.data.frame(day.one)[, 1]
@@ -171,9 +200,8 @@ rainfall.matrix <- function(object, day.one, span = NULL,
 #' @rdname rainfall
 #' @method rainfall sf
 #' @export
-rainfall.sf <- function(object, day.one, span = NULL, 
-                        timeseries = FALSE,
-                        intervals = 5, as.sf = TRUE, ...){
+rainfall.sf <- function(object, day.one, span = NULL, ...,
+                        timeseries = FALSE, intervals = 5, as.sf = TRUE){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -215,19 +243,6 @@ rainfall.sf <- function(object, day.one, span = NULL,
     class(indices) <- union("clima_df", class(indices))
     
   }
-  
-  return(indices)
-  
-}
-
-#' @rdname rainfall
-#' @method rainfall clima_df
-#' @export
-rainfall.clima_df <- function(object, 
-                              timeseries = FALSE,
-                              intervals = 5, ...){
-  
-  indices <- .rainfall_indices(object, timeseries, intervals)
   
   return(indices)
   

@@ -82,20 +82,22 @@ to download. See help("parameters", "nasapower") when \var{data.from} = "nasapow
 \examples{
 # Using local sources
 # an array with temperature data
-data("modis", package = "climatrends")
+data("temp_dat", package = "climatrends")
 
 set.seed(9271)
 span <- as.integer(runif(10, 6, 15))
 
-get_timeseries(modis, "2013-10-28", span = span)
+get_timeseries(temp_dat, "2013-10-28", span = span)
 
 # matrix with precipitation data
-data("chirp", package = "climatrends")
+data("rain_dat", package = "climatrends")
 
-get_timeseries(chirp, "2013-10-28", span = span)
+get_timeseries(rain_dat, "2013-10-28", span = span)
 
 ########################################################
 \donttest{
+library("nasapower")
+
 # Fetch data from NASA POWER using 'sf' method
 data("lonlatsf", package = "climatrends")
 
@@ -107,5 +109,6 @@ g <- get_timeseries(lonlatsf,
 
 g
 }
+
 }
 \concept{GET functions}

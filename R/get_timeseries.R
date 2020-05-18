@@ -41,20 +41,22 @@
 #' @examples 
 #' # Using local sources
 #' # an array with temperature data
-#' data("modis", package = "climatrends")
+#' data("temp_dat", package = "climatrends")
 #' 
 #' set.seed(9271)
 #' span <- as.integer(runif(10, 6, 15))
 #' 
-#' get_timeseries(modis, "2013-10-28", span = span)
+#' get_timeseries(temp_dat, "2013-10-28", span = span)
 #' 
 #' # matrix with precipitation data
-#' data("chirp", package = "climatrends")
+#' data("rain_dat", package = "climatrends")
 #' 
-#' get_timeseries(chirp, "2013-10-28", span = span)
+#' get_timeseries(rain_dat, "2013-10-28", span = span)
 #' 
 #' ########################################################
 #' \donttest{
+#' library("nasapower")
+#' 
 #' # Fetch data from NASA POWER using 'sf' method
 #' data("lonlatsf", package = "climatrends")
 #' 
@@ -66,7 +68,7 @@
 #' 
 #' g
 #' }
-#' @importFrom nasapower get_power
+#' 
 #' @importFrom sf st_centroid st_geometry_type st_as_sf
 #' @importFrom stats dist hclust cutree
 #' @export
@@ -467,12 +469,14 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
                            ceiling(max(lonlat_i[,1])), 
                            ceiling(max(lonlat_i[,2]))))
     
+    args <- list(community = community,
+                 lonlat = lims,
+                 dates = dates,
+                 temporal_average = temporal_average, 
+                 pars = pars)
+    
     # get NASA POWER
-    info <- nasapower::get_power(community = community,
-                                 lonlat = lims,
-                                 dates = dates,
-                                 temporal_average = temporal_average, 
-                                 pars = pars)
+    info <- do.call("get_power", args)
     
     info <- as.data.frame(info)
     

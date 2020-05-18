@@ -3,36 +3,45 @@
 \name{ETo}
 \alias{ETo}
 \alias{ETo.default}
+\alias{ETo.data.frame}
 \alias{ETo.array}
 \alias{ETo.sf}
 \title{Reference evapotranspiration}
 \usage{
-ETo(object, day.one, Kc = 1, ...)
+ETo(..., Kc = 1)
 
-\method{ETo}{default}(object, day.one, Kc = 1, ...)
+\method{ETo}{default}(tmax, tmin, ..., Kc = 1, lat = NULL, month = NULL)
 
-\method{ETo}{array}(object, day.one, Kc = 1, lat = NULL, p = 0.27, ...)
+\method{ETo}{data.frame}(object, day.one, ..., Kc = 1)
 
-\method{ETo}{sf}(object, day.one, Kc = 1, as.sf = TRUE, ...)
+\method{ETo}{array}(object, day.one, ..., Kc = 1, lat = NULL, p = 0.27)
+
+\method{ETo}{sf}(object, day.one, ..., Kc = 1, as.sf = TRUE)
 }
 \arguments{
-\item{object}{a data.frame (or any object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf}
-with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data or a \code{clima_ls} with maximum and minimum 
-temperature, in that order. See details}
-
-\item{day.one}{a vector of class \code{Date} or any other object that can be 
-coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
-day to capture the climate data}
+\item{...}{additional arguments passed to methods. See details}
 
 \item{Kc}{a numeric value for the crop factor for water requirement}
 
-\item{...}{additional arguments passed to methods. See details}
+\item{tmax}{a numeric vector with the maximum temperature}
+
+\item{tmin}{a numeric vector with the minimum temperature}
 
 \item{lat}{a vector for the latitude (in Decimal degrees), used to compute 
 mean daily percentage of annual daytime hours based on the latitude and month.
 This is extracted automatically in the \code{sf} method. See details}
+
+\item{month}{an integer for the reference month of daylight percentage}
+
+\item{object}{a data.frame with geographical coordinates (lonlat), 
+or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
+or an \code{array} with two dimensions containing the temperature data 
+or a \code{clima_ls} with maximum and minimum temperature, 
+in that order. See details}
+
+\item{day.one}{a vector of class \code{Date} or any other object that can be 
+coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
+day to capture the climate data}
 
 \item{p}{optional if \var{lat} is given, a numeric for the mean daily percentage 
 of annual daytime hours (p = 0.27 by default)}
@@ -54,13 +63,13 @@ When \var{lat} is provided, it is combined with the month provided in
  of daytime hours in the given month and latitude. Otherwise \var{p} is set 
  to 0.27 as default.
  
-The \code{array} method assumes that \var{object} contains climate data provided 
- from a local source; this requires an array with two dimensions, 1st dimension 
+The \code{array} method assumes that \var{object} contains climate data available 
+ in your R section; this requires an array with two dimensions, 1st dimension 
  contains the day temperature and 2nd dimension the night temperature, 
- see help("modis", "climatrends") for an example on input structure.
+ see help("temp_dat", package = "climatrends") for an example on input structure.
 
-The \code{default} method and the \code{sf} method assumes that the climate data
- will e fetched from a remote (cloud) source that be adjusted using the argument 
+The \code{data.frame} method and the \code{sf} method assumes that the climate data
+ will be fetched from a remote (cloud) source that be adjusted using the argument 
  \var{data.from}.
 
 Additional arguments:
@@ -84,32 +93,27 @@ Additional arguments:
  \var{day.one} to be included in the timespan.
 }
 \examples{
-# Using local data
-data("modis", package = "climatrends")
+# the default method
+set.seed(78)
+tmax <- runif(50, 37, 47)
+set.seed(79)
+tmin <- runif(50, 31, 34)
 
-ETo(modis, 
+ETo(tmax, tmin, lat = 22, month = 10)
+
+###############################################
+
+# the array method
+data("temp_dat", package = "climatrends")
+
+ETo(temp_dat, 
     day.one = "2013-10-28",
     span = 10,
     Kc = 0.92)
-
+    
 \donttest{
-######################################
-
-# Using remote data
-# random geographic locations around bbox(11, 12, 55, 58)
-set.seed(826128)
-lonlat <- data.frame(lon = runif(2, 11, 12),
-                     lat = runif(2, 55, 58))
-
-# the evapotranspiration in the 30 days
-ETo(lonlat,
-    day.one = "2018-05-15",
-    last.day = "2018-06-15",
-    Kc = 0.5)
-
 #######################################
-
-# Objects of class 'sf'
+library("nasapower")
 data("lonlatsf", package = "climatrends")
 
 ETo(lonlatsf,

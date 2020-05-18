@@ -37,7 +37,7 @@ test_that("sf method works", {
   skip_on_cran()
   
   xy <- as.data.frame(lonlat[1:3,])
-  xy <- st_as_sf(xy, coords = c("V1","V2"))
+  xy <- sf::st_as_sf(xy, coords = c("V1","V2"))
   
   r <- temperature(object = xy, 
                    day.one = "2013-10-28",
@@ -57,7 +57,7 @@ test_that("sf method with timeseries", {
   skip_on_cran()
   
   xy <- as.data.frame(lonlat[1:3,])
-  xy <- st_as_sf(xy, coords = c("V1","V2"))
+  xy <- sf::st_as_sf(xy, coords = c("V1","V2"))
   
   r <- temperature(object = xy, 
                    day.one = "2013-10-28",
@@ -71,5 +71,6 @@ test_that("sf method with timeseries", {
   r <- all(r == realv)
   
   expect_true(r)
+
 })
 

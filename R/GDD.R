@@ -8,36 +8,22 @@
 #' @family GDD functions
 #' @inheritParams temperature
 #' @param base an integer for the minimum temperature for growth
-#' @param degree.days an integer for the accumulated degree-days required by the 
-#'  organism (as per the physiology of the focal organism). Optional if 
-#'  \var{return.as} = \code{"gdd"}
-#' @param equation character to specify the equation to be used, one of \code{"default"},
-#' \code{"variant_a"} or \code{"variant_b"}. See details 
-#' @param return.as character (one of \code{"ndays"} the default or \code{"gdd"})
-#'  to select if the function returns the number of days to reach the accumulated 
-#'  \var{degree.days} or the daily values of the GDD
 #' @return 
 #'  The number of days to reach the accumulated \var{degree.days} or the daily degree-days 
 #'   as defined with the argument \var{return.as}
 #' @details 
-#' The \code{array} method assumes that \var{object} contains climate data provided 
-#'  from a local source; this requires an array with two dimensions, 1st dimension 
-#'  contains the day temperature and 2nd dimension the night temperature, 
-#'  see help("modis", "climatrends") for an example on input structure.
-#' 
-#' The \code{default} method and the \code{sf} method assumes that the climate data
-#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
-#'  \var{data.from}.
-#'  
-#' The \code{"default"} \var{equation} uses the average of the daily maximum (Tmax) and 
-#'  minimum (Tmin) temperatures compared to a \var{base} temperature (Tbase). If Tmin 
-#'  is below Tbase there are two variants: 
-#'  
-#'  \code{"variant_a"}: set max(GDD, 0)
-#'  
-#'  \code{"variant_b"}: set Tmin = Tbase if Tmin < Tbase
-#'
 #' Additional arguments:
+#' 
+#' \code{return.as} character (one of, the default, \code{"gdd"} or \code{"ndays"})
+#'  to select if the function returns the number of days to reach the accumulated 
+#'  \var{degree.days} or the daily values of the GDD
+#'  
+#' \code{degree.days} an integer for the accumulated degree-days required by the 
+#'  organism (as per the physiology of the focal organism). Optional if 
+#'  \var{return.as} = \code{"gdd"}
+#' 
+#' \code{equation} character to specify the equation to be used, one of \code{"default"},
+#' \code{"variant_a"} or \code{"variant_b"}. See Equations below 
 #' 
 #' \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
@@ -46,58 +32,61 @@
 #' \code{span}: an integer (optional to \var{last.day}) or a vector with 
 #'  integers (optional if \var{last.day} is given) for the length of 
 #'  the time series to be captured
-#' 
-#' \code{data.from}: character for the source of remote data. Current remote source 
-#'  is: 'nasapower'
-#' 
+#'  
 #' \code{pars}: character vector for the temperature data to be fetched. If 
 #'  \code{data.from} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
 #'  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
+#' 
+#' S3 Methods:
+#' 
+#' The \code{array} method assumes that \var{object} contains climate data available 
+#'  in your R section; this requires an array with two dimensions, 1st dimension 
+#'  contains the day temperature and 2nd dimension the night temperature, 
+#'  see help("temp_dat", package = "climatrends") for an example on input structure.
+#' 
+#' The \code{data.frame} method and the \code{sf} method assumes that the climate data
+#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
+#'  \var{data.from}
+#'
+#'  
+#' Equations: 
+#'   
+#' The \code{"default"} \var{equation} uses the average of the daily maximum (Tmax) and 
+#'  minimum (Tmin) temperatures compared to a \var{base} temperature (Tbase). If Tmin 
+#'  is below Tbase there are two variants: 
+#'  
+#'  \code{"variant_a"}: set Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
+#'  
+#'  \code{"variant_b"}: set Tmin = Tbase if Tmin < Tbase
 #' 
 #' @references 
 #' Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 
 #' \cr\url{https://doi.org/10.2307/2845499}
 #' 
 #' @examples
-#' # Using local data
-#' data("modis", package = "climatrends")
+#' data("innlandet", package = "climatrends")
 #' 
-#' GDD(modis,
-#'     day.one = "2013-10-28",
-#'     base = 10,
-#'     degree.days = 100)
+#' tmax <- innlandet[, "tmax"]
+#' tmin <- innlandet[, "tmin"]
 #' 
-#' # change the equation to variant_b where 
-#' # Tmin = Tbase if (Tmax + Tmin) / 2 < Tbase
-#' GDD(modis,
-#'     day.one = "2013-10-28",
-#'     base = 10,
-#'     degree.days = 100,
-#'     equation = "variant_b")
+#' # using the default equation, returns negative values
+#' GDD(tmax, tmin, base = 2)
 #' 
-#' # return as degree days
-#' GDD(modis,
-#'     day.one = "2013-10-28",
-#'     base = 10,
-#'     degree.days = 100,
-#'     return.as = "gdd")
+#' # set the equation variant_a
+#' # Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
+#' GDD(tmax, tmin, base = 2, equation = "variant_a")
 #' 
-#' \donttest{
-#' # Using remote sources and sf method
-#' data("lonlatsf", package = "climatrends")
 #' 
-#' # compute number of days from "2019-04-01" to reach accumated GDD 
-#' # for Acer platanoides that begins to flowering at 45 GDD
-#' # set equation to variant_a where Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
-#' GDD(lonlatsf,
-#'     day.one = "2019-04-01",
-#'     last.day = "2019-06-30",
-#'     base = 5,
-#'     degree.days = 45,
-#'     equation = "variant_a")
-#' }
+#' #####################################################
+#' 
+#' # return as the number of days required to reach a certain 
+#' # accumulated GDD
+#' data("temp_dat", package = "climatrends")
+#' 
+#' GDD(temp_dat, day.one = "2013-10-27", degree.days = 90, return.as = "ndays")
+#' 
 #' @export
-GDD <- function(object, ..., base = 10)
+GDD <- function(..., base = 10)
 {
   UseMethod("GDD")
 }
@@ -105,16 +94,66 @@ GDD <- function(object, ..., base = 10)
 #' @rdname GDD
 #' @method GDD default
 #' @export
-GDD.default <- function(object, day.one, base = 10, 
-                        degree.days = NULL,
-                        equation = "default",
-                        return.as = "ndays", ...){
+GDD.default <- function(tmax, tmin, dates = NULL, ..., base = 10) {
+  
+  dots <- list(...)
+  equation <- dots[["equation"]]
+  return.as <- dots[["return.as"]]
+  degree.days <- dots[["degree.days"]]
+  
+  if (is.null(return.as)) {
+    return.as <- "gdd" 
+  }
+  
+  if (is.null(equation)) {
+    equation <- "default"
+  }
+  
+  if (!is.null(dates)) {
+    dates <- .coerce2Date(dates)
+  }
+  
+  setnulldate <- FALSE
+  if (is.null(dates)) {
+    dates <- .coerce2Date(1:length(tmax))
+    setnulldate <- TRUE
+  }
+  
+  temp <- data.frame(id = 1, 
+                     date = dates,
+                     tmax = tmax, 
+                     tmin = tmin)
+  
+  result <- .gdd(temp, base, degree.days, equation, return.as)
+  
+  if (isTRUE(setnulldate)) {
+    result <- data.frame(gdd = result[, "gdd"])
+    class(result) <- union("clima_df", class(result))
+  }
+  
+  return(result)
+  
+}
+  
+  
+#' @rdname GDD
+#' @method GDD data.frame
+#' @export
+GDD.data.frame <- function(object, day.one, ..., base = 10){
   
   dots <- list(...)
   pars <- dots[["pars"]]
+  equation <- dots[["equation"]]
+  return.as <- dots[["return.as"]]
+  degree.days <- dots[["degree.days"]]
   
-  # coerce inputs to data.frame
-  object <- as.data.frame(object)
+  if (is.null(return.as)) {
+    return.as <- "gdd" 
+  }
+  
+  if (is.null(equation)) {
+    equation <- "default"
+  }
   
   if(dim(object)[[2]] != 2) {
     stop("Subscript out of bounds. In GDD.default(),",
@@ -142,10 +181,7 @@ GDD.default <- function(object, day.one, base = 10,
 #' @rdname GDD
 #' @method GDD array
 #' @export
-GDD.array <- function(object, day.one, base = 10, 
-                      degree.days = NULL, 
-                      equation = "default", 
-                      return.as = "ndays", ...){
+GDD.array <- function(object, day.one, ..., base = 10){
   
   if(dim(object)[[2]] == 2) {
     UseMethod("GDD", "default")
@@ -154,6 +190,17 @@ GDD.array <- function(object, day.one, base = 10,
   dots <- list(...)
   span <- dots[["span"]]
   last.day <- dots[["last.day"]]
+  equation <- dots[["equation"]]
+  return.as <- dots[["return.as"]]
+  degree.days <- dots[["degree.days"]]
+  
+  if (is.null(return.as)) {
+    return.as <- "gdd" 
+  }
+  
+  if (is.null(equation)) {
+    equation <- "default"
+  }
   
   day.one <- as.vector(t(day.one))
   
@@ -168,7 +215,7 @@ GDD.array <- function(object, day.one, base = 10,
     span <- dim(object)[[2]] - do
   }
   
-  ts <- get_timeseries(object, day.one, span = span, last.day = last.day, ...)
+  ts <- get_timeseries(object, day.one, span = span, last.day = last.day)
   
   temp <- cbind(ts[[1]], tmin = ts[[2]]$value)
   
@@ -183,14 +230,21 @@ GDD.array <- function(object, day.one, base = 10,
 #' @rdname GDD
 #' @method GDD sf
 #' @export
-GDD.sf <- function(object, day.one, base = 10, 
-                   degree.days = NULL, 
-                   equation = "default",
-                   return.as = "ndays", 
-                   as.sf = TRUE, ...){
+GDD.sf <- function(object, day.one, ..., base = 10, as.sf = TRUE){
   
   dots <- list(...)
   pars <- dots[["pars"]]
+  equation <- dots[["equation"]]
+  return.as <- dots[["return.as"]]
+  degree.days <- dots[["degree.days"]]
+  
+  if (is.null(return.as)) {
+    return.as <- "gdd" 
+  }
+  
+  if (is.null(equation)) {
+    equation <- "default"
+  }
   
   day.one <- as.data.frame(day.one)[, 1]
   
@@ -218,11 +272,20 @@ GDD.sf <- function(object, day.one, base = 10,
 #' @rdname GDD
 #' @method GDD clima_ls
 #' @export
-GDD.clima_ls <- function(object, 
-                         base = 10, 
-                         degree.days = NULL, 
-                         equation = "default",
-                         return.as = "ndays", ...){
+GDD.clima_ls <- function(object, ..., base = 10){
+  
+  dots <- list(...)
+  equation <- dots[["equation"]]
+  return.as <- dots[["return.as"]]
+  degree.days <- dots[["degree.days"]]
+  
+  if (is.null(return.as)) {
+    return.as <- "gdd" 
+  }
+  
+  if (is.null(equation)) {
+    equation <- "default"
+  }
   
   temp <- cbind(object[[1]], tmin = object[[2]]$value)
   
@@ -281,7 +344,7 @@ GDD.clima_ls <- function(object,
     
     if (isTRUE(return.as == "gdd")) {
       
-      y <- data.frame(id = x$id,
+      y <- data.frame(id = as.integer(x$id),
                       date = x$date,
                       gdd = y,
                       stringsAsFactors = FALSE)

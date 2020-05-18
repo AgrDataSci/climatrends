@@ -3,51 +3,67 @@
 \name{temperature}
 \alias{temperature}
 \alias{temperature.default}
+\alias{temperature.data.frame}
 \alias{temperature.array}
 \alias{temperature.sf}
 \alias{temperature.clima_ls}
 \title{Temperature indices}
 \usage{
-temperature(object, ...)
+temperature(...)
 
-\method{temperature}{default}(
+\method{temperature}{default}(tmax, tmin, dates = NULL, ..., timeseries = FALSE, intervals = 5)
+
+\method{temperature}{data.frame}(
   object,
   day.one,
   span = NULL,
+  ...,
   timeseries = FALSE,
-  intervals = 5,
-  ...
+  intervals = 5
 )
 
 \method{temperature}{array}(
   object,
   day.one,
   span = NULL,
+  ...,
   timeseries = FALSE,
-  intervals = 5,
-  ...
+  intervals = 5
 )
 
 \method{temperature}{sf}(
   object,
   day.one,
   span = NULL,
+  ...,
   timeseries = FALSE,
   intervals = 5,
-  as.sf = TRUE,
-  ...
+  as.sf = TRUE
 )
 
-\method{temperature}{clima_ls}(object, timeseries = FALSE, intervals = 5, ...)
+\method{temperature}{clima_ls}(object, ..., timeseries = FALSE, intervals = 5)
 }
 \arguments{
-\item{object}{a data.frame (or any object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf}
-with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data or a \code{clima_ls} with maximum and minimum 
-temperature, in that order. See details}
-
 \item{...}{additional arguments passed to methods. See details}
+
+\item{tmax}{a numeric vector with the maximum temperature}
+
+\item{tmin}{a numeric vector with the minimum temperature}
+
+\item{dates}{optional, a character (or Date or numeric) vector for the dates in 
+\var{tmax} and \var{tmin}}
+
+\item{timeseries}{logical, \code{FALSE} for a single point time series
+observation or \code{TRUE} for a time series based on \var{intervals}}
+
+\item{intervals}{integer (no lower than 5), for the days intervals when
+\var{timeseries} = \code{TRUE}}
+
+\item{object}{a data.frame with geographical coordinates (lonlat), 
+or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
+or an \code{array} with two dimensions containing the temperature data 
+or a \code{clima_ls} with maximum and minimum temperature, 
+in that order. See details}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -55,12 +71,6 @@ day to capture the climate data}
 
 \item{span}{an integer or a vector with integers (optional if \var{last.day} is 
 given) for the length of the time series to be captured}
-
-\item{timeseries}{logical, \code{FALSE} for a single point time series
-observation or \code{TRUE} for a time series based on \var{intervals}}
-
-\item{intervals}{integer (no lower than 5), for the days intervals when
-\var{timeseries} = \code{TRUE}}
 
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
@@ -89,12 +99,12 @@ temperature < 10th percentile}
 Methods to compute temperature indices over a time series
 }
 \details{
-The \code{array} method assumes that \var{object} contains climate data provided 
- from a local source; this requires an array with two dimensions, 1st dimension 
+The \code{array} method assumes that \var{object} contains climate data available 
+ in your R section; this requires an array with two dimensions, 1st dimension 
  contains the day temperature and 2nd dimension the night temperature, 
- see help("modis", package = "climatrends") for an example on input structure.
+ see help("temp_dat", package = "climatrends") for an example on input structure.
 
-The \code{default} method and the \code{sf} method assumes that the climate data
+The \code{data.frame} method and the \code{sf} method assumes that the climate data
  will e fetched from a remote (cloud) source that be adjusted using the argument 
  \var{data.from}.
 
@@ -118,10 +128,25 @@ Additional arguments:
  \var{day.one} to be included in the timespan.
 }
 \examples{
-# Using local sources
-data("modis", package = "climatrends")
 
-temperature(modis,
+data("innlandet", package = "climatrends")
+# default method
+tmax <- innlandet[, "tmax"]
+tmin <- innlandet[, "tmin"]
+date <- innlandet[, "dates"]
+
+# one single observation
+temperature(tmax, tmin)
+
+# return as timeseries with 30-day intervals
+temperature(tmax, tmin, dates = date, timeseries = TRUE, intervals = 30)
+
+#####################################################
+
+# array method
+data("temp_dat", package = "climatrends")
+
+temperature(temp_dat,
             day.one = "2013-10-28",
             span = 12)
 
@@ -129,7 +154,7 @@ temperature(modis,
 #####################################################
 
 # Using remote sources of climate data
-
+library("nasapower")
 data("lonlatsf", package = "climatrends")
 
 # some random dates provided as integers and coerced to Dates internally
@@ -150,15 +175,6 @@ temp2 <- temperature(lonlatsf,
                      last.day = "2011-01-31",
                      as.sf = FALSE)
 temp2
-
-# indices from "2010-12-01" to "2011-01-31" with intervals of 7 days
-temp3 <- temperature(lonlatsf,
-                     day.one = "2010-12-01",
-                     last.day = "2011-01-31",
-                     timeseries = TRUE,
-                     intervals = 7,
-                     as.sf = FALSE)
-temp3
 
 }
 }

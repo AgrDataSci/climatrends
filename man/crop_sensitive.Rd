@@ -3,14 +3,17 @@
 \name{crop_sensitive}
 \alias{crop_sensitive}
 \alias{crop_sensitive.default}
+\alias{crop_sensitive.data.frame}
 \alias{crop_sensitive.array}
 \alias{crop_sensitive.clima_ls}
 \alias{crop_sensitive.sf}
 \title{Crop sensitive indices}
 \usage{
-crop_sensitive(object, ...)
+crop_sensitive(...)
 
-\method{crop_sensitive}{default}(object, day.one, ...)
+\method{crop_sensitive}{default}(tmax, tmin, ...)
+
+\method{crop_sensitive}{data.frame}(object, day.one, ...)
 
 \method{crop_sensitive}{array}(object, day.one, ...)
 
@@ -19,13 +22,17 @@ crop_sensitive(object, ...)
 \method{crop_sensitive}{sf}(object, day.one, ..., as.sf = TRUE)
 }
 \arguments{
-\item{object}{a data.frame (or any object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf}
-with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data or a \code{clima_ls} with maximum and minimum 
-temperature, in that order. See details}
-
 \item{...}{additional arguments passed to methods. See details}
+
+\item{tmax}{a numeric vector with the maximum temperature}
+
+\item{tmin}{a numeric vector with the minimum temperature}
+
+\item{object}{a data.frame with geographical coordinates (lonlat), 
+or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
+or an \code{array} with two dimensions containing the temperature data 
+or a \code{clima_ls} with maximum and minimum temperature, 
+in that order. See details}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -78,20 +85,30 @@ The thresholds can be adjusted using the arguments \code{hts_mean.threshold},
  the time series to be captured
 }
 \examples{
-data("modis", package = "climatrends")
+# the default method
+set.seed(78)
+tmax <- runif(50, 37, 47)
+set.seed(79)
+tmin <- runif(50, 31, 34)
+
+crop_sensitive(tmax, tmin)
+
+###############################################
+
+# the array method
+data("temp_dat", package = "climatrends")
 
 # use the default thresholds
-crop_sensitive(modis,
+crop_sensitive(temp_dat,
                day.one = "2013-10-27",
                last.day = "2013-11-04")
 
-# or change the thresholds based on the crop
-crop_sensitive(modis,
+# or change the thresholds based on the crop physiology
+crop_sensitive(temp_dat,
                day.one = "2013-10-27",
                last.day = "2013-11-04",
                hts_mean.threshold = c(24),
                hts_max.threshold = c(31, 33))
-
 }
 \references{
 Challinor et al. (2016). Nature Climate Change 6(10):6954-958

@@ -3,25 +3,29 @@
 #' Methods to compute temperature indices over a time series
 #'
 #' @family temperature functions
-#' @param object a data.frame (or any object that can be coerced to data.frame) 
-#'  with geographical coordinates (lonlat), or an object of class \code{sf}
-#'  with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-#'  containing the temperature data or a \code{clima_ls} with maximum and minimum 
-#'  temperature, in that order. See details 
+#' @param object a data.frame with geographical coordinates (lonlat), 
+#'  or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
+#'  or an \code{array} with two dimensions containing the temperature data 
+#'  or a \code{clima_ls} with maximum and minimum temperature, 
+#'  in that order. See details 
 #' @inheritParams get_timeseries
 #' @param timeseries logical, \code{FALSE} for a single point time series
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
 #' @param intervals integer (no lower than 5), for the days intervals when
 #'  \var{timeseries} = \code{TRUE}
+#' @param dates optional, a character (or Date or numeric) vector for the dates in 
+#'  \var{tmax} and \var{tmin}
+#' @param tmax a numeric vector with the maximum temperature
+#' @param tmin a numeric vector with the minimum temperature
 #' @param as.sf logical, to return an object of class 'sf'
 #' @param ... additional arguments passed to methods. See details
 #' @details 
-#' The \code{array} method assumes that \var{object} contains climate data provided 
-#'  from a local source; this requires an array with two dimensions, 1st dimension 
+#' The \code{array} method assumes that \var{object} contains climate data available 
+#'  in your R section; this requires an array with two dimensions, 1st dimension 
 #'  contains the day temperature and 2nd dimension the night temperature, 
-#'  see help("modis", package = "climatrends") for an example on input structure.
+#'  see help("temp_dat", package = "climatrends") for an example on input structure.
 #' 
-#' The \code{default} method and the \code{sf} method assumes that the climate data
+#' The \code{data.frame} method and the \code{sf} method assumes that the climate data
 #'  will e fetched from a remote (cloud) source that be adjusted using the argument 
 #'  \var{data.from}.
 #'
@@ -68,10 +72,25 @@
 #' 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
 #' 
 #' @examples
-#' # Using local sources
-#' data("modis", package = "climatrends")
 #' 
-#' temperature(modis,
+#' data("innlandet", package = "climatrends")
+#' # default method
+#' tmax <- innlandet[, "tmax"]
+#' tmin <- innlandet[, "tmin"]
+#' date <- innlandet[, "dates"]
+#' 
+#' # one single observation
+#' temperature(tmax, tmin)
+#' 
+#' # return as timeseries with 30-day intervals
+#' temperature(tmax, tmin, dates = date, timeseries = TRUE, intervals = 30)
+#' 
+#' #####################################################
+#' 
+#' # array method
+#' data("temp_dat", package = "climatrends")
+#' 
+#' temperature(temp_dat,
 #'             day.one = "2013-10-28",
 #'             span = 12)
 #' 
@@ -79,7 +98,7 @@
 #' #####################################################
 #' 
 #' # Using remote sources of climate data
-#' 
+#' library("nasapower")
 #' data("lonlatsf", package = "climatrends")
 #' 
 #' # some random dates provided as integers and coerced to Dates internally
@@ -101,18 +120,9 @@
 #'                      as.sf = FALSE)
 #' temp2
 #' 
-#' # indices from "2010-12-01" to "2011-01-31" with intervals of 7 days
-#' temp3 <- temperature(lonlatsf,
-#'                      day.one = "2010-12-01",
-#'                      last.day = "2011-01-31",
-#'                      timeseries = TRUE,
-#'                      intervals = 7,
-#'                      as.sf = FALSE)
-#' temp3
-#' 
 #' }
 #' @export
-temperature <- function(object, ...)
+temperature <- function(...)
 {
   
   UseMethod("temperature")
@@ -123,18 +133,48 @@ temperature <- function(object, ...)
 #' @rdname temperature
 #' @method temperature default
 #' @export
-temperature.default <- function(object, day.one, 
-                                span = NULL, timeseries = FALSE,
-                                intervals = 5, ...){
+temperature.default <- function(tmax, tmin, dates = NULL, ..., 
+                                timeseries = FALSE, intervals = 5) {
+  
+  if (!is.null(dates)) {
+    dates <- .coerce2Date(dates)
+  }
+  
+  setnulldate <- FALSE
+  if (is.null(dates)) {
+    dates <- .coerce2Date(1:length(tmax))
+    if (isTRUE(timeseries)) {
+      setnulldate <- TRUE
+    }
+  }
+  
+  tmax <- data.frame(id = 1, value = tmax, date = dates, stringsAsFactors = FALSE)
+  
+  tmin <- data.frame(id = 1, value = tmin, date = dates, stringsAsFactors = FALSE)
+  
+  indices <- .temperature_indices(tmax, tmin, timeseries, intervals)
+  
+  if (isTRUE(setnulldate)) {
+    message("Intervals set with no visible dates, returning NAs\n")
+    indices$date <- NA 
+  }
+  
+  return(indices)
+  
+}
+
+#' @rdname temperature
+#' @method temperature data.frame
+#' @export
+temperature.data.frame <- function(object, day.one, span = NULL, ...,
+                                   timeseries = FALSE, intervals = 5){
   
   dots <- list(...)
   pars <- dots[["pars"]]
   last.day <- dots[["last.day"]]
   
-  # coerce inputs to data.frame
-  object <- as.data.frame(object)
   if(dim(object)[[2]] != 2) {
-    stop("Subscript out of bounds. In temperature.default(),",
+    stop("Subscript out of bounds. In temperature.data.frame(),",
          " only lonlat should be provided. \n")
   }
   
@@ -152,22 +192,14 @@ temperature.default <- function(object, day.one,
   
   indices <- .temperature_indices(day, night, timeseries, intervals)
   
-  class(indices) <- union("clima_df", class(indices))
-  
   return(indices)
 }
 
 #' @rdname temperature
 #' @method temperature array
 #' @export
-temperature.array <- function(object, day.one, 
-                              span = NULL, timeseries = FALSE,
-                              intervals = 5, ...){
-  
-  
-  if (dim(object)[[2]] == 2) {
-    UseMethod("temperature", "default")
-  }
+temperature.array <- function(object, day.one, span = NULL, ...,
+                              timeseries = FALSE, intervals = 5){
   
   dots <- list(...)
   last.day <- dots[["last.day"]]
@@ -175,7 +207,7 @@ temperature.array <- function(object, day.one,
   # coerce to data.frame
   day.one <- as.vector(t(day.one))
   
-  ts <- get_timeseries(object, day.one, span = span, last.day = last.day, ...)
+  ts <- get_timeseries(object, day.one, span = span, last.day = last.day)
   
   indices <- .temperature_indices(ts[[1]], ts[[2]], timeseries, intervals)
   
@@ -186,9 +218,8 @@ temperature.array <- function(object, day.one,
 #' @rdname temperature
 #' @method temperature sf
 #' @export
-temperature.sf <- function(object, day.one, 
-                           span = NULL, timeseries = FALSE,
-                           intervals = 5, as.sf = TRUE, ...){
+temperature.sf <- function(object, day.one, span = NULL, ...,
+                           timeseries = FALSE, intervals = 5, as.sf = TRUE){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -243,9 +274,8 @@ temperature.sf <- function(object, day.one,
 #' @rdname temperature
 #' @method temperature clima_ls
 #' @export
-temperature.clima_ls <- function(object, 
-                                 timeseries = FALSE,
-                                 intervals = 5, ...){
+temperature.clima_ls <- function(object, ...,
+                                 timeseries = FALSE, intervals = 5){
   
   day <- object[[1]]
   night <- object[[2]]

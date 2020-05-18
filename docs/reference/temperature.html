@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5-1</span>
       </span>
     </div>
 
@@ -140,16 +140,19 @@
     <p>Methods to compute temperature indices over a time series</p>
     </div>
 
-    <pre class="usage"><span class='fu'>temperature</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>temperature</span>(<span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
+<span class='fu'>temperature</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='kw'>dates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+
+<span class='co'># S3 method for data.frame</span>
 <span class='fu'>temperature</span>(
   <span class='no'>object</span>,
   <span class='no'>day.one</span>,
   <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>,
   <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='no'>...</span>
+  <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>
 )
 
 <span class='co'># S3 method for array</span>
@@ -157,9 +160,9 @@
   <span class='no'>object</span>,
   <span class='no'>day.one</span>,
   <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>,
   <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='no'>...</span>
+  <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>
 )
 
 <span class='co'># S3 method for sf</span>
@@ -167,29 +170,52 @@
   <span class='no'>object</span>,
   <span class='no'>day.one</span>,
   <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>,
   <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )
 
 <span class='co'># S3 method for clima_ls</span>
-<span class='fu'>temperature</span>(<span class='no'>object</span>, <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>temperature</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>a data.frame (or any object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class <code>sf</code>
-with geometry 'POINT' or 'POLYGON', or an <code>array</code> with two dimensions 
-containing the temperature data or a <code>clima_ls</code> with maximum and minimum 
-temperature, in that order. See details</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>additional arguments passed to methods. See details</p></td>
+    </tr>
+    <tr>
+      <th>tmax</th>
+      <td><p>a numeric vector with the maximum temperature</p></td>
+    </tr>
+    <tr>
+      <th>tmin</th>
+      <td><p>a numeric vector with the minimum temperature</p></td>
+    </tr>
+    <tr>
+      <th>dates</th>
+      <td><p>optional, a character (or Date or numeric) vector for the dates in 
+<var>tmax</var> and <var>tmin</var></p></td>
+    </tr>
+    <tr>
+      <th>timeseries</th>
+      <td><p>logical, <code>FALSE</code> for a single point time series
+observation or <code>TRUE</code> for a time series based on <var>intervals</var></p></td>
+    </tr>
+    <tr>
+      <th>intervals</th>
+      <td><p>integer (no lower than 5), for the days intervals when
+<var>timeseries</var> = <code>TRUE</code></p></td>
+    </tr>
+    <tr>
+      <th>object</th>
+      <td><p>a data.frame with geographical coordinates (lonlat), 
+or an object of class <code>sf</code> with geometry 'POINT' or 'POLYGON', 
+or an <code>array</code> with two dimensions containing the temperature data 
+or a <code>clima_ls</code> with maximum and minimum temperature, 
+in that order. See details</p></td>
     </tr>
     <tr>
       <th>day.one</th>
@@ -201,16 +227,6 @@ day to capture the climate data</p></td>
       <th>span</th>
       <td><p>an integer or a vector with integers (optional if <var>last.day</var> is 
 given) for the length of the time series to be captured</p></td>
-    </tr>
-    <tr>
-      <th>timeseries</th>
-      <td><p>logical, <code>FALSE</code> for a single point time series
-observation or <code>TRUE</code> for a time series based on <var>intervals</var></p></td>
-    </tr>
-    <tr>
-      <th>intervals</th>
-      <td><p>integer (no lower than 5), for the days intervals when
-<var>timeseries</var> = <code>TRUE</code></p></td>
     </tr>
     <tr>
       <th>as.sf</th>
@@ -242,11 +258,11 @@ temperature &lt; 10th percentile</p></dd>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The <code>array</code> method assumes that <var>object</var> contains climate data provided 
- from a local source; this requires an array with two dimensions, 1st dimension 
+    <p>The <code>array</code> method assumes that <var>object</var> contains climate data available 
+ in your R section; this requires an array with two dimensions, 1st dimension 
  contains the day temperature and 2nd dimension the night temperature, 
- see help("modis", package = "climatrends") for an example on input structure.</p>
-<p>The <code>default</code> method and the <code>sf</code> method assumes that the climate data
+ see help("temp_dat", package = "climatrends") for an example on input structure.</p>
+<p>The <code>data.frame</code> method and the <code>sf</code> method assumes that the climate data
  will e fetched from a remote (cloud) source that be adjusted using the argument 
  <var>data.from</var>.</p>
 <p>When <var>timeseries</var> = <code>TRUE</code>, an id is created, 
@@ -274,10 +290,25 @@ temperature &lt; 10th percentile</p></dd>
 <code><a href='crop_sensitive.html'>crop_sensitive</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># Using local sources</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"modis"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+    <pre class="examples">
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"innlandet"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+<span class='co'># default method</span>
+<span class='no'>tmax</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"tmax"</span>]
+<span class='no'>tmin</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"tmin"</span>]
+<span class='no'>date</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"dates"</span>]
 
-<span class='fu'>temperature</span>(<span class='no'>modis</span>,
+<span class='co'># one single observation</span>
+<span class='fu'>temperature</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>)
+
+<span class='co'># return as timeseries with 30-day intervals</span>
+<span class='fu'>temperature</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>date</span>, <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>30</span>)
+
+<span class='co'>#####################################################</span>
+
+<span class='co'># array method</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"temp_dat"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+
+<span class='fu'>temperature</span>(<span class='no'>temp_dat</span>,
             <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
             <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>12</span>)
 
@@ -285,7 +316,7 @@ temperature &lt; 10th percentile</p></dd>
 <span class='co'>#####################################################</span>
 
 <span class='co'># Using remote sources of climate data</span>
-
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"lonlatsf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='co'># some random dates provided as integers and coerced to Dates internally</span>
@@ -306,15 +337,6 @@ temperature &lt; 10th percentile</p></dd>
                      <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2011-01-31"</span>,
                      <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 <span class='no'>temp2</span>
-
-<span class='co'># indices from "2010-12-01" to "2011-01-31" with intervals of 7 days</span>
-<span class='no'>temp3</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
-                     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2010-12-01"</span>,
-                     <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2011-01-31"</span>,
-                     <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                     <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='no'>temp3</span>
 
 <span class='co'># }</span></pre>
   </div>

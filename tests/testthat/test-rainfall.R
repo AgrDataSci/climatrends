@@ -22,7 +22,7 @@ test_that("nasapower and sf ok", {
   ll <- data.frame(lon = lonlat[,1],
                    lat = lonlat[,2])
   
-  ll <- st_as_sf(ll, coords = c("lon","lat"))
+  ll <- sf::st_as_sf(ll, coords = c("lon","lat"))
   
   r <- rainfall(ll,
                 day.one = "2013-01-01",
@@ -39,7 +39,7 @@ test_that("nasapower and sf ok", {
 test_that("larger span", {
   
   expect_error(
-    rainfall(chirp,
+    rainfall(rain_dat,
              day.one = "2013-10-27",
              span = 16)
   )
@@ -50,7 +50,7 @@ test_that("larger span", {
 test_that("non valid date", {
   
   expect_error(
-    rainfall(chirp,
+    rainfall(rain_dat,
              day.one = "2013-02-31",
              span = 11)
   )

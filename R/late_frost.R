@@ -20,6 +20,7 @@
 #' \code{span}: an integer (optional to \var{last.day}) or a vector with 
 #'  integers (optional if \var{last.day} is given) for the length of 
 #'  the time series to be captured
+#'  
 #' @return a data.frame with the late frost events
 #' \item{id}{the id generated using the indices for the rows in \var{object}}
 #' \item{date}{the first day of the event}
@@ -37,15 +38,26 @@
 #' 
 #' @examples 
 #' 
+#' # default method
+#' data("innlandet", package = "climatrends")
+#' 
+#' tmax <- innlandet[, "tmax"]
+#' tmin <- innlandet[, "tmin"]
+#' date <- innlandet[, "dates"]
+#' 
+#' late_frost(tmax, tmin, dates = date)
+#' 
 #' # demo of the array method but no frost event is returned 
 #' # because the data comes from the tropics
+#' data("temp_dat", package = "climatrends")
 #' 
-#' late_frost(modis, day.one = "2013-10-27")
+#' late_frost(temp_dat, day.one = "2013-10-27")
 #' 
 #' 
 #' \donttest{
 #' # Some random points in Norway
 #' # get data from NASA Power
+#' library("nasapower")
 #' data("lonlatsf", package = "climatrends")
 #'   
 #' late_frost(lonlatsf, day.one = "2019-01-01", last.day = "2019-07-01")
@@ -53,18 +65,46 @@
 #' }
 #' 
 #' @export
-late_frost <- function(object, ..., base = 4, tfrost = -2) {
+late_frost <- function(..., base = 4, tfrost = -2) {
+  
   UseMethod("late_frost")
+
 }
+
 
 #' @rdname late_frost
 #' @method late_frost default
 #' @export
-late_frost.default <- function(object, 
-                               day.one, 
-                               ..., 
-                               base = 4, 
-                               tfrost = -2){
+late_frost.default <- function(tmax, tmin, dates = NULL, ..., base = 4, tfrost = -2) {
+  
+  dots <- list(...)
+  equation <- dots[["equation"]]
+  
+  if (is.null(equation)) {
+    equation <- "variant_a"
+  }
+  
+  if (!is.null(dates)) {
+    dates <- .coerce2Date(dates)
+  }
+  
+  if (is.null(dates)) {
+    dates <- rep(NA, times = length(tmax))
+  }
+  
+  temp <- data.frame(id = 1, tmax = tmax, tmin = tmin, date = dates, 
+                     stringsAsFactors = FALSE)
+  
+  result <- .late_frost(temp, base, tfrost, equation)
+  
+  return(result)
+  
+}
+
+#' @rdname late_frost
+#' @method late_frost data.frame
+#' @export
+late_frost.data.frame <- function(object, day.one, ..., base = 4, tfrost = -2){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -102,15 +142,7 @@ late_frost.default <- function(object,
 #' @rdname late_frost
 #' @method late_frost array
 #' @export
-late_frost.array <- function(object, 
-                             day.one, 
-                             ..., 
-                             base = 4, 
-                             tfrost = -2){
-  
-  if(dim(object)[[2]] == 2) {
-    UseMethod("late_frost", "default")
-  }
+late_frost.array <- function(object, day.one, ..., base = 4, tfrost = -2){
   
   dots <- list(...)
   span <- dots[["span"]]
@@ -149,11 +181,7 @@ late_frost.array <- function(object,
 #' @rdname late_frost
 #' @method late_frost sf
 #' @export
-late_frost.sf <- function(object, 
-                          day.one, 
-                          ..., 
-                          base = 4, 
-                          tfrost = -2){
+late_frost.sf <- function(object, day.one, ..., base = 4, tfrost = -2){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -186,10 +214,7 @@ late_frost.sf <- function(object,
 #' @rdname late_frost
 #' @method late_frost clima_ls
 #' @export
-late_frost.clima_ls <- function(object, 
-                                ..., 
-                                base = 4, 
-                                tfrost = -2){
+late_frost.clima_ls <- function(object, ..., base = 4, tfrost = -2){
   
   dots <- list(...)
   equation <- dots[["equation"]]
@@ -207,6 +232,7 @@ late_frost.clima_ls <- function(object,
   return(result)
   
 }
+
 
 
 .late_frost <- function(obj, base, tfrost, equation = "variant_a") {
@@ -277,6 +303,8 @@ late_frost.clima_ls <- function(object,
   rownames(result) <- 1:dim(result)[[1]]
   
   result$event <- factor(result$event, levels = c("frost","latent","warming"))
+  
+  result$id <- as.integer(result$id)
 
   class(result) <- union("clima_df", class(result))
 

@@ -3,78 +3,45 @@
 \name{GDD}
 \alias{GDD}
 \alias{GDD.default}
+\alias{GDD.data.frame}
 \alias{GDD.array}
 \alias{GDD.sf}
 \alias{GDD.clima_ls}
 \title{Growing degree-days}
 \usage{
-GDD(object, ..., base = 10)
+GDD(..., base = 10)
 
-\method{GDD}{default}(
-  object,
-  day.one,
-  base = 10,
-  degree.days = NULL,
-  equation = "default",
-  return.as = "ndays",
-  ...
-)
+\method{GDD}{default}(tmax, tmin, dates = NULL, ..., base = 10)
 
-\method{GDD}{array}(
-  object,
-  day.one,
-  base = 10,
-  degree.days = NULL,
-  equation = "default",
-  return.as = "ndays",
-  ...
-)
+\method{GDD}{data.frame}(object, day.one, ..., base = 10)
 
-\method{GDD}{sf}(
-  object,
-  day.one,
-  base = 10,
-  degree.days = NULL,
-  equation = "default",
-  return.as = "ndays",
-  as.sf = TRUE,
-  ...
-)
+\method{GDD}{array}(object, day.one, ..., base = 10)
 
-\method{GDD}{clima_ls}(
-  object,
-  base = 10,
-  degree.days = NULL,
-  equation = "default",
-  return.as = "ndays",
-  ...
-)
+\method{GDD}{sf}(object, day.one, ..., base = 10, as.sf = TRUE)
+
+\method{GDD}{clima_ls}(object, ..., base = 10)
 }
 \arguments{
-\item{object}{a data.frame (or any object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class \code{sf}
-with geometry 'POINT' or 'POLYGON', or an \code{array} with two dimensions 
-containing the temperature data or a \code{clima_ls} with maximum and minimum 
-temperature, in that order. See details}
-
 \item{...}{additional arguments passed to methods. See details}
 
 \item{base}{an integer for the minimum temperature for growth}
 
+\item{tmax}{a numeric vector with the maximum temperature}
+
+\item{tmin}{a numeric vector with the minimum temperature}
+
+\item{dates}{optional, a character (or Date or numeric) vector for the dates in 
+\var{tmax} and \var{tmin}}
+
+\item{object}{a data.frame with geographical coordinates (lonlat), 
+or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
+or an \code{array} with two dimensions containing the temperature data 
+or a \code{clima_ls} with maximum and minimum temperature, 
+in that order. See details}
+
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
 day to capture the climate data}
-
-\item{degree.days}{an integer for the accumulated degree-days required by the 
-organism (as per the physiology of the focal organism). Optional if 
-\var{return.as} = \code{"gdd"}}
-
-\item{equation}{character to specify the equation to be used, one of \code{"default"},
-\code{"variant_a"} or \code{"variant_b"}. See details}
-
-\item{return.as}{character (one of \code{"ndays"} the default or \code{"gdd"})
-to select if the function returns the number of days to reach the accumulated 
-\var{degree.days} or the daily values of the GDD}
 
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
@@ -88,24 +55,18 @@ is used to predict plant and animal development rates. Growing degree-days
 are calculated by taking the integral of warmth above a base temperature.
 }
 \details{
-The \code{array} method assumes that \var{object} contains climate data provided 
- from a local source; this requires an array with two dimensions, 1st dimension 
- contains the day temperature and 2nd dimension the night temperature, 
- see help("modis", "climatrends") for an example on input structure.
-
-The \code{default} method and the \code{sf} method assumes that the climate data
- will e fetched from a remote (cloud) source that be adjusted using the argument 
- \var{data.from}.
- 
-The \code{"default"} \var{equation} uses the average of the daily maximum (Tmax) and 
- minimum (Tmin) temperatures compared to a \var{base} temperature (Tbase). If Tmin 
- is below Tbase there are two variants: 
- 
- \code{"variant_a"}: set max(GDD, 0)
- 
- \code{"variant_b"}: set Tmin = Tbase if Tmin < Tbase
-
 Additional arguments:
+
+\code{return.as} character (one of, the default, \code{"gdd"} or \code{"ndays"})
+ to select if the function returns the number of days to reach the accumulated 
+ \var{degree.days} or the daily values of the GDD
+ 
+\code{degree.days} an integer for the accumulated degree-days required by the 
+ organism (as per the physiology of the focal organism). Optional if 
+ \var{return.as} = \code{"gdd"}
+
+\code{equation} character to specify the equation to be used, one of \code{"default"},
+\code{"variant_a"} or \code{"variant_b"}. See Equations below 
 
 \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
  any other object that can be coerced to \code{Date} (e.g. integer, character 
@@ -114,52 +75,55 @@ Additional arguments:
 \code{span}: an integer (optional to \var{last.day}) or a vector with 
  integers (optional if \var{last.day} is given) for the length of 
  the time series to be captured
-
-\code{data.from}: character for the source of remote data. Current remote source 
- is: 'nasapower'
-
+ 
 \code{pars}: character vector for the temperature data to be fetched. If 
  \code{data.from} is 'nasapower'. The temperature can be adjusted to 2 m, the default,
- c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN")
+ c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN") 
+
+S3 Methods:
+
+The \code{array} method assumes that \var{object} contains climate data available 
+ in your R section; this requires an array with two dimensions, 1st dimension 
+ contains the day temperature and 2nd dimension the night temperature, 
+ see help("temp_dat", package = "climatrends") for an example on input structure.
+
+The \code{data.frame} method and the \code{sf} method assumes that the climate data
+ will e fetched from a remote (cloud) source that be adjusted using the argument 
+ \var{data.from}
+
+ 
+Equations: 
+  
+The \code{"default"} \var{equation} uses the average of the daily maximum (Tmax) and 
+ minimum (Tmin) temperatures compared to a \var{base} temperature (Tbase). If Tmin 
+ is below Tbase there are two variants: 
+ 
+ \code{"variant_a"}: set Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
+ 
+ \code{"variant_b"}: set Tmin = Tbase if Tmin < Tbase
 }
 \examples{
-# Using local data
-data("modis", package = "climatrends")
+data("innlandet", package = "climatrends")
 
-GDD(modis,
-    day.one = "2013-10-28",
-    base = 10,
-    degree.days = 100)
+tmax <- innlandet[, "tmax"]
+tmin <- innlandet[, "tmin"]
 
-# change the equation to variant_b where 
-# Tmin = Tbase if (Tmax + Tmin) / 2 < Tbase
-GDD(modis,
-    day.one = "2013-10-28",
-    base = 10,
-    degree.days = 100,
-    equation = "variant_b")
+# using the default equation, returns negative values
+GDD(tmax, tmin, base = 2)
 
-# return as degree days
-GDD(modis,
-    day.one = "2013-10-28",
-    base = 10,
-    degree.days = 100,
-    return.as = "gdd")
+# set the equation variant_a
+# Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
+GDD(tmax, tmin, base = 2, equation = "variant_a")
 
-\donttest{
-# Using remote sources and sf method
-data("lonlatsf", package = "climatrends")
 
-# compute number of days from "2019-04-01" to reach accumated GDD 
-# for Acer platanoides that begins to flowering at 45 GDD
-# set equation to variant_a where Tmean = Tbase if (Tmax + Tmin) / 2 < Tbase
-GDD(lonlatsf,
-    day.one = "2019-04-01",
-    last.day = "2019-06-30",
-    base = 5,
-    degree.days = 45,
-    equation = "variant_a")
-}
+#####################################################
+
+# return as the number of days required to reach a certain 
+# accumulated GDD
+data("temp_dat", package = "climatrends")
+
+GDD(temp_dat, day.one = "2013-10-27", degree.days = 90, return.as = "ndays")
+
 }
 \references{
 Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 

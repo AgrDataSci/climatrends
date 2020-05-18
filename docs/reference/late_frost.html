@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5-1</span>
       </span>
     </div>
 
@@ -142,9 +142,12 @@
  a substantial accumulation of warmth</p>
     </div>
 
-    <pre class="usage"><span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
+    <pre class="usage"><span class='fu'>late_frost</span>(<span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for default</span>
+<span class='fu'>late_frost</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='kw'>dates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
+
+<span class='co'># S3 method for data.frame</span>
 <span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for array</span>
@@ -160,14 +163,6 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>a data.frame (or any object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class <code>sf</code>
-with geometry 'POINT' or 'POLYGON', or an <code>array</code> with two dimensions 
-containing the temperature data or a <code>clima_ls</code> with maximum and minimum 
-temperature, in that order. See details</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>additional arguments passed to methods. See details</p></td>
     </tr>
@@ -178,6 +173,27 @@ temperature, in that order. See details</p></td>
     <tr>
       <th>tfrost</th>
       <td><p>an integer for the freezing threshold</p></td>
+    </tr>
+    <tr>
+      <th>tmax</th>
+      <td><p>a numeric vector with the maximum temperature</p></td>
+    </tr>
+    <tr>
+      <th>tmin</th>
+      <td><p>a numeric vector with the minimum temperature</p></td>
+    </tr>
+    <tr>
+      <th>dates</th>
+      <td><p>optional, a character (or Date or numeric) vector for the dates in 
+<var>tmax</var> and <var>tmin</var></p></td>
+    </tr>
+    <tr>
+      <th>object</th>
+      <td><p>a data.frame with geographical coordinates (lonlat), 
+or an object of class <code>sf</code> with geometry 'POINT' or 'POLYGON', 
+or an <code>array</code> with two dimensions containing the temperature data 
+or a <code>clima_ls</code> with maximum and minimum temperature, 
+in that order. See details</p></td>
     </tr>
     <tr>
       <th>day.one</th>
@@ -195,7 +211,7 @@ day to capture the climate data</p></td>
 <dt>gdd</dt><dd><p>the growing degree-days accumulated during the event</p></dd>
 <dt>event</dt><dd><p>a factor for the observed event, frost, latent (where there is no frost event, 
  but also there is no GDD), and warming (where GDD is accumulated)</p></dd>
-<dt>duration</dt><dd><p>the number of days the frost or warming event spanned</p></dd>
+<dt>duration</dt><dd><p>the number of days the event spanned</p></dd>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -221,15 +237,26 @@ day to capture the climate data</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples">
+<span class='co'># default method</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"innlandet"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+
+<span class='no'>tmax</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"tmax"</span>]
+<span class='no'>tmin</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"tmin"</span>]
+<span class='no'>date</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"dates"</span>]
+
+<span class='fu'>late_frost</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>date</span>)
+
 <span class='co'># demo of the array method but no frost event is returned </span>
 <span class='co'># because the data comes from the tropics</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"temp_dat"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
-<span class='fu'>late_frost</span>(<span class='no'>modis</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-27"</span>)
+<span class='fu'>late_frost</span>(<span class='no'>temp_dat</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-27"</span>)
 
 
 <span class='co'># \donttest{</span>
 <span class='co'># Some random points in Norway</span>
 <span class='co'># get data from NASA Power</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"lonlatsf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='fu'>late_frost</span>(<span class='no'>lonlatsf</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2019-01-01"</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2019-07-01"</span>)

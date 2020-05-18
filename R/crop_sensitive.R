@@ -52,29 +52,66 @@
 #' \cr\url{https://doi.org/10.1038/nclimate2242}
 #' 
 #' @examples 
-#' data("modis", package = "climatrends")
+#' # the default method
+#' set.seed(78)
+#' tmax <- runif(50, 37, 47)
+#' set.seed(79)
+#' tmin <- runif(50, 31, 34)
+#' 
+#' crop_sensitive(tmax, tmin)
+#' 
+#' ###############################################
+#' 
+#' # the array method
+#' data("temp_dat", package = "climatrends")
 #' 
 #' # use the default thresholds
-#' crop_sensitive(modis,
+#' crop_sensitive(temp_dat,
 #'                day.one = "2013-10-27",
 #'                last.day = "2013-11-04")
 #' 
-#' # or change the thresholds based on the crop
-#' crop_sensitive(modis,
+#' # or change the thresholds based on the crop physiology
+#' crop_sensitive(temp_dat,
 #'                day.one = "2013-10-27",
 #'                last.day = "2013-11-04",
 #'                hts_mean.threshold = c(24),
 #'                hts_max.threshold = c(31, 33))
-#' 
 #' @export
-crop_sensitive <- function(object, ...){
+crop_sensitive <- function(...){
   UseMethod("crop_sensitive")
 }
 
 #' @rdname crop_sensitive
 #' @method crop_sensitive default
 #' @export
-crop_sensitive.default <- function(object, day.one, ...) {
+crop_sensitive.default <- function(tmax, tmin, ...) {
+  
+  dots <- list(...)
+  hts_mean <- dots[["hts_mean.threshold"]]
+  hts_max <- dots[["hts_max.threshold"]]
+  hse <- dots[["hse.threshold"]]
+  cdi_mean <- dots[["cdi_mean.threshold"]]
+  cdi_max <- dots[["cdi_max.threshold"]]
+  lethal <- dots[["lethal.threshold"]]
+  
+  temp <- data.frame(id = 1, tmax = tmax, tmin = tmin, stringsAsFactors = FALSE)
+  
+  result <- .crop_sensitive(temp = temp, 
+                            hts_mean.threshold = hts_mean,
+                            hts_max.threshold = hts_max,
+                            hse.threshold = hse,
+                            cdi_mean.threshold = cdi_mean,
+                            cdi_max.threshold = cdi_max,
+                            lethal.threshold = lethal)
+  
+  return(result)
+  
+}
+
+#' @rdname crop_sensitive
+#' @method crop_sensitive data.frame
+#' @export
+crop_sensitive.data.frame <- function(object, day.one, ...) {
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -84,9 +121,6 @@ crop_sensitive.default <- function(object, day.one, ...) {
   cdi_mean <- dots[["cdi_mean.threshold"]]
   cdi_max <- dots[["cdi_max.threshold"]]
   lethal <- dots[["lethal.threshold"]]
-  
-  # coerce inputs to data.frame
-  object <- as.data.frame(object)
   
   if(dim(object)[[2]] != 2) {
     stop("Subscript out of bounds. In crop_sensitive.default(),",
@@ -101,7 +135,9 @@ crop_sensitive.default <- function(object, day.one, ...) {
   
   dat <- get_timeseries(object, day.one, pars = pars, ...)
   
-  temp <- cbind(dat[[1]], min = dat[[2]]$value)
+  temp <- cbind(dat[[1]], tmin = dat[[2]]$value)
+  
+  names(temp)[names(temp)=="value"] <- "tmax"
   
   result <- .crop_sensitive(temp = temp, 
                       hts_mean.threshold = hts_mean,
@@ -121,11 +157,6 @@ crop_sensitive.default <- function(object, day.one, ...) {
 #' @export
 crop_sensitive.array <- function(object, day.one, ...){
   
-  
-  if (dim(object)[[2]] == 2) {
-    UseMethod("crop_sensitive", "default")
-  }
-  
   dots <- list(...)
   hts_mean <- dots[["hts_mean.threshold"]]
   hts_max <- dots[["hts_max.threshold"]]
@@ -139,7 +170,9 @@ crop_sensitive.array <- function(object, day.one, ...){
   
   ts <- get_timeseries(object, day.one, ...)
   
-  temp <- cbind(ts[[1]], min = ts[[2]]$value)
+  temp <- cbind(ts[[1]], tmin = ts[[2]]$value)
+  
+  names(temp)[names(temp)=="value"] <- "tmax"
   
   result <- .crop_sensitive(temp = temp, 
                       hts_mean.threshold = hts_mean,
@@ -166,7 +199,9 @@ crop_sensitive.clima_ls <- function(object, ...) {
   cdi_max <- dots[["cdi_max.threshold"]]
   lethal <- dots[["lethal.threshold"]]
   
-  temp <- cbind(object[[1]], min = object[[2]]$value)
+  temp <- cbind(object[[1]], tmin = object[[2]]$value)
+  
+  names(temp)[names(temp) == "value"] <- "tmax"
   
   result <- .crop_sensitive(temp = temp, 
                       hts_mean.threshold = hts_mean,
@@ -203,7 +238,9 @@ crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
   
   dat <- get_timeseries(object, day.one, pars = pars, ...)
   
-  temp <- cbind(dat[[1]], min = dat[[2]]$value)
+  temp <- cbind(dat[[1]], tmin = dat[[2]]$value)
+  
+  names(temp)[names(temp)=="value"] <- "tmax"
   
   result <- .crop_sensitive(temp = temp, 
                       hts_mean.threshold = hts_mean,
@@ -269,8 +306,8 @@ crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
   
   X <- lapply(X, function(y){
     
-    max <- y$value
-    min <- y$min
+    max <- y$tmax
+    min <- y$tmin
     
     c(
       sapply(hts_mean.threshold, function(x){

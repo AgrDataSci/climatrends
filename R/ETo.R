@@ -11,6 +11,7 @@
 #' @param Kc a numeric value for the crop factor for water requirement
 #' @param p optional if \var{lat} is given, a numeric for the mean daily percentage 
 #'  of annual daytime hours (p = 0.27 by default)
+#' @param month an integer for the reference month of daylight percentage
 #' @return The evapotranspiration in mm/day
 #' @details 
 #' When \var{lat} is provided, it is combined with the month provided in 
@@ -19,13 +20,13 @@
 #'  of daytime hours in the given month and latitude. Otherwise \var{p} is set 
 #'  to 0.27 as default.
 #'  
-#' The \code{array} method assumes that \var{object} contains climate data provided 
-#'  from a local source; this requires an array with two dimensions, 1st dimension 
+#' The \code{array} method assumes that \var{object} contains climate data available 
+#'  in your R section; this requires an array with two dimensions, 1st dimension 
 #'  contains the day temperature and 2nd dimension the night temperature, 
-#'  see help("modis", "climatrends") for an example on input structure.
+#'  see help("temp_dat", package = "climatrends") for an example on input structure.
 #' 
-#' The \code{default} method and the \code{sf} method assumes that the climate data
-#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
+#' The \code{data.frame} method and the \code{sf} method assumes that the climate data
+#'  will be fetched from a remote (cloud) source that be adjusted using the argument 
 #'  \var{data.from}.
 #' 
 #' Additional arguments:
@@ -56,32 +57,27 @@
 #' \url{http://www.fao.org/3/S2022E/s2022e00.htm}
 #' 
 #' @examples
-#' # Using local data
-#' data("modis", package = "climatrends")
+#' # the default method
+#' set.seed(78)
+#' tmax <- runif(50, 37, 47)
+#' set.seed(79)
+#' tmin <- runif(50, 31, 34)
 #' 
-#' ETo(modis, 
+#' ETo(tmax, tmin, lat = 22, month = 10)
+#' 
+#' ###############################################
+#' 
+#' # the array method
+#' data("temp_dat", package = "climatrends")
+#' 
+#' ETo(temp_dat, 
 #'     day.one = "2013-10-28",
 #'     span = 10,
 #'     Kc = 0.92)
-#' 
+#'     
 #' \donttest{
-#' ######################################
-#' 
-#' # Using remote data
-#' # random geographic locations around bbox(11, 12, 55, 58)
-#' set.seed(826128)
-#' lonlat <- data.frame(lon = runif(2, 11, 12),
-#'                      lat = runif(2, 55, 58))
-#' 
-#' # the evapotranspiration in the 30 days
-#' ETo(lonlat,
-#'     day.one = "2018-05-15",
-#'     last.day = "2018-06-15",
-#'     Kc = 0.5)
-#' 
 #' #######################################
-#' 
-#' # Objects of class 'sf'
+#' library("nasapower")
 #' data("lonlatsf", package = "climatrends")
 #' 
 #' ETo(lonlatsf,
@@ -91,7 +87,7 @@
 #' }
 #' @importFrom sf st_bind_cols
 #' @export
-ETo <- function(object, day.one, Kc = 1, ...){
+ETo <- function(..., Kc = 1){
   
   UseMethod("ETo")
 
@@ -100,7 +96,35 @@ ETo <- function(object, day.one, Kc = 1, ...){
 #' @rdname ETo
 #' @method ETo default
 #' @export
-ETo.default <- function(object, day.one, Kc = 1, ...){
+ETo.default <- function(tmax, tmin, ..., Kc = 1, lat = NULL, month = NULL){
+  
+  dots <- list(...)
+  p <- dots[["p"]]
+  
+  # get p if lat is provided
+  if (all(!is.null(lat), !is.null(month))) {
+    m <- as.integer(month)
+    p <- .p_daytime(lat = lat, month = m)
+  }
+  
+  if (is.null(p)) {
+    p <- 0.27
+  }
+  
+  tmax <- data.frame(id = 1, value = tmax, stringsAsFactors = FALSE)
+  
+  tmin <- data.frame(id = 1, value = tmin, stringsAsFactors = FALSE)
+  
+  result <- .eto(tmax, tmin, Kc, p)
+  
+  return(result)
+  
+}
+
+#' @rdname ETo
+#' @method ETo data.frame
+#' @export
+ETo.data.frame <- function(object, day.one, ..., Kc = 1){
   
   dots <- list(...)
   pars <- dots[["pars"]]
@@ -148,11 +172,7 @@ ETo.default <- function(object, day.one, Kc = 1, ...){
 #' @rdname ETo
 #' @method ETo array
 #' @export
-ETo.array <- function(object, day.one, Kc = 1, lat = NULL, p = 0.27, ...){
-  
-  if(dim(object)[[2]] == 2) {
-    UseMethod("ETo", "default")
-  }
+ETo.array <- function(object, day.one, ..., Kc = 1, lat = NULL, p = 0.27){
   
   dots <- list(...)
   span <- dots[["span"]]
@@ -190,7 +210,7 @@ ETo.array <- function(object, day.one, Kc = 1, lat = NULL, p = 0.27, ...){
 #' @rdname ETo
 #' @method ETo sf
 #' @export
-ETo.sf <- function(object, day.one, Kc = 1, as.sf = TRUE, ...){
+ETo.sf <- function(object, day.one, ..., Kc = 1, as.sf = TRUE){
   
   dots <- list(...)
   pars <- dots[["pars"]]

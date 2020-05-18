@@ -82,7 +82,7 @@ are calculated by taking the integral of warmth above a base temperature." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5-1</span>
       </span>
     </div>
 
@@ -144,63 +144,26 @@ is used to predict plant and animal development rates. Growing degree-days
 are calculated by taking the integral of warmth above a base temperature.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+    <pre class="usage"><span class='fu'>GDD</span>(<span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>GDD</span>(
-  <span class='no'>object</span>,
-  <span class='no'>day.one</span>,
-  <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
-  <span class='kw'>return.as</span> <span class='kw'>=</span> <span class='st'>"ndays"</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>GDD</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='kw'>dates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+
+<span class='co'># S3 method for data.frame</span>
+<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>)
 
 <span class='co'># S3 method for array</span>
-<span class='fu'>GDD</span>(
-  <span class='no'>object</span>,
-  <span class='no'>day.one</span>,
-  <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
-  <span class='kw'>return.as</span> <span class='kw'>=</span> <span class='st'>"ndays"</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>)
 
 <span class='co'># S3 method for sf</span>
-<span class='fu'>GDD</span>(
-  <span class='no'>object</span>,
-  <span class='no'>day.one</span>,
-  <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
-  <span class='kw'>return.as</span> <span class='kw'>=</span> <span class='st'>"ndays"</span>,
-  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
-)
+<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='co'># S3 method for clima_ls</span>
-<span class='fu'>GDD</span>(
-  <span class='no'>object</span>,
-  <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
-  <span class='kw'>return.as</span> <span class='kw'>=</span> <span class='st'>"ndays"</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>object</th>
-      <td><p>a data.frame (or any object that can be coerced to data.frame) 
-with geographical coordinates (lonlat), or an object of class <code>sf</code>
-with geometry 'POINT' or 'POLYGON', or an <code>array</code> with two dimensions 
-containing the temperature data or a <code>clima_ls</code> with maximum and minimum 
-temperature, in that order. See details</p></td>
-    </tr>
     <tr>
       <th>...</th>
       <td><p>additional arguments passed to methods. See details</p></td>
@@ -210,27 +173,31 @@ temperature, in that order. See details</p></td>
       <td><p>an integer for the minimum temperature for growth</p></td>
     </tr>
     <tr>
+      <th>tmax</th>
+      <td><p>a numeric vector with the maximum temperature</p></td>
+    </tr>
+    <tr>
+      <th>tmin</th>
+      <td><p>a numeric vector with the minimum temperature</p></td>
+    </tr>
+    <tr>
+      <th>dates</th>
+      <td><p>optional, a character (or Date or numeric) vector for the dates in 
+<var>tmax</var> and <var>tmin</var></p></td>
+    </tr>
+    <tr>
+      <th>object</th>
+      <td><p>a data.frame with geographical coordinates (lonlat), 
+or an object of class <code>sf</code> with geometry 'POINT' or 'POLYGON', 
+or an <code>array</code> with two dimensions containing the temperature data 
+or a <code>clima_ls</code> with maximum and minimum temperature, 
+in that order. See details</p></td>
+    </tr>
+    <tr>
       <th>day.one</th>
       <td><p>a vector of class <code>Date</code> or any other object that can be 
 coerced to <code>Date</code> (e.g. integer, character YYYY-MM-DD) for the starting 
 day to capture the climate data</p></td>
-    </tr>
-    <tr>
-      <th>degree.days</th>
-      <td><p>an integer for the accumulated degree-days required by the 
-organism (as per the physiology of the focal organism). Optional if 
-<var>return.as</var> = <code>"gdd"</code></p></td>
-    </tr>
-    <tr>
-      <th>equation</th>
-      <td><p>character to specify the equation to be used, one of <code>"default"</code>,
-<code>"variant_a"</code> or <code>"variant_b"</code>. See details</p></td>
-    </tr>
-    <tr>
-      <th>return.as</th>
-      <td><p>character (one of <code>"ndays"</code> the default or <code>"gdd"</code>)
-to select if the function returns the number of days to reach the accumulated 
-<var>degree.days</var> or the daily values of the GDD</p></td>
     </tr>
     <tr>
       <th>as.sf</th>
@@ -244,30 +211,39 @@ to select if the function returns the number of days to reach the accumulated
   as defined with the argument <var>return.as</var></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The <code>array</code> method assumes that <var>object</var> contains climate data provided 
- from a local source; this requires an array with two dimensions, 1st dimension 
- contains the day temperature and 2nd dimension the night temperature, 
- see help("modis", "climatrends") for an example on input structure.</p>
-<p>The <code>default</code> method and the <code>sf</code> method assumes that the climate data
- will e fetched from a remote (cloud) source that be adjusted using the argument 
- <var>data.from</var>.</p> 
-<p>The <code>"default"</code> <var>equation</var> uses the average of the daily maximum (Tmax) and 
- minimum (Tmin) temperatures compared to a <var>base</var> temperature (Tbase). If Tmin 
- is below Tbase there are two variants:</p> 
-<p><code>"variant_a"</code>: set max(GDD, 0)</p> 
-<p><code>"variant_b"</code>: set Tmin = Tbase if Tmin &lt; Tbase</p>
-<p>Additional arguments:</p>
+    <p>Additional arguments:</p>
+<p><code>return.as</code> character (one of, the default, <code>"gdd"</code> or <code>"ndays"</code>)
+ to select if the function returns the number of days to reach the accumulated 
+ <var>degree.days</var> or the daily values of the GDD</p> 
+<p><code>degree.days</code> an integer for the accumulated degree-days required by the 
+ organism (as per the physiology of the focal organism). Optional if 
+ <var>return.as</var> = <code>"gdd"</code></p>
+<p><code>equation</code> character to specify the equation to be used, one of <code>"default"</code>,
+<code>"variant_a"</code> or <code>"variant_b"</code>. See Equations below</p>
 <p><code>last.day</code>: an object (optional to <var>span</var>) of class <code>Date</code> or
  any other object that can be coerced to <code>Date</code> (e.g. integer, character 
  YYYY-MM-DD) for the last day of the time series</p> 
 <p><code>span</code>: an integer (optional to <var>last.day</var>) or a vector with 
  integers (optional if <var>last.day</var> is given) for the length of 
- the time series to be captured</p>
-<p><code>data.from</code>: character for the source of remote data. Current remote source 
- is: 'nasapower'</p>
+ the time series to be captured</p> 
 <p><code>pars</code>: character vector for the temperature data to be fetched. If 
  <code>data.from</code> is 'nasapower'. The temperature can be adjusted to 2 m, the default,
  c("T2M_MAX", "T2M_MIN") or 10 m c("T10M_MAX", "T10M_MIN")</p>
+<p>S3 Methods:</p>
+<p>The <code>array</code> method assumes that <var>object</var> contains climate data available 
+ in your R section; this requires an array with two dimensions, 1st dimension 
+ contains the day temperature and 2nd dimension the night temperature, 
+ see help("temp_dat", package = "climatrends") for an example on input structure.</p>
+<p>The <code>data.frame</code> method and the <code>sf</code> method assumes that the climate data
+ will e fetched from a remote (cloud) source that be adjusted using the argument 
+ <var>data.from</var></p>
+ 
+<p>Equations:</p>  
+<p>The <code>"default"</code> <var>equation</var> uses the average of the daily maximum (Tmax) and 
+ minimum (Tmin) temperatures compared to a <var>base</var> temperature (Tbase). If Tmin 
+ is below Tbase there are two variants:</p> 
+<p><code>"variant_a"</code>: set Tmean = Tbase if (Tmax + Tmin) / 2 &lt; Tbase</p> 
+<p><code>"variant_b"</code>: set Tmin = Tbase if Tmin &lt; Tbase</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 
@@ -282,43 +258,26 @@ to select if the function returns the number of days to reach the accumulated
 <code><a href='late_frost.html'>late_frost</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># Using local data</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"modis"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+    <pre class="examples"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"innlandet"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
-<span class='fu'>GDD</span>(<span class='no'>modis</span>,
-    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
-    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-    <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>100</span>)
+<span class='no'>tmax</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"tmax"</span>]
+<span class='no'>tmin</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"tmin"</span>]
 
-<span class='co'># change the equation to variant_b where </span>
-<span class='co'># Tmin = Tbase if (Tmax + Tmin) / 2 &lt; Tbase</span>
-<span class='fu'>GDD</span>(<span class='no'>modis</span>,
-    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
-    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-    <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-    <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"variant_b"</span>)
+<span class='co'># using the default equation, returns negative values</span>
+<span class='fu'>GDD</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>2</span>)
 
-<span class='co'># return as degree days</span>
-<span class='fu'>GDD</span>(<span class='no'>modis</span>,
-    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
-    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-    <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-    <span class='kw'>return.as</span> <span class='kw'>=</span> <span class='st'>"gdd"</span>)
+<span class='co'># set the equation variant_a</span>
+<span class='co'># Tmean = Tbase if (Tmax + Tmin) / 2 &lt; Tbase</span>
+<span class='fu'>GDD</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"variant_a"</span>)
 
-<span class='co'># \donttest{</span>
-<span class='co'># Using remote sources and sf method</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"lonlatsf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
-<span class='co'># compute number of days from "2019-04-01" to reach accumated GDD </span>
-<span class='co'># for Acer platanoides that begins to flowering at 45 GDD</span>
-<span class='co'># set equation to variant_a where Tmean = Tbase if (Tmax + Tmin) / 2 &lt; Tbase</span>
-<span class='fu'>GDD</span>(<span class='no'>lonlatsf</span>,
-    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2019-04-01"</span>,
-    <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2019-06-30"</span>,
-    <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-    <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>45</span>,
-    <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"variant_a"</span>)
-<span class='co'># }</span></pre>
+<span class='co'>#####################################################</span>
+
+<span class='co'># return as the number of days required to reach a certain </span>
+<span class='co'># accumulated GDD</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"temp_dat"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+
+<span class='fu'>GDD</span>(<span class='no'>temp_dat</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-27"</span>, <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>90</span>, <span class='kw'>return.as</span> <span class='kw'>=</span> <span class='st'>"ndays"</span>)</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

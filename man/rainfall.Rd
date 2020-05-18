@@ -3,36 +3,45 @@
 \name{rainfall}
 \alias{rainfall}
 \alias{rainfall.default}
+\alias{rainfall.data.frame}
 \alias{rainfall.matrix}
 \alias{rainfall.sf}
-\alias{rainfall.clima_df}
 \title{Rainfall indices}
 \usage{
 rainfall(object, ...)
 
-\method{rainfall}{default}(object, day.one, span = NULL, timeseries = FALSE, intervals = 5, ...)
+\method{rainfall}{default}(object, dates = NULL, ..., timeseries = FALSE, intervals = 5)
 
-\method{rainfall}{matrix}(object, day.one, span = NULL, timeseries = FALSE, intervals = 5, ...)
+\method{rainfall}{data.frame}(object, day.one, span = NULL, ..., timeseries = FALSE, intervals = 5)
+
+\method{rainfall}{matrix}(object, day.one, span = NULL, ..., timeseries = FALSE, intervals = 5)
 
 \method{rainfall}{sf}(
   object,
   day.one,
   span = NULL,
+  ...,
   timeseries = FALSE,
   intervals = 5,
-  as.sf = TRUE,
-  ...
+  as.sf = TRUE
 )
-
-\method{rainfall}{clima_df}(object, timeseries = FALSE, intervals = 5, ...)
 }
 \arguments{
-\item{object}{a \code{data.frame} (or any other object that can be coerced to 
-data.frame) with geographical coordinates (lonlat), or an object of class 
-\code{sf} with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
-precipitation data, or a data.frame of class \code{clima_df}. See details.}
+\item{object}{a numeric vector with precipitation data or a \code{data.frame}
+with geographical coordinates (lonlat), or an object of class \code{sf} 
+with geometry 'POINT' or 'POLYGON', or a named \code{matrix} with 
+precipitation data. See details.}
 
 \item{...}{additional arguments passed to methods. See details.}
+
+\item{dates}{optional, a character (or Date or numeric) vector for the dates in 
+\var{object} in the dafault method}
+
+\item{timeseries}{logical, \code{FALSE} for a single point time series
+observation or \code{TRUE} for a time series based on \var{intervals}}
+
+\item{intervals}{integer (no lower than 5), for the days intervals when
+\var{timeseries} = \code{TRUE}}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -40,12 +49,6 @@ day to capture the climate data}
 
 \item{span}{an integer or a vector with integers (optional if \var{last.day} is 
 given) for the length of the time series to be captured}
-
-\item{timeseries}{logical, \code{FALSE} for a single point time series
-observation or \code{TRUE} for a time series based on \var{intervals}}
-
-\item{intervals}{integer (no lower than 5), for the days intervals when
-\var{timeseries} = \code{TRUE}}
 
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
@@ -67,8 +70,8 @@ A dataframe with rainfall indices:
 Methods to compute rainfall indices over a time series
 }
 \details{
-The \code{matrix} method assumes that \var{object} contains climate data provided 
- from a local source; see help("chirp", package = "climatrends") for an example on input 
+The \code{matrix} method assumes that \var{object} contains climate data available in your 
+ R section; see help("rain_dat", package = "climatrends") for an example on input 
  structure.
 
 The \code{default} method and the \code{sf} method assumes that the climate data
@@ -97,17 +100,29 @@ When \var{timeseries} = \code{TRUE}, an id is created,
  which is the index for the rownames of the inputted \var{object}.
 }
 \examples{
-# Using local sources
-data("chirp", package = "climatrends")
+# A vector with precipitation data
+set.seed(987219)
+rain <- runif(50, min = 0, max = 6)
 
-rainfall(chirp,
+rainfall(rain)
+
+# Return as timeseries with intervals of 7 days
+dates <- 17650:17699
+rainfall(rain, dates = dates, timeseries = TRUE, intervals = 7)
+
+######################################################
+
+# the matrix method
+data("rain_dat", package = "climatrends")
+
+rainfall(rain_dat,
          day.one = "2013-10-28",
          span = 12)
 
 #####################################################
 \donttest{
 # Using remote sources of climate data
-
+library("nasapower")
 data("lonlatsf", package = "climatrends")
 
 # some random dates provided as integers and coerced to Dates internally
@@ -128,18 +143,8 @@ rain2 <- rainfall(lonlatsf,
                   last.day = "2011-01-31",
                   as.sf = FALSE)
 rain2
+}
 
-# indices from "2010-12-01" to "2011-01-31" with intervals of 7 days
-rain3 <- rainfall(lonlatsf,
-                  day.one = "2010-12-01",
-                  last.day = "2011-01-31",
-                  timeseries = TRUE,
-                  intervals = 7,
-                  as.sf = FALSE)
-rain3
-
-}       
-         
 }
 \references{
 Aguilar E., et al. (2005). Journal of Geophysical Research, 
