@@ -1,6 +1,6 @@
 Package: climatrends
 Type: Package
-Title: Precipitation and Temperature Indices for Climate Variability Analysis
+Title: Climate Variability Indices for Ecological Modelling
 Version: 0.1.6
 Authors@R: c(person("Kaue", "de Sousa", 
         email = "kaue.desousa@inn.no", role = c("aut", "cre"),
@@ -11,10 +11,8 @@ Authors@R: c(person("Kaue", "de Sousa",
         comment = c(ORCID = "0000-0002-4491-4483")))
 URL: https://agrobioinfoservices.github.io/climatrends
 BugReports: https://github.com/agrobioinfoservices/climatrends/issues
-Description: Climate variability indices for ecological modelling. 
-    The indices produced here can be used as explanatory variables for crop 
-    modelling, trends in climate change and to assess the interactions
-    of plants and animals with the environment.
+Description: Methods to calculate precipitation and temperature indices in 
+    crop modelling, ecological modelling and trends in climate change.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

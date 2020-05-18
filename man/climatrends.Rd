@@ -4,14 +4,12 @@
 \name{climatrends}
 \alias{climatrends}
 \alias{climatrends-package}
-\title{Precipitation and Temperature Indices for Climate Variability Analysis}
+\title{Climate Variability Indices for Ecological Modelling}
 \description{
 \if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
 
-Climate variability indices for ecological modelling. 
-    The indices produced here can be used as explanatory variables for crop 
-    modelling, trends in climate change and to assess the interactions
-    of plants and animals with the environment.
+Methods to calculate precipitation and temperature indices in 
+    crop modelling, ecological modelling and trends in climate change.
 }
 \seealso{
 \strong{Useful links:}

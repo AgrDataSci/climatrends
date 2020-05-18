@@ -16,6 +16,8 @@ addons:
 r_github_packages:
   - r-lib/covr
   - r-quantities/errors
+r_packages:
+  - nasapower
 script:
   - git clone https://github.com/r-quantities/quantities.git
   - bash quantities/scripts/check_with_quantities.sh
