@@ -128,17 +128,18 @@ Additional arguments:
  \var{day.one} to be included in the timespan.
 }
 \examples{
-
+# the default method
 data("innlandet", package = "climatrends")
-# default method
+
 tmax <- innlandet[, "tmax"]
 tmin <- innlandet[, "tmin"]
-date <- innlandet[, "dates"]
 
-# one single observation
+# a single temporal observation
 temperature(tmax, tmin)
 
 # return as timeseries with 30-day intervals
+date <- innlandet[, "dates"]
+
 temperature(tmax, tmin, dates = date, timeseries = TRUE, intervals = 30)
 
 #####################################################

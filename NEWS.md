@@ -1,4 +1,4 @@
-climatrends 0.1.5 (2020-05-14)
+climatrends 0.1.6 (2020-05-18)
 =========================
 
 ### NEW FEATURES
@@ -19,6 +19,7 @@ climatrends 0.1.5 (2020-05-14)
 
 ### CHANGES IN BEHAVIOUR
 
+* New default method in all functions which uses a vector as main input
 * Change order of `GDD()` arguments. Previous versions used *GDD(object, day.one = NULL, degree.days = NULL, base = 10, span = 150, ...)*. From now on `GDD()` default behaviour is *GDD(object, day.one, base = 10, ...)*, additional arguments are passed through `...` in each defined method.
 
 climatrends 0.1.0 (2020-02-20)

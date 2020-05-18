@@ -72,17 +72,18 @@
 #' 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
 #' 
 #' @examples
-#' 
+#' # the default method
 #' data("innlandet", package = "climatrends")
-#' # default method
+#' 
 #' tmax <- innlandet[, "tmax"]
 #' tmin <- innlandet[, "tmin"]
-#' date <- innlandet[, "dates"]
 #' 
-#' # one single observation
+#' # a single temporal observation
 #' temperature(tmax, tmin)
 #' 
 #' # return as timeseries with 30-day intervals
+#' date <- innlandet[, "dates"]
+#' 
 #' temperature(tmax, tmin, dates = date, timeseries = TRUE, intervals = 30)
 #' 
 #' #####################################################

@@ -1,7 +1,7 @@
 Package: climatrends
 Type: Package
 Title: Precipitation and Temperature Indices for Climate Variability Analysis
-Version: 0.1.5-1
+Version: 0.1.6
 Authors@R: c(person("Kaue", "de Sousa", 
         email = "kaue.desousa@inn.no", role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-7571-7845")),
