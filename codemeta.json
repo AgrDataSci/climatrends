@@ -5,7 +5,7 @@
   ],
   "@type": "SoftwareSourceCode",
   "identifier": "climatrends",
-  "description": "Methods to calculate precipitation and temperature indices in \n    crop modelling, ecological modelling and trends in climate change.",
+  "description": "Supports analysis of trends in climate change, ecological and crop modelling.",
   "name": "climatrends: Climate Variability Indices for Ecological Modelling",
   "codeRepository": "https://agrobioinfoservices.github.io/climatrends",
   "issueTracker": "https://github.com/agrobioinfoservices/climatrends/issues",

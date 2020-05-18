@@ -8,8 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
 
-Methods to calculate precipitation and temperature indices for 
-    crop modelling, ecological modelling and trends in climate change.
+Supports analysis of trends in climate change, ecological and crop modelling.
 }
 \seealso{
 \strong{Useful links:}

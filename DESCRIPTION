@@ -11,8 +11,7 @@ Authors@R: c(person("Kaue", "de Sousa",
         comment = c(ORCID = "0000-0002-4491-4483")))
 URL: https://agrobioinfoservices.github.io/climatrends
 BugReports: https://github.com/agrobioinfoservices/climatrends/issues
-Description: Methods to calculate precipitation and temperature indices for 
-    crop modelling, ecological modelling and trends in climate change.
+Description: Supports analysis of trends in climate change, ecological and crop modelling.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
