@@ -13,13 +13,7 @@ addons:
     packages:
       - libudunits2-dev
       - libgdal-dev
-r_github_packages:
-  - r-lib/covr
-  - r-quantities/errors
 r_packages:
   - nasapower
-script:
-  - git clone https://github.com/r-quantities/quantities.git
-  - bash quantities/scripts/check_with_quantities.sh
 after_success:
   - Rscript -e 'covr::codecov()'
