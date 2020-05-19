@@ -8,9 +8,9 @@
 \alias{ETo.sf}
 \title{Reference evapotranspiration}
 \usage{
-ETo(..., Kc = 1)
+ETo(object, ..., Kc = 1)
 
-\method{ETo}{default}(tmax, tmin, ..., Kc = 1, lat = NULL, month = NULL)
+\method{ETo}{default}(object, tmin, ..., Kc = 1, lat = NULL, month = NULL)
 
 \method{ETo}{data.frame}(object, day.one, ..., Kc = 1)
 
@@ -19,11 +19,15 @@ ETo(..., Kc = 1)
 \method{ETo}{sf}(object, day.one, ..., Kc = 1, as.sf = TRUE)
 }
 \arguments{
+\item{object}{a numeric vector with the maximum temperature, 
+or a data.frame with geographical coordinates (lonlat), 
+or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
+or an \code{array} with two dimensions containing the
+maximum and minimum temperature, in that order. See details}
+
 \item{...}{additional arguments passed to methods. See details}
 
 \item{Kc}{a numeric value for the crop factor for water requirement}
-
-\item{tmax}{a numeric vector with the maximum temperature}
 
 \item{tmin}{a numeric vector with the minimum temperature}
 
@@ -32,12 +36,6 @@ mean daily percentage of annual daytime hours based on the latitude and month.
 This is extracted automatically in the \code{sf} method. See details}
 
 \item{month}{an integer for the reference month of daylight percentage}
-
-\item{object}{a data.frame with geographical coordinates (lonlat), 
-or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
-or an \code{array} with two dimensions containing the temperature data 
-or a \code{clima_ls} with maximum and minimum temperature, 
-in that order. See details}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 

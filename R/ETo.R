@@ -87,7 +87,7 @@
 #' }
 #' @importFrom sf st_bind_cols
 #' @export
-ETo <- function(..., Kc = 1){
+ETo <- function(object, ..., Kc = 1){
   
   UseMethod("ETo")
 
@@ -96,7 +96,7 @@ ETo <- function(..., Kc = 1){
 #' @rdname ETo
 #' @method ETo default
 #' @export
-ETo.default <- function(tmax, tmin, ..., Kc = 1, lat = NULL, month = NULL){
+ETo.default <- function(object, tmin, ..., Kc = 1, lat = NULL, month = NULL){
   
   dots <- list(...)
   p <- dots[["p"]]
@@ -111,11 +111,12 @@ ETo.default <- function(tmax, tmin, ..., Kc = 1, lat = NULL, month = NULL){
     p <- 0.27
   }
   
-  tmax <- data.frame(id = 1, value = tmax, stringsAsFactors = FALSE)
+  temp <- data.frame(id = 1, 
+                     tmax = object, 
+                     tmin = tmin,
+                     stringsAsFactors = FALSE)
   
-  tmin <- data.frame(id = 1, value = tmin, stringsAsFactors = FALSE)
-  
-  result <- .eto(tmax, tmin, Kc, p)
+  result <- .eto(temp, Kc, p)
   
   return(result)
   
@@ -159,11 +160,11 @@ ETo.data.frame <- function(object, day.one, ..., Kc = 1){
   
   dat <- get_timeseries(object, day.one, pars = pars, ...)
   
-  day <- dat[[pars[[1]]]]
+  temp <- cbind(dat[[pars[[1]]]], tmin = dat[[pars[[2]]]]$value)
   
-  night <- dat[[pars[[2]]]]
+  names(temp)[names(temp) == "value"] <- "tmax"
   
-  result <- .eto(day, night, Kc, p)
+  result <- .eto(temp, Kc, p)
   
   return(result)
 }
@@ -198,9 +199,13 @@ ETo.array <- function(object, day.one, ..., Kc = 1, lat = NULL, p = 0.27){
     p <- .p_daytime(lat = lat, month = m)
   }
   
-  ts <- get_timeseries(object, day.one, span, last.day)
+  dat <- get_timeseries(object, day.one, span, last.day)
   
-  result <- .eto(ts[[1]], ts[[2]], Kc, p)
+  temp <- cbind(dat[[1]], tmin = dat[[2]]$value)
+  
+  names(temp)[names(temp) == "value"] <- "tmax"
+  
+  result <- .eto(temp, Kc, p)
   
   return(result)
   
@@ -238,11 +243,11 @@ ETo.sf <- function(object, day.one, ..., Kc = 1, as.sf = TRUE){
   
   dat <- get_timeseries(object, day.one, pars = pars, ...)
   
-  day <- dat[[pars[[1]]]]
+  temp <- cbind(dat[[pars[[1]]]], tmin = dat[[pars[[2]]]]$value)
   
-  night <- dat[[pars[[2]]]]
+  names(temp)[names(temp) == "value"] <- "tmax"
   
-  result <- .eto(day, night, Kc, p)
+  result <- .eto(temp, Kc, p)
   
   if (isTRUE(as.sf)) {
     result <- suppressWarnings(sf::st_bind_cols(object, result))
@@ -252,15 +257,24 @@ ETo.sf <- function(object, day.one, ..., Kc = 1, as.sf = TRUE){
   
 }
 
-# Compute evapotranspiration
-.eto <- function(day, night, Kc, p) {
-  
-  temp <- cbind(day, value2 = night$value)
+#' Evapotranspiration
+#' 
+#' This is the main function, the others are handling methods
+#' 
+#' @param temp data.frame with following values id, tmax, tmin and date
+#' @param Kc the crop factor
+#' @param p percentage of daylight
+#' @examples 
+#' data(innlandet, package = "climatrends")
+#' 
+#' .eto(innlandet, 0.8, 0.1)
+#' @noRd 
+.eto <- function(temp, Kc = 1, p = 0.27) {
   
   temp <- split(temp, temp$id)
   
   Tmean <-lapply(temp, function(x){
-    (mean(x$value, na.rm = TRUE) + mean(x$value2, na.rm = TRUE)) / 2
+    (mean(x$tmax, na.rm = TRUE) + mean(x$tmin, na.rm = TRUE)) / 2
   })
   
   Tmean <- do.call("rbind", Tmean)

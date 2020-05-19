@@ -3,40 +3,31 @@
 #' Methods to compute temperature indices over a time series
 #'
 #' @family temperature functions
-#' @param object a data.frame with geographical coordinates (lonlat), 
+#' @param object a numeric vector with the maximum temperature, 
+#'  or a data.frame with geographical coordinates (lonlat), 
 #'  or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
-#'  or an \code{array} with two dimensions containing the temperature data 
-#'  or a \code{clima_ls} with maximum and minimum temperature, 
-#'  in that order. See details 
+#'  or an \code{array} with two dimensions containing the
+#'  maximum and minimum temperature, in that order. See details 
 #' @inheritParams get_timeseries
 #' @param timeseries logical, \code{FALSE} for a single point time series
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
-#' @param intervals integer (no lower than 5), for the days intervals when
-#'  \var{timeseries} = \code{TRUE}
-#' @param dates optional, a character (or Date or numeric) vector for the dates in 
-#'  \var{tmax} and \var{tmin}
-#' @param tmax a numeric vector with the maximum temperature
 #' @param tmin a numeric vector with the minimum temperature
 #' @param as.sf logical, to return an object of class 'sf'
 #' @param ... additional arguments passed to methods. See details
 #' @details 
-#' The \code{array} method assumes that \var{object} contains climate data available 
-#'  in your R section; this requires an array with two dimensions, 1st dimension 
-#'  contains the day temperature and 2nd dimension the night temperature, 
-#'  see help("temp_dat", package = "climatrends") for an example on input structure.
-#' 
-#' The \code{data.frame} method and the \code{sf} method assumes that the climate data
-#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
-#'  \var{data.from}.
-#'
-#' When \var{timeseries} = \code{TRUE}, an id is created, 
-#'  which is the index for the rownames of the inputted \var{object}.
 #' 
 #' Additional arguments:
 #' 
+#' \code{intervals}: an integer (no lower than 5), for the days intervals when
+#'  \var{timeseries = TRUE}
+#' 
 #' \code{last.day}: optional to \var{span}, an object of class \code{Date} or
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
-#'  YYYY-MM-DD)  for the last day of the time series
+#'  YYYY-MM-DD)  for the last day of the time series. For \code{data.frame}, \code{array} 
+#'  and \code{sf} methods
+#'  
+#' \code{dates}: a character (or Date or numeric) vector for the dates of tmax and tmin
+#'  in the \code{default} method
 #' 
 #' \code{data.from}: character for the source of remote data. Current remote source 
 #'  is: 'nasapower'
@@ -47,6 +38,21 @@
 #' 
 #' \code{days.before}: optional, an integer for the number of days before 
 #'  \var{day.one} to be included in the timespan.
+#' 
+#' 
+#' # S3 Methods
+#' 
+#' The \code{array} method assumes that \var{object} contains climate data available 
+#'  in your R section; this requires an array with two dimensions, 1st dimension 
+#'  contains the day temperature and 2nd dimension the night temperature, 
+#'  see help("temp_dat", package = "climatrends") for an example on input structure.
+#' 
+#' The \code{data.frame} and the \code{sf} methods assumes that the climate data
+#'  will be fetched from a remote (cloud) source that be adjusted using the argument 
+#'  \var{data.from}.
+#'
+#' When \var{timeseries = TRUE}, an id is created, 
+#'  which is the index for the rownames of the inputted \var{object}.
 #' 
 #' @return A dataframe with temperature indices:
 #' \item{maxDT}{maximun day temperature (degree Celsius)}
@@ -75,16 +81,15 @@
 #' # the default method
 #' data("innlandet", package = "climatrends")
 #' 
-#' tmax <- innlandet[, "tmax"]
-#' tmin <- innlandet[, "tmin"]
-#' 
 #' # a single temporal observation
-#' temperature(tmax, tmin)
+#' temperature(innlandet$tmax, innlandet$tmin)
 #' 
 #' # return as timeseries with 30-day intervals
-#' date <- innlandet[, "dates"]
-#' 
-#' temperature(tmax, tmin, dates = date, timeseries = TRUE, intervals = 30)
+#' temperature(innlandet$tmax, 
+#'             innlandet$tmin, 
+#'             dates = innlandet$dates,
+#'             timeseries = TRUE, 
+#'             intervals = 30)
 #' 
 #' #####################################################
 #' 
@@ -117,13 +122,12 @@
 #' # get temperature indices from "2010-12-01" to "2011-01-31"
 #' temp2 <- temperature(lonlatsf,
 #'                      day.one = "2010-12-01",
-#'                      last.day = "2011-01-31",
-#'                      as.sf = FALSE)
+#'                      last.day = "2011-01-31")
 #' temp2
 #' 
 #' }
 #' @export
-temperature <- function(...)
+temperature <- function(object, ...)
 {
   
   UseMethod("temperature")
@@ -134,8 +138,11 @@ temperature <- function(...)
 #' @rdname temperature
 #' @method temperature default
 #' @export
-temperature.default <- function(tmax, tmin, dates = NULL, ..., 
-                                timeseries = FALSE, intervals = 5) {
+temperature.default <- function(object, tmin, ..., timeseries = FALSE) {
+  
+  dots <- list(...)
+  dates <- dots[["dates"]]
+  intervals <- dots[["intervals"]]
   
   if (!is.null(dates)) {
     dates <- .coerce2Date(dates)
@@ -143,17 +150,19 @@ temperature.default <- function(tmax, tmin, dates = NULL, ...,
   
   setnulldate <- FALSE
   if (is.null(dates)) {
-    dates <- .coerce2Date(1:length(tmax))
+    dates <- .coerce2Date(1:length(object))
     if (isTRUE(timeseries)) {
       setnulldate <- TRUE
     }
   }
   
-  tmax <- data.frame(id = 1, value = tmax, date = dates, stringsAsFactors = FALSE)
+  temp <- data.frame(id = 1, 
+                     tmax = object,
+                     tmin = tmin,
+                     date = dates, 
+                     stringsAsFactors = FALSE)
   
-  tmin <- data.frame(id = 1, value = tmin, date = dates, stringsAsFactors = FALSE)
-  
-  indices <- .temperature_indices(tmax, tmin, timeseries, intervals)
+  indices <- .temperature_indices(temp, timeseries, intervals)
   
   if (isTRUE(setnulldate)) {
     message("Intervals set with no visible dates, returning NAs\n")
@@ -167,12 +176,13 @@ temperature.default <- function(tmax, tmin, dates = NULL, ...,
 #' @rdname temperature
 #' @method temperature data.frame
 #' @export
-temperature.data.frame <- function(object, day.one, span = NULL, ...,
-                                   timeseries = FALSE, intervals = 5){
+temperature.data.frame <- function(object, day.one, span = NULL, ..., 
+                                   timeseries = FALSE){
   
   dots <- list(...)
   pars <- dots[["pars"]]
   last.day <- dots[["last.day"]]
+  intervals <- dots[["intervals"]]
   
   if(dim(object)[[2]] != 2) {
     stop("Subscript out of bounds. In temperature.data.frame(),",
@@ -187,11 +197,11 @@ temperature.data.frame <- function(object, day.one, span = NULL, ...,
   
   dat <- get_timeseries(object, day.one, span, pars = pars, ...)
   
-  day <- dat[[pars[[1]]]]
+  temp <- cbind(dat[[pars[[1]]]], tmin = dat[[pars[[2]]]]$value)
   
-  night <- dat[[pars[[2]]]]
+  names(temp)[names(temp) == "value"] <- "tmax"
   
-  indices <- .temperature_indices(day, night, timeseries, intervals)
+  indices <- .temperature_indices(temp, timeseries, intervals)
   
   return(indices)
 }
@@ -200,17 +210,22 @@ temperature.data.frame <- function(object, day.one, span = NULL, ...,
 #' @method temperature array
 #' @export
 temperature.array <- function(object, day.one, span = NULL, ...,
-                              timeseries = FALSE, intervals = 5){
+                              timeseries = FALSE){
   
   dots <- list(...)
   last.day <- dots[["last.day"]]
+  intervals <- dots[["intervals"]]
   
   # coerce to data.frame
   day.one <- as.vector(t(day.one))
   
-  ts <- get_timeseries(object, day.one, span = span, last.day = last.day)
+  dat <- get_timeseries(object, day.one, span = span, last.day = last.day)
   
-  indices <- .temperature_indices(ts[[1]], ts[[2]], timeseries, intervals)
+  temp <- cbind(dat[[1]], tmin = dat[[2]]$value)
+  
+  names(temp)[names(temp) == "value"] <- "tmax"
+  
+  indices <- .temperature_indices(temp, timeseries, intervals)
   
   return(indices)
   
@@ -220,11 +235,12 @@ temperature.array <- function(object, day.one, span = NULL, ...,
 #' @method temperature sf
 #' @export
 temperature.sf <- function(object, day.one, span = NULL, ...,
-                           timeseries = FALSE, intervals = 5, as.sf = TRUE){
+                           timeseries = FALSE, as.sf = TRUE){
   
   dots <- list(...)
   pars <- dots[["pars"]]
   last.day <- dots[["last.day"]]
+  intervals <- dots[["intervals"]]
   
   day.one <- as.vector(t(day.one))
   
@@ -234,11 +250,11 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   
   dat <- get_timeseries(object, day.one, span, pars = pars, ...)
   
-  day <- dat[[pars[[1]]]]
+  temp <- cbind(dat[[pars[[1]]]], tmin = dat[[pars[[2]]]]$value)
   
-  night <- dat[[pars[[2]]]]
+  names(temp)[names(temp) == "value"] <- "tmax"
   
-  indices <- .temperature_indices(day, night, timeseries, intervals)
+  indices <- .temperature_indices(temp, timeseries, intervals)
   
   if (all(as.sf, timeseries)) {
   
@@ -247,7 +263,7 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
     xy$id <- 1:dim(xy)[[1]]
     xy <- merge(xy, indices, by = "id")
     
-    indices <- st_as_sf(xy, coords = c("lon", "lat"), crs = 4326)
+    indices <- sf::st_as_sf(xy, coords = c("lon", "lat"), crs = 4326)
       
   }
   
@@ -272,41 +288,34 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   
 }
 
-#' @rdname temperature
-#' @method temperature clima_ls
-#' @export
-temperature.clima_ls <- function(object, ...,
-                                 timeseries = FALSE, intervals = 5){
-  
-  day <- object[[1]]
-  night <- object[[2]]
-  
-  result <- .temperature_indices(day, night, timeseries, intervals)
-  
-  return(result)
-  
-}
-
-#' Compute the temperature indices
-#' @param day a data.frame with the day temperature
-#' @param night a data.frame with the night temperature
-#' @inheritParams temperature
+#' Temperature indices
+#' 
+#' This is the main function, the others are handling methods
+#' 
+#' @param temp data.frame with following values id, tmax, tmin and date
+#' @param timeseries if indices are to be returned in timeseries 
+#' @param intervals the intervals in the timeseries
+#' @examples 
+#' data(innlandet, package = "climatrends")
+#' 
+#' .temperature_indices(innlandet, FALSE, 0)
+#' 
+#' .temperature_indices(innlandet, TRUE, 30)
+#' 
 #' @noRd
-.temperature_indices <- function(day, night, timeseries, intervals){
+.temperature_indices <- function(temp, timeseries = FALSE, intervals = NULL){
   
   index <- c("maxDT", "minDT", "maxNT", "minNT",
              "DTR", "SU", "TR", "CFD",
              "WSDI", "CSDI", "T10p", "T90p")
   
-  nr <- max(unique(day$id))
+  nr <- max(unique(temp$id))
   
   if (isTRUE(timeseries)) {
     
-    ids <- unique(day$id)
+    ids <- unique(temp$id)
     
-    day <- split(day, day$id)
-    
-    night <- split(night, night$id)
+    temp <- split(temp, temp$id)
     
     # it might happen that when bins are not well distributed across dates
     # in that case the last values are dropped
@@ -314,7 +323,7 @@ temperature.clima_ls <- function(object, ...,
     # in that case, the last four observations are dropped to fit in a vector of
     # length == 49 (the maximum integer from dividing days/intervals)
     # organise bins, ids and dates
-    day <- lapply(day, function(x){
+    temp <- lapply(temp, function(x){
       
       r <- dim(x)[[1]]
       
@@ -330,53 +339,33 @@ temperature.clima_ls <- function(object, ...,
       
     })
     
-    day <- do.call("rbind", day)
-    
-    night <- lapply(night, function(x) {
-      
-      r <- dim(x)[[1]]
-      
-      bins <- floor(r / intervals)
-      
-      bins <- rep(1:bins, each = intervals, length.out = NA)
-      
-      x <- x[1:length(bins), ]
-      
-      x$id <- paste(x$id, bins, sep = "_")
-      
-      x 
-      
-    })
-    
-    night <- do.call("rbind", night)
+    temp <- do.call("rbind", temp)
     
     # split by bins
-    day <- split(day, day$id)
+    temp <- split(temp, temp$id)
     
-    night <- split(night, night$id)
-    
-    ind <- mapply(function(X, Y) {
+    ind <- lapply(temp, function(x) {
       
-      id <- strsplit(Y$id[1], "_")[[1]][[1]]
+      id <- strsplit(x$id[1], "_")[[1]][[1]]
       
-      d <- Y$date[[1]]
+      d <- x$date[[1]]
       
-      XX <- X$value
+      tmax <- x$tmax
       
-      YY <- Y$value
+      tmin <- x$tmin
 
-      i <- c(maxDT = .max_temperature(XX),
-             minDT = .min_temperature(XX),
-             maxNT = .max_temperature(YY),
-             minNT = .min_temperature(YY),
-             DTR   = .temperature_range(XX, YY),
-             SU    = .summer_days(XX),
-             TR    = .tropical_nights(YY),
-             CFD   = .frosty_days(YY),
-             WSDI  = .max_wsdi(XX),
-             CSDI  = .max_csdi(YY),
-             T10p  = .t10p(YY),
-             T90p  = .t90p(XX))
+      i <- c(maxDT = .max_temperature(tmax),
+             minDT = .min_temperature(tmax),
+             maxNT = .max_temperature(tmin),
+             minNT = .min_temperature(tmin),
+             DTR   = .temperature_range(tmax, tmin),
+             SU    = .summer_days(tmax),
+             TR    = .tropical_nights(tmin),
+             CFD   = .frosty_days(tmin),
+             WSDI  = .max_wsdi(tmax),
+             CSDI  = .max_csdi(tmin),
+             T10p  = .t10p(tmin),
+             T90p  = .t90p(tmax))
       
       i <- data.frame(id    = id,
                       date  = as.character(d),
@@ -384,7 +373,7 @@ temperature.clima_ls <- function(object, ...,
                       value = as.vector(unlist(i)), 
                       stringsAsFactors = FALSE)
       
-    }, X = day, Y = night, SIMPLIFY = FALSE)
+    })
     
     ind <- do.call("rbind", ind)
     
@@ -407,37 +396,30 @@ temperature.clima_ls <- function(object, ...,
   
   if (isFALSE(timeseries)) {
     
-    day <- split(day, day$id)
+    temp <- split(temp, temp$id)
     
-    night <- split(night, night$id)
-    
-    ind <- mapply(function(X, Y) {
+    ind <- lapply(temp, function(x){
       
-      x <- as.vector(as.matrix(X$value))
-      y <- as.vector(as.matrix(Y$value))
+      tmax <- x$tmax
+      tmin <- x$tmin
       
-      x <- data.frame(maxDT = .max_temperature(x),
-                      minDT = .min_temperature(x),
-                      maxNT = .max_temperature(y),
-                      minNT = .min_temperature(y),
-                      DTR   = .temperature_range(x, y),
-                      SU    = .summer_days(x),
-                      TR    = .tropical_nights(y),
-                      CFD   = .frosty_days(y),
-                      WSDI  = .max_wsdi(x),
-                      CSDI  = .max_csdi(y),
-                      T10p  = .t10p(y),
-                      T90p  = .t90p(x),
+      x <- data.frame(maxDT = .max_temperature(tmax),
+                      minDT = .min_temperature(tmax),
+                      maxNT = .max_temperature(tmin),
+                      minNT = .min_temperature(tmin),
+                      DTR   = .temperature_range(tmax, tmin),
+                      SU    = .summer_days(tmax),
+                      TR    = .tropical_nights(tmin),
+                      CFD   = .frosty_days(tmin),
+                      WSDI  = .max_wsdi(tmax),
+                      CSDI  = .max_csdi(tmin),
+                      T10p  = .t10p(tmin),
+                      T90p  = .t90p(tmax),
                       stringsAsFactors = FALSE)
       
-    }, X = day, Y = night)
+    })
     
-    ind <- matrix(unlist(ind), 
-                  nrow = nr, 
-                  ncol = length(index), 
-                  byrow = TRUE)
-    
-    dimnames(ind)[[2]] <- index
+    ind <- do.call("rbind", ind)
     
     ind <- as.data.frame(ind, stringsAsFactors = FALSE)
     

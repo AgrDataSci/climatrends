@@ -105,7 +105,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Overview.html">climatrends: Precipitation and Temperature Indices for Climate Variability Analysis</a>
+      <a href="../articles/Overview.html">climatrends: Climate Variability Indices for Ecological Modelling</a>
     </li>
   </ul>
 </li>
@@ -144,19 +144,16 @@
  (e.g. anthesis), but can also be applied to other phenological stages.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>crop_sensitive</span>(<span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>crop_sensitive</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>crop_sensitive</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='no'>...</span>)
+<span class='fu'>crop_sensitive</span>(<span class='no'>object</span>, <span class='no'>tmin</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
 <span class='fu'>crop_sensitive</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for array</span>
 <span class='fu'>crop_sensitive</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for clima_ls</span>
-<span class='fu'>crop_sensitive</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for sf</span>
 <span class='fu'>crop_sensitive</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
@@ -165,24 +162,20 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>object</th>
+      <td><p>a numeric vector with the maximum temperature, 
+or a data.frame with geographical coordinates (lonlat), 
+or an object of class <code>sf</code> with geometry 'POINT' or 'POLYGON', 
+or an <code>array</code> with two dimensions containing the
+maximum and minimum temperature, in that order. See details</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>additional arguments passed to methods. See details</p></td>
     </tr>
     <tr>
-      <th>tmax</th>
-      <td><p>a numeric vector with the maximum temperature</p></td>
-    </tr>
-    <tr>
       <th>tmin</th>
       <td><p>a numeric vector with the minimum temperature</p></td>
-    </tr>
-    <tr>
-      <th>object</th>
-      <td><p>a data.frame with geographical coordinates (lonlat), 
-or an object of class <code>sf</code> with geometry 'POINT' or 'POLYGON', 
-or an <code>array</code> with two dimensions containing the temperature data 
-or a <code>clima_ls</code> with maximum and minimum temperature, 
-in that order. See details</p></td>
     </tr>
     <tr>
       <th>day.one</th>
@@ -228,10 +221,12 @@ day to capture the climate data</p></td>
  vector of numeric)</p>
 <p><code>last.day</code>: an object (optional to <var>span</var>) of class <code>Date</code> or
  any other object that can be coerced to <code>Date</code> (e.g. integer, character 
- YYYY-MM-DD) for the last day of the time series</p> 
+ YYYY-MM-DD) for the last day of the time series. For <code>data.frame</code>, <code>array</code> 
+ and <code>sf</code> methods</p> 
 <p><code>span</code>: an integer (optional to <var>last.day</var>) or a vector with 
  integers (optional if <var>last.day</var> is given) for the length of 
- the time series to be captured</p>
+ the time series to be captured. For <code>data.frame</code>, <code>array</code> 
+ and <code>sf</code> methods</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Challinor et al. (2016). Nature Climate Change 6(10):6954-958

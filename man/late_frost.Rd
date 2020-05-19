@@ -6,40 +6,32 @@
 \alias{late_frost.data.frame}
 \alias{late_frost.array}
 \alias{late_frost.sf}
-\alias{late_frost.clima_ls}
 \title{Late spring frost}
 \usage{
-late_frost(..., base = 4, tfrost = -2)
+late_frost(object, ..., tbase = 4, tfrost = -2)
 
-\method{late_frost}{default}(tmax, tmin, dates = NULL, ..., base = 4, tfrost = -2)
+\method{late_frost}{default}(object, tmin, ..., tbase = 4, tfrost = -2)
 
-\method{late_frost}{data.frame}(object, day.one, ..., base = 4, tfrost = -2)
+\method{late_frost}{data.frame}(object, day.one, ..., tbase = 4, tfrost = -2)
 
-\method{late_frost}{array}(object, day.one, ..., base = 4, tfrost = -2)
+\method{late_frost}{array}(object, day.one, ..., tbase = 4, tfrost = -2)
 
-\method{late_frost}{sf}(object, day.one, ..., base = 4, tfrost = -2)
-
-\method{late_frost}{clima_ls}(object, ..., base = 4, tfrost = -2)
+\method{late_frost}{sf}(object, day.one, ..., tbase = 4, tfrost = -2)
 }
 \arguments{
+\item{object}{a numeric vector with the maximum temperature, 
+or a data.frame with geographical coordinates (lonlat), 
+or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
+or an \code{array} with two dimensions containing the
+maximum and minimum temperature, in that order. See details}
+
 \item{...}{additional arguments passed to methods. See details}
 
-\item{base}{an integer for the minimum temperature for growth}
+\item{tbase}{an integer for the minimum temperature for growth}
 
 \item{tfrost}{an integer for the freezing threshold}
 
-\item{tmax}{a numeric vector with the maximum temperature}
-
 \item{tmin}{a numeric vector with the minimum temperature}
-
-\item{dates}{optional, a character (or Date or numeric) vector for the dates in 
-\var{tmax} and \var{tmin}}
-
-\item{object}{a data.frame with geographical coordinates (lonlat), 
-or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
-or an \code{array} with two dimensions containing the temperature data 
-or a \code{clima_ls} with maximum and minimum temperature, 
-in that order. See details}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -61,8 +53,11 @@ Compute late spring frost, which is a freezing event occurring after
 \details{
 Additional arguments:
 
-\code{equation}: character to specify the equation to be used, \code{"variant_a"} 
+\code{equation}: character to specify the equation to be used, \code{"b"} 
  is set by default. See GDD() 
+
+\code{dates}: a character (or Date or numeric) vector for the dates of tmax and tmin
+ in the \code{default} method
 
 \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
  any other object that can be coerced to \code{Date} (e.g. integer, character 
@@ -73,15 +68,24 @@ Additional arguments:
  the time series to be captured
 }
 \examples{
-
 # default method
 data("innlandet", package = "climatrends")
 
-tmax <- innlandet[, "tmax"]
-tmin <- innlandet[, "tmin"]
-date <- innlandet[, "dates"]
+# equation b is set by default
+# where tmin and tmax are adjusted if below tbase
+late_frost(innlandet$tmax, 
+           innlandet$tmin, 
+           dates = innlandet$date, 
+           base = 2)
 
-late_frost(tmax, tmin, dates = date)
+# slightly different series if equation a is used
+late_frost(innlandet$tmax, 
+           innlandet$tmin, 
+           dates = innlandet$date, 
+           base = 2,
+           equation = "a")
+
+#####################################################
 
 # demo of the array method but no frost event is returned 
 # because the data comes from the tropics
@@ -89,6 +93,7 @@ data("temp_dat", package = "climatrends")
 
 late_frost(temp_dat, day.one = "2013-10-27")
 
+#####################################################
 
 \donttest{
 # Some random points in Norway

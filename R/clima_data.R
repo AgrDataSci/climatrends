@@ -19,8 +19,8 @@
 #' \code{innlandet}: matrix with maximum and minimum temperature for a random point in 
 #'  the Innlandet county in Norway, spanning from "2019-01-01" to "2019-07-01"
 #'  
-#' \code{lonlatsf}: a 'sf' object with 'POINT' geometry with five random points across 
-#'  the Innlandet county in Norway 
+#' \code{lonlatsf}: a 'sf' object with 'POINT' geometry with five random points around 
+#'  Sinop, Brazil 
 #'  
 #' In \code{temp_dat} and \code{rain_dat}, rows represents the coordinates for the 
 #'  given lonlat provided in \code{raster::extract()} and colunms represents the dates 

@@ -1,5 +1,5 @@
 ---
-title: "climatrends: Precipitation and Temperature Indices for Climate Variability Analysis"
+title: "climatrends: Climate Variability Indices for Ecological Modelling"
 package: climatrends
 author:
 - name: Kauê de Sousa
@@ -17,236 +17,126 @@ bibliography: ["climatrends.bib"]
 csl: citation_style.csl
 ---
 
-
-
 # Summary
 
-Understanding how climate variability influences ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** aims to provide the toolkit to compute extreme precipitation and temperature indices that serves as input for climate models, crop modelling, trends in climate change and ecology. The climate variables available in **climatrends** were previously used to identify climate patterns in crop growing cycles[@Kehel2016], regional climate change assessment[@Aguilar2005], crowdsourcing citizen science in agriculture[@vanEtten2019] and comparison between perceptions to climate change and satellite observations[@DeSousa2018].
-
-# Source of data
-
-By default **climatrends** uses [NASA POWER](https://power.larc.nasa.gov/) to compute the indices via the R package [nasapower](https://CRAN.R-project.org/package=nasapower)[@Sparks2018]. By providing the target dates and the geographic information, **climatrends** sends an internal call to *nasapower* to request the time series data and compute the environmental indices. This process do not requires much computer capacity but requires a persistent internet connection. NASA POWER, however, has a low grid resolution (0.5 arc-degree) and could not provide the expected results for ecological interactions in a narrow geographical range.
-
-Other option relies in providing the climate data locally as a `matrix` or `array` (please see details below), using, for example, the function `extract()` from the package [raster](https://CRAN.R-project.org/package=raster)[@Hijmans2015]. The environmental data can be computed using inputted data from CHIRPS[@Funk2015] for rainfall, and MODIS[@Wan2015] for land surface temperature. These databases are free and publicly available sources of global coverage with high resolution (0.05 arc-degree), but may require significant local storage capacity. MODIS data also requires some work to reduce noise and gap filling.
+Understanding how climate variability influences ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** provides methods to compute precipitation and temperature indices that serves as input for crop modelling, ecological modelling and trends in climate change. The climate variables available in **climatrends** were previously used to identify climate patterns in crop growing cycles[@Kehel2016], regional climate change assessment[@Aguilar2005; @Challinor2016; @Trnka2014; @Zohner2020], crowdsourcing citizen science in agriculture[@vanEtten2019] and trends in climate change compared with farmers' perceptions[@DeSousa2018].
 
 # Usage
 
+By default, the functions in **climatrends** requires a vector with climate data, and optionally a vector of dates that can be linked to the data for time series analysis. The package also provides methods for objects of classes `array` (or `matrix`), `sf` and `data.frame`, where the last two are designed to be used to request remote data from `R` packages that uses API clients, such as nasapower[@Sparks2018]. This vignette presents the main functions and the methods available in **climatrends**. Overall, these applications can be generalised to all functions.
+
 ## Temperature 
 
-The function `temperature()` has as the basic input data an `object` of class `data.frame` with geographic information (lonlat) or an `array` with day and night temperature (when provided locally) and a vector of class `Date` for the first day that will be taken into account for the indices. The duration from where the environmental indices will be computed is defined by the argument `span` which can be a single integer that takes into account a single timespan for all tricot experiments or a vector indicating the timespan for each point.
+Here we compute temperature indices for the first semester of 2019 in the Innlandet county in Norway:
 
-Here we generate some random points within the Innlandet county in Norway from May-2015:
+```{r temperature, message=TRUE, eval=TRUE, echo=TRUE}
+library("climatrends")
 
+data("innlandet", package = "climatrends")
 
-```r
-set.seed(6)
-lonlat <- data.frame(lon = runif(5, 8.3, 12),
-                     lat = runif(5, 60, 62.3))
+temp1 <- temperature(innlandet$tmax, innlandet$tmin)
 
-date <- as.Date("2015-05-01", format = "%Y-%m-%d")
+temp1
 
-temp <- temperature(lonlat, day.one = date, span = 50)
-#> Getting climate data from NASA POWER
-
-head(temp)
-#>   maxDT minDT maxNT  minNT   DTR    SU    TR   CFD
-#>   <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1 12.81 -0.58  3.61 -10.84  7.36  0.00  0.00 13.00
-#> 2 13.39  0.66  3.84  -7.60  7.02  0.00  0.00 12.00
-#> 3 10.68 -1.48  2.43 -11.29  7.12  0.00  0.00 40.00
-#> 4 14.08  1.53  3.94  -6.85  8.44  0.00  0.00 12.00
-#> 5 19.64  5.82  8.24  -2.40  8.23  0.00  0.00  1.00
 ```
 
-With the argument `timeseries = TRUE`, `temperature()` returns the indices for a time series based on `intervals`. Here we compute the indices for intervals of 7 days:
+With the argument `timeseries = TRUE`, temperature() returns the indices for a time series based on `intervals`. Here we compute the indices for intervals of 30 days:
 
+```{r temperature2, message=TRUE, eval=TRUE, echo=TRUE}
+temp2 <- temperature(innlandet$tmax, innlandet$tmin,
+                     dates = innlandet$dates,
+                     timeseries = TRUE, 
+                     intervals = 30)
 
-```r
-temp2 <- temperature(lonlat,
-                     day.one = date,
-                     span = 50, 
-                     timeseries = TRUE,
-                     intervals = 7)
-#> Getting climate data from NASA POWER
-
-head(temp2)
-#>      id       date index  value
-#>   <int>     <date> <chr>  <dbl>
-#> 1     1 2015-05-01 maxDT   9.70
-#> 2     1 2015-05-01 minDT  -0.58
-#> 3     1 2015-05-01 maxNT   2.42
-#> 4     1 2015-05-01 minNT -10.84
-#> 5     1 2015-05-01   DTR   8.19
-#> 6     1 2015-05-01    SU   0.00
+temp2
 ```
 
 ## Growing degree-days 
 
-Growing degree-days is a heuristic tool in phenology, it is a measure of heat accumulation used to predict plant and animal development rates[@Prentice1992]. With the function `GDD()` we can compute the growing degree-days to assess the degree-days required by an certain organism during a certain season. Also, this index can be used as an estimate for the timespan to compute the temperature and precipitation indices. Here we compute the days to reach the growing degree-days for a certain organism which requires 200 degree-days with a `base = 5` from `day.one`:
+Growing degree-days is a heuristic tool in phenology, it is a measure of heat accumulation used to predict plant and animal development rates[@Prentice1992]. With the function `GDD()` we can compute the growing degree-days over a time series. In this case we apply an adjusted equation designed for cold areas with the argument `equation`:
 
+```{r gdd, message=TRUE, eval=TRUE, echo=TRUE}
+gdd <- GDD(innlandet$tmax, innlandet$tmin, tbase = 2, equation = "b")
 
-```r
-gdd <- GDD(lonlat, 
-           day.one = date,
-           degree.days = 200,
-           base = 5)
-#> Getting climate data from NASA POWER
-
-head(gdd)
-#>     GDD
-#>   <int>
-#> 1   120
-#> 2   112
-#> 3   150
-#> 4   105
-#> 5    56
+gdd
 ```
 
-Then, these growing degree-days can be applied as timespan to compute the temperature indices across the season:
+Additionally, the function may return the daily values of degree-days or the number of days that a given organism required to reach a certain number of accumulated degree-days. These values are defined by 'daily' or 'ndays' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset of photosynthesis [@JWu2013]. In that case, the function will calculate the growing degree-days and sum up the values until it reaches the defined gdd (105 $^\circ C$) and return the number of days needed in the given season, as follows.
 
+```{r gdd2, message=FALSE, eval=FALSE, echo=TRUE}
+lonlat <- data.frame(lon = 129.19,
+                     lat = 36.39)
 
-```r
-temp <- temperature(lonlat, 
-                    day.one = date, 
-                    span = gdd)
-#> Getting climate data from NASA POWER
-
-head(temp)
-#>   maxDT minDT maxNT  minNT   DTR    SU    TR   CFD
-#>   <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1 22.32 -0.58 11.42 -10.84  8.05  0.00  0.00 13.00
-#> 2 21.56  0.66 11.82  -7.60  7.43  0.00  0.00 12.00
-#> 3 20.76 -1.48 11.13 -11.29  7.59  0.00  0.00 40.00
-#> 4 22.32  1.53 12.95  -6.85  8.72  0.00  0.00 12.00
-#> 5 19.64  5.82 10.53  -2.40  8.20  0.00  0.00  1.00
+GDD(lonlat, 
+    day.one = "2019-04-01",
+    last.day = "2019-10-01",
+    degree.days = 150, 
+    return.as = "ndays")
 ```
 
+This means that 45 days were required to reach 150 degree-days from April 2019.
+
+## Late spring frost
+
+Late frost is a freezing event occurring after a substantial accumulation of warmth. These events can be tracked using the function `late_frost()`. The function returns a data.frame with the duration and gdd accumulated during the `events` of frost, latency (where there is no frost event, but also there is no GDD), and warming (where GDD is accumulated).
+
+```{r latefrost, message=TRUE, eval=TRUE, echo=TRUE}
+lf <- late_frost(innlandet$tmax, 
+                 innlandet$tmin, 
+                 dates = innlandet$date, 
+                 base = 2)
+
+lf
+```
 
 ## Rainfall 
 
-Precipitation indices are computed in the same way as the temperature indices using the function `rainfall()`. Here we use the NASA POWER data with a timespan defined by the growing degree-days.  
+Precipitation indices are computed in the same way as the `temperature()` indices using the function `rainfall()`. But here, we fetch data from NASA POWER using the [nasapower](https://CRAN.R-project.org/package=nasapower) package passed to the `data.frame` method.  
 
+```{r rain, message=FALSE, eval=FALSE, echo=TRUE}
+library("nasapower")
 
-```r
+lonlat <- data.frame(lon = c(-73.3, -74.5),
+                     lat = c(-6.1, - 6.2))
+
 rain <- rainfall(lonlat, 
-                 day.one = date,
-                 span = gdd)
-#> Getting climate data from NASA POWER
+                 day.one = "2018-11-01",
+                 last.day = "2018-12-31")
 
-head(rain)
-#>    MLDS  MLWS R10mm R20mm Rx1day Rx5day   R95p  R99p Rtotal  SDII
-#>   <int> <int> <int> <int>  <dbl>  <dbl>  <dbl> <dbl>  <dbl> <dbl>
-#> 1    13    13     8     2  26.77  55.56 107.34 50.74 495.45  4.23
-#> 2     8    17     7     2  23.03  46.32 104.33 44.75 472.98  3.81
-#> 3    12    14    10     3  36.96  71.99 168.55 63.68 585.54  6.04
-#> 4     5     6    12     1  30.55  46.96  99.28 46.82 397.14  3.61
-#> 5     6     6     3     0  17.60  41.29  42.44 17.60 186.91  1.48
+rain
 ```
 
-The function `rainfall()` also compute indices for a time series:
+## Crop sensitive indices
 
+These indices are designed to capture variability in sensitive stages of crop development [@Challinor2016; @Trnka2014] and can be computed using the function `crop_sensitive()`. Here we use the `sf` method with 5 random points across the Sinop municipality in Brazil.
 
-```r
-rainfall(lonlat,
-         day.one = date,
-         span = gdd,
-         timeseries = TRUE,
-         intervals = 15)
+```{r csenstive, message=FALSE, eval=FALSE, echo=TRUE}
+data("lonlatsf", package = "climatrends")
+
+crop_sensitive(lonlatsf, 
+               day.one = "2018-12-01",
+               last.day = "2019-01-31", 
+               as.sf = FALSE)
 ```
 
-Another feature in `rainfall()` is that it enables the indices to be calculated from some days before `day.one`. This is important for case studies where a residual precipitation must be taken into account. To do so, we use the argument `days.before`:
+Additionally the thresholds for each index can be adjusted using the argument `*.threshold` (where * is replaced by the index abbreviation).
+
+## Reference evapotranspiration
+
+Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth's surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function `ETo()` which computes the evapotranspiration based on the Blaney-Criddle method[@Brouwer1986], an ideal equation when only air-temperature data sets are available for a site. Here we use the `array` method to compute the reference evapotranspiration. And the duration of the timeseries in each row is adjusted with the argument `span` based on the duration of the anthesis period in the latitude 25N, adjusted with argument `lat`.
 
 
-```r
-rainfall(lonlat,
-         day.one = date,
-         span = gdd,
-         days.before = 15)
+```{r eto, message=TRUE, eval=TRUE, echo=TRUE}
+data("temp_dat", package = "climatrends")
+
+eto <- ETo(temp_dat, 
+           day.one = "2013-10-28",
+           span = c(9, 10, 11, 12, 8, 10, 11, 11, 12, 10),
+           lat = rep(25, 10),
+           Kc = 0.92)
+
+eto
+
 ```
-
-## Evapotranspiration
-
-Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth's surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function `ETo()` which computes the evapotranspiration based on the Blaney-Criddle method[@Brouwer1986], an ideal equation when only air-temperature data sets are available for a site. 
-
-
-
-```r
-eto <- ETo(lonlat, 
-           day.one = date,
-           span = gdd,
-           lat = lonlat[["lat"]])
-#> Getting climate data from NASA POWER
-
-head(eto)
-#>     ETo
-#>   <dbl>
-#> 1  4.21
-#> 2  4.24
-#> 3  3.98
-#> 4  4.25
-#> 5  4.54
-```
-
-# Compute indices from local databases
-
-When using data from local databases, such as CHIRPS or MODIS. The inputted `object` must be provided in a specific format. This is how the `object` should be organised for `rainfall()`. A matrix where column names are the days as extracted from CHIRPS. Let's create some random values to simulate the input behaviour.
-
-
-```r
-set.seed(999)
-rain <- matrix(runif(150, 0, 2), ncol = 15, nrow = 10)
-dimnames(rain)[[2]] <- as.character(as.Date(16005:16019, origin = "1970-01-01"))
-
-dates <- as.Date(runif(10, 16005, 16008), origin = "1970-01-01")
-
-rainfall(rain, 
-         day.one = dates,
-         span = 10)
-```
-
-The same for `temperature()`. But in that case the inputted `object` is an array with two layers, the first for the day temperature and the second for the night temperature.
-
-
-```r
-set.seed(888)
-day <- runif(150, 27, 35)
-night <- runif(150, 20, 25)
-
-mod <- array(c(day, night), dim = c(10, 15, 2))
-dimnames(mod)[[2]] <- as.character(as.Date(16005:16019, origin = "1970-01-01"))
-
-dates <- as.Date(runif(10, 16005, 16008), origin = "1970-01-01")
-
-temperature(mod,
-            day.one = dates,
-            span = 10)
-```
-
-# Indices
-
-**climatrends** computes 18 temperature and precipitation indices:
-
-
-|Index  |Definition                                                                          |Unit    |
-|:------|:-----------------------------------------------------------------------------------|:-------|
-|maxDT  |maximun day temperature                                                             |°C      |
-|minDT  |minimum day temperature                                                             |°C      |
-|maxNT  |maximun night temperature                                                           |°C      |
-|minNT  |minimum night temperature                                                           |°C      |
-|DTR    |diurnal temperature range (mean difference between DT and NT)                       |°C      |
-|SU     |summer days, number of days with maximum temperature > 30 °C                        |days    |
-|TR     |tropical nights, number of nights with maximum temperature > 25 °C                  |days    |
-|CFD    |consecutive frosty days, number of days with temperature < 0 °C                     |days    |
-|MLDS   |maximum length of consecutive dry day, rain < 1 mm                                  |days    |
-|MLWS   |maximum length of consecutive wet day, rain >= 1 mm                                 |days    |
-|R10mm  |heavy precipitation days 10 >= rain < 20 mm                                         |days    |
-|R20mm  |very heavy precipitation days rain >= 20                                            |days    |
-|Rx1day |maximum 1-day precipitation                                                         |mm      |
-|Rx5day |maximum 5-day precipitation                                                         |mm      |
-|R95p   |total precipitation when rain > 95th percentile                                     |mm      |
-|R99p   |total precipitation when rain > 99th percentile                                     |mm      |
-|Rtotal |total precipitation in wet days, rain >= 1 mm                                       |mm      |
-|SDII   |simple daily intensity index, total precipitation divided by the number of wet days |mm/days |
-
 
 ## References

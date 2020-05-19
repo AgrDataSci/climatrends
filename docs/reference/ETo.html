@@ -105,7 +105,7 @@ is available locally." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Overview.html">climatrends: Precipitation and Temperature Indices for Climate Variability Analysis</a>
+      <a href="../articles/Overview.html">climatrends: Climate Variability Indices for Ecological Modelling</a>
     </li>
   </ul>
 </li>
@@ -144,10 +144,10 @@ theoretical method used when no measured data on pan evaporation
 is available locally.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ETo</span>(<span class='no'>...</span>, <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+    <pre class="usage"><span class='fu'>ETo</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>ETo</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='no'>...</span>, <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>month</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>ETo</span>(<span class='no'>object</span>, <span class='no'>tmin</span>, <span class='no'>...</span>, <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>month</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
 <span class='co'># S3 method for data.frame</span>
 <span class='fu'>ETo</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>Kc</span> <span class='kw'>=</span> <span class='fl'>1</span>)
@@ -162,16 +162,20 @@ is available locally.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>object</th>
+      <td><p>a numeric vector with the maximum temperature, 
+or a data.frame with geographical coordinates (lonlat), 
+or an object of class <code>sf</code> with geometry 'POINT' or 'POLYGON', 
+or an <code>array</code> with two dimensions containing the
+maximum and minimum temperature, in that order. See details</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>additional arguments passed to methods. See details</p></td>
     </tr>
     <tr>
       <th>Kc</th>
       <td><p>a numeric value for the crop factor for water requirement</p></td>
-    </tr>
-    <tr>
-      <th>tmax</th>
-      <td><p>a numeric vector with the maximum temperature</p></td>
     </tr>
     <tr>
       <th>tmin</th>
@@ -186,14 +190,6 @@ This is extracted automatically in the <code>sf</code> method. See details</p></
     <tr>
       <th>month</th>
       <td><p>an integer for the reference month of daylight percentage</p></td>
-    </tr>
-    <tr>
-      <th>object</th>
-      <td><p>a data.frame with geographical coordinates (lonlat), 
-or an object of class <code>sf</code> with geometry 'POINT' or 'POLYGON', 
-or an <code>array</code> with two dimensions containing the temperature data 
-or a <code>clima_ls</code> with maximum and minimum temperature, 
-in that order. See details</p></td>
     </tr>
     <tr>
       <th>day.one</th>

@@ -10,28 +10,19 @@
 #'  precipitation data. See details.   
 #' @param timeseries logical, \code{FALSE} for a single point time series
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
-#' @param intervals integer (no lower than 5), for the days intervals when
-#'  \var{timeseries} = \code{TRUE}
-#' @param dates optional, a character (or Date or numeric) vector for the dates in 
-#'  \var{object} in the dafault method
 #' @param as.sf logical, to return an object of class 'sf'
 #' @details 
-#' The \code{matrix} method assumes that \var{object} contains climate data available in your 
-#'  R section; see help("rain_dat", package = "climatrends") for an example on input 
-#'  structure.
+#' #' Additional arguments:
 #' 
-#' The \code{default} method and the \code{sf} method assumes that the climate data
-#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
-#'  \var{data.from}.
-#'
-#' When \var{timeseries} = \code{TRUE}, an id is created, 
-#'  which is the index for the rownames of the inputted \var{object}.
-#' 
-#' Additional arguments:
-#' 
+#' \code{intervals}: an integer (no lower than 5), for the days intervals when
+#'  \var{timeseries = TRUE}
+#'  
 #' \code{last.day}: optional to \var{span}, an object of class \code{Date} or
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
 #'  YYYY-MM-DD)  for the last day of the time series
+#'  
+#' \code{dates}: a character (or Date or numeric) vector for the dates of tmax and tmin
+#'  in the \code{default} method
 #' 
 #' \code{data.from}: character for the source of remote data. Current remote source 
 #'  is: 'nasapower'
@@ -42,6 +33,16 @@
 #' \code{days.before}: optional, an integer for the number of days before 
 #'  \var{day.one} to be included in the timespan.
 #'  
+#' # S3 Methods 
+#' 
+#' The \code{matrix} method assumes that \var{object} contains climate data available in
+#'  your R section; see help("rain_dat", package = "climatrends") for an example on input 
+#'  structure.
+#' 
+#' The \code{data.frame} and the \code{sf} methods assumes that the climate data
+#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
+#'  \var{data.from}.
+#'
 #' When \var{timeseries} = \code{TRUE}, an id is created, 
 #'  which is the index for the rownames of the inputted \var{object}.
 #'
@@ -58,7 +59,6 @@
 #' \item{SDII}{simple daily intensity index, total precipitation divided by the
 #'  number of wet days (mm/days)}
 #'  
-#' @family climatology functions
 #' @references 
 #' Aguilar E., et al. (2005). Journal of Geophysical Research, 
 #' 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
@@ -104,8 +104,7 @@
 #' # get precipitation indices from "2010-12-01" to "2011-01-31"
 #' rain2 <- rainfall(lonlatsf,
 #'                   day.one = "2010-12-01",
-#'                   last.day = "2011-01-31",
-#'                   as.sf = FALSE)
+#'                   last.day = "2011-01-31")
 #' rain2
 #' }
 #' 
@@ -118,10 +117,11 @@ rainfall <- function(object, ...)
 #' @rdname rainfall
 #' @method rainfall default
 #' @export
-rainfall.default <- function(object, dates = NULL, ..., 
-                             timeseries = FALSE, intervals = 5){
+rainfall.default <- function(object, ..., timeseries = FALSE){
   
   dots <- list(...)
+  dates <- dots[["dates"]]
+  intervals <- dots[["intervals"]]
   
   if (!is.null(dates)) {
     dates <- .coerce2Date(dates)
@@ -153,10 +153,11 @@ rainfall.default <- function(object, dates = NULL, ...,
 #' @method rainfall data.frame
 #' @export
 rainfall.data.frame <- function(object, day.one, span = NULL, ...,
-                                timeseries = FALSE, intervals = 5){
+                                timeseries = FALSE){
   
   dots <- list(...)
   pars <- dots[["pars"]]
+  intervals <- dots[["intervals"]]
   
   # coerce inputs to data.frame
   object <- as.data.frame(object)
@@ -183,12 +184,16 @@ rainfall.data.frame <- function(object, day.one, span = NULL, ...,
 #' @method rainfall matrix
 #' @export
 rainfall.matrix <- function(object, day.one, span = NULL, ...,
-                            timeseries = FALSE, intervals = 5){
+                            timeseries = FALSE){
+  dots <- list(...)
+  intervals <- dots[["intervals"]]
+  days.before <- dots[["days.before"]]
   
   # coerce to data.frame
   day.one <- as.data.frame(day.one)[, 1]
   
-  rain <- get_timeseries(object, day.one, span, ...)[[1]]
+  rain <- get_timeseries(object, day.one, span = span, 
+                         days.before = days.before)[[1]]
   
   indices <- .rainfall_indices(rain, timeseries, intervals)
   
@@ -201,10 +206,11 @@ rainfall.matrix <- function(object, day.one, span = NULL, ...,
 #' @method rainfall sf
 #' @export
 rainfall.sf <- function(object, day.one, span = NULL, ...,
-                        timeseries = FALSE, intervals = 5, as.sf = TRUE){
+                        timeseries = FALSE, as.sf = TRUE){
   
   dots <- list(...)
   pars <- dots[["pars"]]
+  intervals <- dots[["intervals"]]
   
   day.one <- as.data.frame(day.one)[, 1]
   
@@ -223,7 +229,7 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
     xy$id <- 1:dim(xy)[[1]]
     xy <- merge(xy, indices, by = "id")
     
-    indices <- st_as_sf(xy, coords = c("lon", "lat"), crs = 4326)
+    indices <- sf::st_as_sf(xy, coords = c("lon", "lat"), crs = 4326)
     
   }
   
@@ -248,8 +254,23 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
   
 }
 
-
-.rainfall_indices <- function(rain, timeseries, intervals){
+#' Rainfall indices
+#' 
+#' This is the main function, the others are handling methods
+#' 
+#' @param rain data.frame with following values id, value and date
+#' @param timeseries if indices are to be returned in timeseries 
+#' @param intervals the intervals in the timeseries
+#' @examples
+#' r <- data.frame(id = 1, 
+#'                 value = runif(21, 0, 4), 
+#'                 date = 200:220, 
+#'                 stringsAsFactors = FALSE)
+#' 
+#' .rainfall_indices(r)
+#' 
+#' @noRd 
+.rainfall_indices <- function(rain, timeseries = FALSE, intervals = NULL){
   
   index <- c("MLDS","MLWS","R10mm","R20mm","Rx1day",
              "Rx5day","R95p","R99p","Rtotal","SDII")
@@ -637,7 +658,7 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
 
 #' Very wet days
 #' @param x numeric vector
-#' @return the R95p index, annual total PRCP when rain > 95th percentile
+#' @return the R95p index, total PRCP when rain > 95th percentile
 #' @examples
 #' set.seed(12)
 #' r <- runif(20, 0, 9)
@@ -661,9 +682,9 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
   
 }
 
-#' Very wet days
+#' Extrem wet days
 #' @param x numeric vector
-#' @return the R95p index, annual total PRCP when rain > 95th percentile
+#' @return the R99p index, total PRCP when rain > 99th percentile
 #' @examples
 #' set.seed(12)
 #' r <- runif(20, 0, 9)

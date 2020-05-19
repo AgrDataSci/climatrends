@@ -6,30 +6,15 @@
 \alias{temperature.data.frame}
 \alias{temperature.array}
 \alias{temperature.sf}
-\alias{temperature.clima_ls}
 \title{Temperature indices}
 \usage{
-temperature(...)
+temperature(object, ...)
 
-\method{temperature}{default}(tmax, tmin, dates = NULL, ..., timeseries = FALSE, intervals = 5)
+\method{temperature}{default}(object, tmin, ..., timeseries = FALSE)
 
-\method{temperature}{data.frame}(
-  object,
-  day.one,
-  span = NULL,
-  ...,
-  timeseries = FALSE,
-  intervals = 5
-)
+\method{temperature}{data.frame}(object, day.one, span = NULL, ..., timeseries = FALSE)
 
-\method{temperature}{array}(
-  object,
-  day.one,
-  span = NULL,
-  ...,
-  timeseries = FALSE,
-  intervals = 5
-)
+\method{temperature}{array}(object, day.one, span = NULL, ..., timeseries = FALSE)
 
 \method{temperature}{sf}(
   object,
@@ -37,33 +22,22 @@ temperature(...)
   span = NULL,
   ...,
   timeseries = FALSE,
-  intervals = 5,
   as.sf = TRUE
 )
-
-\method{temperature}{clima_ls}(object, ..., timeseries = FALSE, intervals = 5)
 }
 \arguments{
-\item{...}{additional arguments passed to methods. See details}
+\item{object}{a numeric vector with the maximum temperature, 
+or a data.frame with geographical coordinates (lonlat), 
+or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
+or an \code{array} with two dimensions containing the
+maximum and minimum temperature, in that order. See details}
 
-\item{tmax}{a numeric vector with the maximum temperature}
+\item{...}{additional arguments passed to methods. See details}
 
 \item{tmin}{a numeric vector with the minimum temperature}
 
-\item{dates}{optional, a character (or Date or numeric) vector for the dates in 
-\var{tmax} and \var{tmin}}
-
 \item{timeseries}{logical, \code{FALSE} for a single point time series
 observation or \code{TRUE} for a time series based on \var{intervals}}
-
-\item{intervals}{integer (no lower than 5), for the days intervals when
-\var{timeseries} = \code{TRUE}}
-
-\item{object}{a data.frame with geographical coordinates (lonlat), 
-or an object of class \code{sf} with geometry 'POINT' or 'POLYGON', 
-or an \code{array} with two dimensions containing the temperature data 
-or a \code{clima_ls} with maximum and minimum temperature, 
-in that order. See details}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -99,23 +73,18 @@ temperature < 10th percentile}
 Methods to compute temperature indices over a time series
 }
 \details{
-The \code{array} method assumes that \var{object} contains climate data available 
- in your R section; this requires an array with two dimensions, 1st dimension 
- contains the day temperature and 2nd dimension the night temperature, 
- see help("temp_dat", package = "climatrends") for an example on input structure.
-
-The \code{data.frame} method and the \code{sf} method assumes that the climate data
- will e fetched from a remote (cloud) source that be adjusted using the argument 
- \var{data.from}.
-
-When \var{timeseries} = \code{TRUE}, an id is created, 
- which is the index for the rownames of the inputted \var{object}.
-
 Additional arguments:
+
+\code{intervals}: an integer (no lower than 5), for the days intervals when
+ \var{timeseries = TRUE}
 
 \code{last.day}: optional to \var{span}, an object of class \code{Date} or
  any other object that can be coerced to \code{Date} (e.g. integer, character 
- YYYY-MM-DD)  for the last day of the time series
+ YYYY-MM-DD)  for the last day of the time series. For \code{data.frame}, \code{array} 
+ and \code{sf} methods
+ 
+\code{dates}: a character (or Date or numeric) vector for the dates of tmax and tmin
+ in the \code{default} method
 
 \code{data.from}: character for the source of remote data. Current remote source 
  is: 'nasapower'
@@ -126,21 +95,35 @@ Additional arguments:
 
 \code{days.before}: optional, an integer for the number of days before 
  \var{day.one} to be included in the timespan.
+
+
+# S3 Methods
+
+The \code{array} method assumes that \var{object} contains climate data available 
+ in your R section; this requires an array with two dimensions, 1st dimension 
+ contains the day temperature and 2nd dimension the night temperature, 
+ see help("temp_dat", package = "climatrends") for an example on input structure.
+
+The \code{data.frame} and the \code{sf} methods assumes that the climate data
+ will be fetched from a remote (cloud) source that be adjusted using the argument 
+ \var{data.from}.
+
+When \var{timeseries = TRUE}, an id is created, 
+ which is the index for the rownames of the inputted \var{object}.
 }
 \examples{
 # the default method
 data("innlandet", package = "climatrends")
 
-tmax <- innlandet[, "tmax"]
-tmin <- innlandet[, "tmin"]
-
 # a single temporal observation
-temperature(tmax, tmin)
+temperature(innlandet$tmax, innlandet$tmin)
 
 # return as timeseries with 30-day intervals
-date <- innlandet[, "dates"]
-
-temperature(tmax, tmin, dates = date, timeseries = TRUE, intervals = 30)
+temperature(innlandet$tmax, 
+            innlandet$tmin, 
+            dates = innlandet$dates,
+            timeseries = TRUE, 
+            intervals = 30)
 
 #####################################################
 
@@ -173,8 +156,7 @@ temp1
 # get temperature indices from "2010-12-01" to "2011-01-31"
 temp2 <- temperature(lonlatsf,
                      day.one = "2010-12-01",
-                     last.day = "2011-01-31",
-                     as.sf = FALSE)
+                     last.day = "2011-01-31")
 temp2
 
 }

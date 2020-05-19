@@ -4,13 +4,13 @@ library("sf")
 # load("tests/test_data.rda")
 load("../test_data.rda")
 
-realv <- c(5,4,5,11,5,7,5,6,6,8)
+realv <- c(4,3,4,10,4,6,4,5,5,7)
 test_that("right values array method", {
   
   dg <- GDD(object = temp,
             day.one = d, 
             degree.days = 45,
-            base = 10,
+            tbase = 10,
             return.as = "ndays")
   
   dg <- all(realv == dg[, 1])
@@ -24,11 +24,11 @@ realv <- c(11, 11, 11, 11, 11,
 # return daily gdd
 test_that("return gdd", {
   
-  gdd <- GDD(object = temp[1:2,,],
+  gdd <- GDD(object = temp[1:2, , ],
              day.one = d[1:2,], 
              span = 5,
-             base = 10,
-             return.as = "gdd")$gdd
+             tbase = 10,
+             return.as = "daily")$gdd
   
   gdd <- round(gdd, 0)
   
@@ -49,7 +49,7 @@ test_that("nasapower works", {
             day.one = "2013-10-28",
             last.day = "2013-11-27",
             degree.days = 30, 
-            base = 5,
+            tbase = 5,
             return.as = "ndays")
   
   dg <- all(dg$GDD == realv)
@@ -64,7 +64,7 @@ test_that("missing degree.days return.as ndays", {
   expect_error(
     GDD(object = temp,
         day.one = d, 
-        base = 10,
+        tbase = 10,
         return.as = "ndays")
   )
   

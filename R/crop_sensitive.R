@@ -22,11 +22,13 @@
 #' 
 #' \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
-#'  YYYY-MM-DD) for the last day of the time series
+#'  YYYY-MM-DD) for the last day of the time series. For \code{data.frame}, \code{array} 
+#'  and \code{sf} methods
 #'  
 #' \code{span}: an integer (optional to \var{last.day}) or a vector with 
 #'  integers (optional if \var{last.day} is given) for the length of 
-#'  the time series to be captured
+#'  the time series to be captured. For \code{data.frame}, \code{array} 
+#'  and \code{sf} methods
 #' 
 #' @return A dataframe with crop sensitive indices with n colunms depending on the 
 #'  number of thresholds passed to each index:
@@ -77,14 +79,14 @@
 #'                hts_mean.threshold = c(24),
 #'                hts_max.threshold = c(31, 33))
 #' @export
-crop_sensitive <- function(...){
+crop_sensitive <- function(object, ...){
   UseMethod("crop_sensitive")
 }
 
 #' @rdname crop_sensitive
 #' @method crop_sensitive default
 #' @export
-crop_sensitive.default <- function(tmax, tmin, ...) {
+crop_sensitive.default <- function(object, tmin, ...) {
   
   dots <- list(...)
   hts_mean <- dots[["hts_mean.threshold"]]
@@ -94,7 +96,10 @@ crop_sensitive.default <- function(tmax, tmin, ...) {
   cdi_max <- dots[["cdi_max.threshold"]]
   lethal <- dots[["lethal.threshold"]]
   
-  temp <- data.frame(id = 1, tmax = tmax, tmin = tmin, stringsAsFactors = FALSE)
+  temp <- data.frame(id = 1, 
+                     tmax = object, 
+                     tmin = tmin,
+                     stringsAsFactors = FALSE)
   
   result <- .crop_sensitive(temp = temp, 
                             hts_mean.threshold = hts_mean,
@@ -151,7 +156,6 @@ crop_sensitive.data.frame <- function(object, day.one, ...) {
   
 }
 
-
 #' @rdname crop_sensitive
 #' @method crop_sensitive array
 #' @export
@@ -173,35 +177,6 @@ crop_sensitive.array <- function(object, day.one, ...){
   temp <- cbind(ts[[1]], tmin = ts[[2]]$value)
   
   names(temp)[names(temp)=="value"] <- "tmax"
-  
-  result <- .crop_sensitive(temp = temp, 
-                      hts_mean.threshold = hts_mean,
-                      hts_max.threshold = hts_max,
-                      hse.threshold = hse,
-                      cdi_mean.threshold = cdi_mean,
-                      cdi_max.threshold = cdi_max,
-                      lethal.threshold = lethal)
-  
-  return(result)
-  
-}
-
-#' @rdname crop_sensitive
-#' @method crop_sensitive clima_ls
-#' @export
-crop_sensitive.clima_ls <- function(object, ...) {
-  
-  dots <- list(...)
-  hts_mean <- dots[["hts_mean.threshold"]]
-  hts_max <- dots[["hts_max.threshold"]]
-  hse <- dots[["hse.threshold"]]
-  cdi_mean <- dots[["cdi_mean.threshold"]]
-  cdi_max <- dots[["cdi_max.threshold"]]
-  lethal <- dots[["lethal.threshold"]]
-  
-  temp <- cbind(object[[1]], tmin = object[[2]]$value)
-  
-  names(temp)[names(temp) == "value"] <- "tmax"
   
   result <- .crop_sensitive(temp = temp, 
                       hts_mean.threshold = hts_mean,
@@ -260,7 +235,16 @@ crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
   
 }
 
-# general function
+#' Crop sensitive
+#' 
+#' This is the main function, the others are handling methods
+#' 
+#' @param temp data.frame with following values id, tmax, tmin and date
+#' @examples 
+#' data(innlandet, package = "climatrends")
+#' 
+#' .crop_sensitive(innlandet)
+#' @noRd 
 .crop_sensitive <- function(temp, 
                             hts_mean.threshold = NULL,
                             hts_max.threshold = NULL,

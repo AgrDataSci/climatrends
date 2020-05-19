@@ -104,7 +104,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Overview.html">climatrends: Precipitation and Temperature Indices for Climate Variability Analysis</a>
+      <a href="../articles/Overview.html">climatrends: Climate Variability Indices for Ecological Modelling</a>
     </li>
   </ul>
 </li>
@@ -142,32 +142,37 @@
  a substantial accumulation of warmth</p>
     </div>
 
-    <pre class="usage"><span class='fu'>late_frost</span>(<span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
+    <pre class="usage"><span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>late_frost</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='kw'>dates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
+<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>tmin</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
+<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for array</span>
-<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
+<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># S3 method for sf</span>
-<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
-
-<span class='co'># S3 method for clima_ls</span>
-<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)</pre>
+<span class='fu'>late_frost</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>object</th>
+      <td><p>a numeric vector with the maximum temperature, 
+or a data.frame with geographical coordinates (lonlat), 
+or an object of class <code>sf</code> with geometry 'POINT' or 'POLYGON', 
+or an <code>array</code> with two dimensions containing the
+maximum and minimum temperature, in that order. See details</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>additional arguments passed to methods. See details</p></td>
     </tr>
     <tr>
-      <th>base</th>
+      <th>tbase</th>
       <td><p>an integer for the minimum temperature for growth</p></td>
     </tr>
     <tr>
@@ -175,25 +180,8 @@
       <td><p>an integer for the freezing threshold</p></td>
     </tr>
     <tr>
-      <th>tmax</th>
-      <td><p>a numeric vector with the maximum temperature</p></td>
-    </tr>
-    <tr>
       <th>tmin</th>
       <td><p>a numeric vector with the minimum temperature</p></td>
-    </tr>
-    <tr>
-      <th>dates</th>
-      <td><p>optional, a character (or Date or numeric) vector for the dates in 
-<var>tmax</var> and <var>tmin</var></p></td>
-    </tr>
-    <tr>
-      <th>object</th>
-      <td><p>a data.frame with geographical coordinates (lonlat), 
-or an object of class <code>sf</code> with geometry 'POINT' or 'POLYGON', 
-or an <code>array</code> with two dimensions containing the temperature data 
-or a <code>clima_ls</code> with maximum and minimum temperature, 
-in that order. See details</p></td>
     </tr>
     <tr>
       <th>day.one</th>
@@ -216,8 +204,10 @@ day to capture the climate data</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Additional arguments:</p>
-<p><code>equation</code>: character to specify the equation to be used, <code>"variant_a"</code> 
+<p><code>equation</code>: character to specify the equation to be used, <code>"b"</code> 
  is set by default. See GDD()</p>
+<p><code>dates</code>: a character (or Date or numeric) vector for the dates of tmax and tmin
+ in the <code>default</code> method</p>
 <p><code>last.day</code>: an object (optional to <var>span</var>) of class <code>Date</code> or
  any other object that can be coerced to <code>Date</code> (e.g. integer, character 
  YYYY-MM-DD) for the last day of the time series</p> 
@@ -236,15 +226,24 @@ day to capture the climate data</p></td>
 <code><a href='GDD.html'>GDD</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples">
-<span class='co'># default method</span>
+    <pre class="examples"><span class='co'># default method</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"innlandet"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
-<span class='no'>tmax</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"tmax"</span>]
-<span class='no'>tmin</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"tmin"</span>]
-<span class='no'>date</span> <span class='kw'>&lt;-</span> <span class='no'>innlandet</span>[, <span class='st'>"dates"</span>]
+<span class='co'># equation b is set by default</span>
+<span class='co'># where tmin and tmax are adjusted if below tbase</span>
+<span class='fu'>late_frost</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>,
+           <span class='no'>innlandet</span>$<span class='no'>tmin</span>,
+           <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>innlandet</span>$<span class='no'>date</span>,
+           <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>2</span>)
 
-<span class='fu'>late_frost</span>(<span class='no'>tmax</span>, <span class='no'>tmin</span>, <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>date</span>)
+<span class='co'># slightly different series if equation a is used</span>
+<span class='fu'>late_frost</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>,
+           <span class='no'>innlandet</span>$<span class='no'>tmin</span>,
+           <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>innlandet</span>$<span class='no'>date</span>,
+           <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+           <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"a"</span>)
+
+<span class='co'>#####################################################</span>
 
 <span class='co'># demo of the array method but no frost event is returned </span>
 <span class='co'># because the data comes from the tropics</span>
@@ -252,6 +251,7 @@ day to capture the climate data</p></td>
 
 <span class='fu'>late_frost</span>(<span class='no'>temp_dat</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-27"</span>)
 
+<span class='co'>#####################################################</span>
 
 <span class='co'># \donttest{</span>
 <span class='co'># Some random points in Norway</span>

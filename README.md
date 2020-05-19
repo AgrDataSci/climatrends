@@ -15,7 +15,7 @@
 
 ## Overview
 
-The **climatrends** package provides methods to compute precipitation and temperature indices for climate models in ecology. The indices produced here can be used as explanatory variables for crop modelling, trends in climate change and to assess the interactions of plants and animals with the environment.
+The **climatrends** package provides methods to compute precipitation and temperature indices for climate models in ecology. The indices produced here can be used as explanatory variables for ecological modelling, crop modelling, and to assess trends in climate change.
 
 ## Package website
 
@@ -45,10 +45,7 @@ library("climatrends")
 
 data("innlandet", package = "climatrends")
 
-tmax <- innlandet[, "tmax"]
-tmin <- innlandet[, "tmin"]
-
-temperature(tmax, tmin)
+temperature(innlandet$tmax, innlandet$tmin)
 
    maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p
    <dbl>  <dbl> <dbl>  <dbl> <int> <int> <int> <int> <int> <int>  <dbl> <dbl>
@@ -59,9 +56,11 @@ temperature(tmax, tmin)
 The indices can be splitted for in intervals for series analysis. Here we get the temperature indices with intervals of 30 days.
 
 ```r
-day <- innlandet[, "dates"]
 
-temperature(tmax, tmin, dates = day, timeseries = TRUE, intervals = 30)
+temperature(innlandet$tmax, innlandet$tmin,
+            dates = innlandet$day, 
+            timeseries = TRUE, 
+            intervals = 30)
 
        id       date index  value
     <int>     <date> <chr>  <dbl>

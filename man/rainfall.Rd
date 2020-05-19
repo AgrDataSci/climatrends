@@ -10,21 +10,13 @@
 \usage{
 rainfall(object, ...)
 
-\method{rainfall}{default}(object, dates = NULL, ..., timeseries = FALSE, intervals = 5)
+\method{rainfall}{default}(object, ..., timeseries = FALSE)
 
-\method{rainfall}{data.frame}(object, day.one, span = NULL, ..., timeseries = FALSE, intervals = 5)
+\method{rainfall}{data.frame}(object, day.one, span = NULL, ..., timeseries = FALSE)
 
-\method{rainfall}{matrix}(object, day.one, span = NULL, ..., timeseries = FALSE, intervals = 5)
+\method{rainfall}{matrix}(object, day.one, span = NULL, ..., timeseries = FALSE)
 
-\method{rainfall}{sf}(
-  object,
-  day.one,
-  span = NULL,
-  ...,
-  timeseries = FALSE,
-  intervals = 5,
-  as.sf = TRUE
-)
+\method{rainfall}{sf}(object, day.one, span = NULL, ..., timeseries = FALSE, as.sf = TRUE)
 }
 \arguments{
 \item{object}{a numeric vector with precipitation data or a \code{data.frame}
@@ -34,14 +26,8 @@ precipitation data. See details.}
 
 \item{...}{additional arguments passed to methods. See details.}
 
-\item{dates}{optional, a character (or Date or numeric) vector for the dates in 
-\var{object} in the dafault method}
-
 \item{timeseries}{logical, \code{FALSE} for a single point time series
 observation or \code{TRUE} for a time series based on \var{intervals}}
-
-\item{intervals}{integer (no lower than 5), for the days intervals when
-\var{timeseries} = \code{TRUE}}
 
 \item{day.one}{a vector of class \code{Date} or any other object that can be 
 coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting 
@@ -70,22 +56,17 @@ A dataframe with rainfall indices:
 Methods to compute rainfall indices over a time series
 }
 \details{
-The \code{matrix} method assumes that \var{object} contains climate data available in your 
- R section; see help("rain_dat", package = "climatrends") for an example on input 
- structure.
+#' Additional arguments:
 
-The \code{default} method and the \code{sf} method assumes that the climate data
- will e fetched from a remote (cloud) source that be adjusted using the argument 
- \var{data.from}.
-
-When \var{timeseries} = \code{TRUE}, an id is created, 
- which is the index for the rownames of the inputted \var{object}.
-
-Additional arguments:
-
+\code{intervals}: an integer (no lower than 5), for the days intervals when
+ \var{timeseries = TRUE}
+ 
 \code{last.day}: optional to \var{span}, an object of class \code{Date} or
  any other object that can be coerced to \code{Date} (e.g. integer, character 
  YYYY-MM-DD)  for the last day of the time series
+ 
+\code{dates}: a character (or Date or numeric) vector for the dates of tmax and tmin
+ in the \code{default} method
 
 \code{data.from}: character for the source of remote data. Current remote source 
  is: 'nasapower'
@@ -96,6 +77,16 @@ Additional arguments:
 \code{days.before}: optional, an integer for the number of days before 
  \var{day.one} to be included in the timespan.
  
+# S3 Methods 
+
+The \code{matrix} method assumes that \var{object} contains climate data available in
+ your R section; see help("rain_dat", package = "climatrends") for an example on input 
+ structure.
+
+The \code{data.frame} and the \code{sf} methods assumes that the climate data
+ will e fetched from a remote (cloud) source that be adjusted using the argument 
+ \var{data.from}.
+
 When \var{timeseries} = \code{TRUE}, an id is created, 
  which is the index for the rownames of the inputted \var{object}.
 }
@@ -140,8 +131,7 @@ rain1
 # get precipitation indices from "2010-12-01" to "2011-01-31"
 rain2 <- rainfall(lonlatsf,
                   day.one = "2010-12-01",
-                  last.day = "2011-01-31",
-                  as.sf = FALSE)
+                  last.day = "2011-01-31")
 rain2
 }
 
@@ -150,5 +140,4 @@ rain2
 Aguilar E., et al. (2005). Journal of Geophysical Research, 
 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
 }
-\concept{climatology functions}
 \concept{precipitation functions}
