@@ -99,10 +99,11 @@ late_frost(temp_dat, day.one = "2013-10-27")
 # Some random points in Norway
 # get data from NASA Power
 library("nasapower")
-data("lonlatsf", package = "climatrends")
-  
-late_frost(lonlatsf, day.one = "2019-01-01", last.day = "2019-07-01")
-  
+lonlat <- data.frame(lon = c(10.93, 10.57),
+                     lat = c(60.77, 61.10))
+
+late_frost(lonlat, day.one = "2019-01-01", last.day = "2019-07-01")
+    
 }
 
 }

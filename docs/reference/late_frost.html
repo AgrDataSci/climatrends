@@ -257,9 +257,10 @@ day to capture the climate data</p></td>
 <span class='co'># Some random points in Norway</span>
 <span class='co'># get data from NASA Power</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"lonlatsf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
+<span class='no'>lonlat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10.93</span>, <span class='fl'>10.57</span>),
+                     <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>60.77</span>, <span class='fl'>61.10</span>))
 
-<span class='fu'>late_frost</span>(<span class='no'>lonlatsf</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2019-01-01"</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2019-07-01"</span>)
+<span class='fu'>late_frost</span>(<span class='no'>lonlat</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2019-01-01"</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2019-07-01"</span>)
 
 <span class='co'># }</span></pre>
   </div>
