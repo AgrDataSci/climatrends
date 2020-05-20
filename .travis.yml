@@ -8,11 +8,11 @@ r:
 os:
   - linux
 warnings_are_errors: true
-#addons:
-#  apt:
-#    packages:
-#      - libudunits2-dev
-#      - libgdal-dev
+addons:
+  apt:
+    packages:
+      - libudunits2-dev
+      - libgdal-dev
 r_packages:
   - nasapower
 after_success:

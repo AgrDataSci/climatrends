@@ -19,7 +19,7 @@ Depends:
     R (>= 3.5.0), 
     methods
 Imports:
-    sf (>= 0.9-3),
+    sf,
     stats
 Suggests: 
     knitr,
