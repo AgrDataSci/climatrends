@@ -472,7 +472,7 @@ GDD.sf <- function(object, day.one, ..., tbase = 10, as.sf = TRUE){
 
   tmax_adj[tmax_adj > tbase_max] <- tbase_max
   
-  tmin_adj[tmin_adj > tbase] <- tbase
+  tmin_adj[tmin_adj < tbase] <- tbase
   
   g <- ((tmax_adj + tmin_adj) / 2) - tbase
 

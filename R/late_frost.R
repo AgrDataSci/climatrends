@@ -24,7 +24,7 @@
 #'  integers (optional if \var{last.day} is given) for the length of 
 #'  the time series to be captured
 #'  
-#' @return a data.frame with the late frost events
+#' @return A data.frame with the late frost events
 #' \item{id}{the id generated using the indices for the rows in \var{object}}
 #' \item{date}{the first day of the event}
 #' \item{gdd}{the growing degree-days accumulated during the event}

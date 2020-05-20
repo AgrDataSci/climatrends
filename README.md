@@ -53,7 +53,7 @@ temperature(innlandet$tmax, innlandet$tmin)
 
 ```
 
-The indices can be splitted for in intervals for series analysis. Here we get the temperature indices with intervals of 30 days.
+The indices can be splitted in intervals for series analysis. Here we get the temperature indices with intervals of 30 days.
 
 ```r
 

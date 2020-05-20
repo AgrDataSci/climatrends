@@ -3,6 +3,7 @@ climatrends 0.1.6-1 (2020-05-20)
 
 * Add suggested CITATION
 * Fix documentation typos
+* Fix a bug in computing equation c in `GDD()`
 
 climatrends 0.1.6 (2020-05-19)
 =========================

@@ -37,6 +37,13 @@ output: pdf_document
 ^[*]^Correspondence should be addressed to: <kaue.desousa@inn.no>
 
 \
+```{r get data, include=FALSE}
+library("knitr")
+library("kableExtra")
+library("magrittr")
+funtbl <- read.csv("available_functions.csv")
+```
+
 
 # Introduction
 
@@ -52,12 +59,25 @@ Raw temperature and precipitation values are ... to describe how organisms inter
 
 ## Implementation
 
-Four main functions are provided, `ETo()`, `GDD()`, `rainfall()` and `temperature()` with methods [@RCoreTeam] for classes 'data.frame', 'matrix' (or array), and 'sf' [@sf]. 
+Six main functions are provided, `crop_sensitive()`, `ETo()`, `GDD()`, `late_frost()`, `rainfall()` and `temperature()` with a default method for numeric 'vector's and additional methods [@RCoreTeam] for classes 'matrix' (or array), 'data.frame', and 'sf' (of geometry POINT or POLYGON) [@sf]. The later two are designed to fetch data from cloud sources. 
+
+
 
 say that the idea for the functions started with citizen science projects that is why `day.one` and `span` may be variable across locations. For time series analysis where fixed periods are defined across many locations the indices can be adjusted with last.day. 
 
 [...continue...]
 
+
+```{r characteristics, echo=FALSE, message=TRUE}
+kable(funtbl, 
+      row.names = FALSE,
+      align = "l", 
+      caption = "Main functions available in climatrends.") %>% 
+  kable_styling(latex_options = "scale_down") %>% 
+  column_spec(2, width = "1in") %>% 
+  column_spec(3, width = "1.7in") %>% 
+  column_spec(4, width = "1.7in")
+```
 
 
 ## Growing degree-days
@@ -70,23 +90,33 @@ $$GDD = \frac{T_{max} + T_{min}}{2} - T_{0}$$
 
 Where $T_{max}$ is the maximum temperature in the given day, $T_{min}$ is the minimum temperature in the given day and $T_{0}$ is the minimum temperature for growth (as per the physiology of the focal organism or ecosystem averages). 
 
-For cold environments, where $T_{min}$ may be lower than $T_{0}$, there are two variants of the previous equation to adjust either $T_{mean}$ (variant A) or $T_{min}$ (variant B). The variant A changes $T_{mean}$ to $T_{0}$ if $T_{mean} < T_{0}$ and is expressed as follows.
+Additionally, the function `GDD()` offers three modified equations (two) designed for cold environments and (one) for tropical environments. For cold environments, where $T_{min}$ may be lower than $T_{0}$, there are two variants of the previous equation to adjust either $T_{mean}$ (variant a) or $T_{min}$ (variant b). The variant a changes $T_{mean}$ to $T_{0}$ if $T_{mean} < T_{0}$ and is expressed as follows.
 
 Equation [2]
 
 $$ GDD = max \left(\frac{T_{max} + T_{min}}{2} - T_{0}, \; 0 \right)$$
 
-The variant B, is calculated using Equation 1, but adjusts $T_{min}$ to $T_{0}$ if $T_{min} < T_{0}$, and is adjusted as follows.
+The variant b, is calculated using Equation 1, but adjusts $T_{min}$ or $T_{max}$ to $T_{0}$ if $T < T_{0}$, the equation is adjusted as follows.
 
 Equation [3]
 
-$$ T_{min} < T_{0} \; \rightarrow \; T_{min} = T_{0} $$
+$$ T < T_{0} \; \rightarrow \; T = T_{0} $$
 
-In `GDD()` these equations are defined as 'default', 'variant_a' and 'variant_b', respectively, and can be selected using the argument `equation`.
+Where $T$ may refer to $T_{min}$ and/or $T_{max}$ when the condition of being below $T_{0}$ applies.
 
-By default, the function returns the degree-days that is accumulated over the time series. Additionally, the function may return the daily values of degree-days or the number of days that a given organism required to reach a certain number of accumulated degree-days. These values are defined by 'acc', 'daily' or 'ndays' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset of photosynthesis [@JWu2013]. In that case, the function will calculate the growing degree-days ($gdd$) and sum up the values until it reaches the defined gdd (105 $^\circ C$) and return the number of days needed in the given season ($GDD_{ndays}$), as follows.
+For tropical areas, where the temperature may surpass a maximum threshold ($T_{0^{max}}$), resulting in limited development, the minimum temperature is adjusted using Equation 3 and the maximum temperature is adjusted to a maximum base temperature as follow.
 
 Equation [4]
+
+$$ T_{max} > T_{0^{max}} \; \rightarrow \; T_{max} = T_{0^{max}} $$
+
+Where $T_{0^{max}}$ is the maximum base temperature for growth, defined in `GDD()` using the argument `tbase_max`.
+
+These modified equations are defined as 'a', 'b' and 'c', respectively, and can be selected using the argument `equation`.
+
+By default, the function returns the degree-days that is accumulated over the time series using Equation 1. Additionally, the function may return the daily values of degree-days or the number of days that a given organism required to reach a certain number of accumulated degree-days. These values are defined by 'acc', 'daily' or 'ndays' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset the photosynthesis [@JWu2013]. In that case, `GDD()` will calculate the growing degree-days ($gdd$) and sum up the values until it reaches the defined gdd (105 $^\circ C$) and return the number of days needed in the given season ($GDD_{ndays}$), as follows.
+
+Equation [5]
 
 $$\parallel GDD_{ndays} \parallel \: = \; ggd_1 \;+ \; ...  \; +  \; gdd_n$$
 
@@ -99,7 +129,7 @@ Equation [5]
 
 $$ETo = p \times \left(0.46 \times \frac{T_{max} + T_{min}}{2} + 8 \right) \times K_c$$
 
-Where $p$ is the mean daily percentage of annual daytime hours, $T_{max}$ is the maximum temperature, $T_{min}$ is the minimum temperature, and $K_c$ is the factor for organism water need may change according to the growth stage.
+Where $p$ is the mean daily percentage of annual daytime hours, $T_{max}$ is the maximum temperature, $T_{min}$ is the minimum temperature, and $K_c$ is the factor for organism water need.
 
 The percentage of daytime hours ($p$) is calculated internally by most methods in `ETo()` (except the array method) using the given latitude (taken from the inputted `object`) and date (taken from the inputted `day.one`). It matches the latitude and date with a table of daylight percentage derived from Brouwer and Heibloem [-@Brouwer1986]. The table can be verified using `climatrends:::daylight`.
 
