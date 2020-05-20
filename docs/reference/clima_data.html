@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6-1</span>
       </span>
     </div>
 
@@ -144,7 +144,8 @@
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>an array with two layers (temp_dat) a matrix (rain_dat), an sf object (lonlatsf)</p>
+    <p>an array with two layers (temp_dat) a matrix (rain_dat),
+ a data.frame (innlandet), a sf object (lonlatsf)</p>
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
     <p>Funk, C. et al. (2015). The climate hazards infrared precipitation 
@@ -162,12 +163,10 @@ SIN Grid V006 <a href='http://dx.doi.org/10.5067/MODIS/MYD11A2.006'>http://dx.do
 <p><code>rain_dat</code>: matrix with precipitation from CHIRPS. An excerpt to represent 
  an example of the input data in <code><a href='rainfall.html'>rainfall()</a></code> or 
  <code><a href='get_timeseries.html'>get_timeseries()</a></code> when a matrix is provided.</p> 
-<p><code>innlandet</code>: matrix with maximum and minimum temperature for a random point in 
- the Innlandet county in Norway, spanning from "2019-01-01" to "2019-07-01"</p> 
-<p><code>innlandet</code>: matrix with maximum and minimum temperature for a random point in 
+<p><code>innlandet</code>: a data.frame with maximum and minimum temperature for a random point in 
  the Innlandet county in Norway, spanning from "2019-01-01" to "2019-07-01"</p> 
 <p><code>lonlatsf</code>: a 'sf' object with 'POINT' geometry with five random points around 
- Sinop, Brazil</p> 
+ the municipality of Sinop, Brazil</p> 
 <p>In <code>temp_dat</code> and <code>rain_dat</code>, rows represents the coordinates for the 
  given lonlat provided in <code><a href='https://rdrr.io/pkg/raster/man/extract.html'>raster::extract()</a></code> and colunms represents the dates 
  from the observed precipitation/temperature.</p>
@@ -183,7 +182,7 @@ SIN Grid V006 <a href='http://dx.doi.org/10.5067/MODIS/MYD11A2.006'>http://dx.do
 
       <footer>
       <div class="copyright">
-  <p>Developed by Kaue de Sousa, Jacob van Etten, Svein Solberg.</p>
+  <p>Developed by Kauê de Sousa.</p>
 </div>
 
 <div class="pkgdown">

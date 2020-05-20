@@ -1,13 +1,13 @@
 Package: climatrends
 Type: Package
 Title: Climate Variability Indices for Ecological Modelling
-Version: 0.1.6
-Authors@R: c(person("Kaue", "de Sousa", 
+Version: 0.1.6-1
+Authors@R: c(person("Kauê", "de Sousa", 
         email = "kaue.desousa@inn.no", role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-7571-7845")),
-        person("Jacob", "van Etten", role = c("aut", "ths"),
+        person("Jacob", "van Etten", role = c("ctb", "ths"),
         comment = c(ORCID = "0000-0001-7554-2558")),
-        person("Svein", "Solberg", role = c("aut","ths"),
+        person("Svein Ø.", "Solberg", role = c("ctb","ths"),
         comment = c(ORCID = "0000-0002-4491-4483")))
 URL: https://agrobioinfoservices.github.io/climatrends
 BugReports: https://github.com/agrobioinfoservices/climatrends/issues
@@ -19,7 +19,7 @@ Depends:
     R (>= 3.5.0), 
     methods
 Imports:
-    sf,
+    sf (>= 0.9-3),
     stats
 Suggests: 
     knitr,

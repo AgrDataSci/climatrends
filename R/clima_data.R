@@ -13,14 +13,11 @@
 #'  an example of the input data in \code{rainfall()} or 
 #'  \code{get_timeseries()} when a matrix is provided.
 #'  
-#' \code{innlandet}: matrix with maximum and minimum temperature for a random point in 
-#'  the Innlandet county in Norway, spanning from "2019-01-01" to "2019-07-01"
-#'  
-#' \code{innlandet}: matrix with maximum and minimum temperature for a random point in 
+#' \code{innlandet}: a data.frame with maximum and minimum temperature for a random point in 
 #'  the Innlandet county in Norway, spanning from "2019-01-01" to "2019-07-01"
 #'  
 #' \code{lonlatsf}: a 'sf' object with 'POINT' geometry with five random points around 
-#'  Sinop, Brazil 
+#'  the municipality of Sinop, Brazil 
 #'  
 #' In \code{temp_dat} and \code{rain_dat}, rows represents the coordinates for the 
 #'  given lonlat provided in \code{raster::extract()} and colunms represents the dates 
@@ -45,6 +42,7 @@
 #' SIN Grid V006 \url{http://dx.doi.org/10.5067/MODIS/MYD11A2.006}.
 #' 
 #' @format 
-#' an array with two layers (temp_dat) a matrix (rain_dat), an sf object (lonlatsf)
+#' an array with two layers (temp_dat) a matrix (rain_dat),
+#'  a data.frame (innlandet), a sf object (lonlatsf)
 c("rain_dat", "temp_dat", "lonlatsf","innlandet")
 

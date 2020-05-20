@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6-1</span>
       </span>
     </div>
 
@@ -134,9 +134,18 @@
       <small>Source: <a href='https://github.com/agrobioinfoservices/climatrends/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="climatrends-016-2020-05-18" class="section level1">
+    <div id="climatrends-016-1-2020-05-20" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.6-1">
+<a href="#climatrends-016-1-2020-05-20" class="anchor"></a>climatrends 0.1.6-1 (2020-05-20)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Add suggested CITATION</li>
+<li>Fix documentation typos</li>
+</ul>
+</div>
+    <div id="climatrends-016-2020-05-19" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.6">
-<a href="#climatrends-016-2020-05-18" class="anchor"></a>climatrends 0.1.6 (2020-05-18)<small> Unreleased </small>
+<a href="#climatrends-016-2020-05-19" class="anchor"></a>climatrends 0.1.6 (2020-05-19)<small> 2020-05-20 </small>
 </h1>
 <div id="new-features" class="section level3">
 <h3 class="hasAnchor">
@@ -151,12 +160,12 @@
 <li>Enable argument <code>last.day</code>, optional to <code>span</code>, when indices are retrieved with focus on time series analysis</li>
 <li>Enable data retrieve from large areas in ‘nasapower’ by clustering the lonlat points with <code><a href="https://rdrr.io/r/stats/hclust.html">stats::hclust()</a></code>
 </li>
-<li>Methods for objects of classes ‘data.frame’ (default), ‘sf’, ‘matrix’, ‘array’, ‘clima_df’ and ‘clima_ls’ in all functions</li>
+<li>Methods for objects of classes ‘vector’ (default), ‘matrix’, ‘array’, ‘data.frame’ and ‘sf’. The last two with focus in retrieve data from external sources.</li>
 <li>Remove dependency from ‘tibble’ which was basically to provide a ‘cool’ printing method</li>
 <li>Implement a <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> method for objects that inherits the class ‘clima_df’</li>
 <li>Calls from “nasapower” can be adjusted with argument <code>pars</code>, mainly for <code><a href="../reference/temperature.html">temperature()</a></code>, <code><a href="../reference/GDD.html">GDD()</a></code> and <code><a href="../reference/ETo.html">ETo()</a></code>. Details in the function documentation</li>
 <li>New <code><a href="../reference/temperature.html">temperature()</a></code> indices provided. Details in the function documentation</li>
-<li>Function <code><a href="../reference/GDD.html">GDD()</a></code> applies two equations adjustments for cold zones with the argument <code>equation</code>. Details in the function documentation</li>
+<li>Function <code><a href="../reference/GDD.html">GDD()</a></code> applies two equations adjustments for cold zones and one for warm zones with the argument <code>equation</code>. Details in the function documentation</li>
 <li>Function <code><a href="../reference/GDD.html">GDD()</a></code> now allows to return the raw daily gdd or number of days to reach the accumulated gdd (the default in previous versions) using the argument <code>return.as</code>
 </li>
 </ul>
@@ -166,7 +175,7 @@
 <a href="#changes-in-behaviour" class="anchor"></a>CHANGES IN BEHAVIOUR</h3>
 <ul>
 <li>New default method in all functions which uses a vector as main input</li>
-<li>Change order of <code><a href="../reference/GDD.html">GDD()</a></code> arguments. Previous versions used <em>GDD(object, day.one = NULL, degree.days = NULL, base = 10, span = 150, …)</em>. From now on <code><a href="../reference/GDD.html">GDD()</a></code> default behaviour is <em>GDD(object, day.one, base = 10, …)</em>, additional arguments are passed through <code>...</code> in each defined method.</li>
+<li>Change order of <code><a href="../reference/GDD.html">GDD()</a></code> arguments. Previous versions used <code><a href="../reference/GDD.html">GDD(object, day.one = NULL, degree.days = NULL, base = 10, span = 150, ...)</a></code>. From now on <code><a href="../reference/GDD.html">GDD()</a></code> default behaviour is <code><a href="../reference/GDD.html">GDD(object, ..., base = 10)</a></code>, with additional arguments are passed through <code>...</code> in each defined method. The function return by default the accumulated degree-days across the series.</li>
 </ul>
 </div>
 </div>
@@ -221,7 +230,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Kaue de Sousa, Jacob van Etten, Svein Solberg.</p>
+  <p>Developed by Kauê de Sousa.</p>
 </div>
 
 <div class="pkgdown">

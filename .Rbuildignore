@@ -4,6 +4,7 @@
 ^appveyor\.yml$
 ^codecov\.yml$
 ^docs$
+^doc$
 ^pkgdown$
 ^CODE_OF_CONDUCT\.md$
 ^README\.md$
@@ -11,8 +12,8 @@
 ^tests$
 ^logo\.svg$
 ^dev$
-^doc$
 ^codemeta\.json$
 ^Meta$
 ^vignettes/precompile\.R$
 ^vignettes/Overview\.Rmd\.orig$
+^inst/paper$

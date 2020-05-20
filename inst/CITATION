@@ -1,0 +1,10 @@
+citHeader("To cite package ‘climatrends’ in publications, please use:")
+
+citEntry(entry = "Manual",
+    title = "climatrends: Climate Variability Indices for Ecological Modelling",
+    author = c(person("Kauê", "de Sousa"), person("Jacob","van Etten"), person("Svein Ø.", "Solberg")),
+    year = "2020",
+    note = "R package version 0.1.6",
+    url = "https://CRAN.R-project.org/package=climatrends",
+    textVersion = "Kauê de Sousa, Jacob van Etten and Svein Ø. Solberg (2020). climatrends: Climate Variability
+    Indices for Ecological Modelling. R package version 0.1.6. https://CRAN.R-project.org/package=climatrends")

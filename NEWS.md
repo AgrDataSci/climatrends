@@ -1,4 +1,10 @@
-climatrends 0.1.6 (2020-05-18)
+climatrends 0.1.6-1 (2020-05-20)
+=========================
+
+* Add suggested CITATION
+* Fix documentation typos
+
+climatrends 0.1.6 (2020-05-19)
 =========================
 
 ### NEW FEATURES
@@ -9,18 +15,18 @@ climatrends 0.1.6 (2020-05-18)
 * Enable future modular expansion of data sources using API clients by creating specific functions that are called with the argument `data.from` in `get_timeseries()`
 * Enable argument `last.day`, optional to `span`, when indices are retrieved with focus on time series analysis
 * Enable data retrieve from large areas in 'nasapower' by clustering the lonlat points with `stats::hclust()`
-* Methods for objects of classes 'data.frame' (default), 'sf', 'matrix', 'array', 'clima_df' and 'clima_ls' in all functions
+* Methods for objects of classes 'vector' (default), 'matrix', 'array', 'data.frame' and 'sf'. The last two with focus in retrieve data from external sources.
 * Remove dependency from 'tibble' which was basically to provide a 'cool' printing method
 * Implement a `print()` method for objects that inherits the class 'clima_df'
 * Calls from "nasapower" can be adjusted with argument `pars`, mainly for `temperature()`, `GDD()` and `ETo()`. Details in the function documentation
 * New `temperature()` indices provided. Details in the function documentation
-* Function `GDD()` applies two equations adjustments for cold zones with the argument `equation`. Details in the function documentation
+* Function `GDD()` applies two equations adjustments for cold zones and one for warm zones with the argument `equation`. Details in the function documentation
 * Function `GDD()` now allows to return the raw daily gdd or number of days to reach the accumulated gdd (the default in previous versions) using the argument `return.as`
 
 ### CHANGES IN BEHAVIOUR
 
 * New default method in all functions which uses a vector as main input
-* Change order of `GDD()` arguments. Previous versions used *GDD(object, day.one = NULL, degree.days = NULL, base = 10, span = 150, ...)*. From now on `GDD()` default behaviour is *GDD(object, day.one, base = 10, ...)*, additional arguments are passed through `...` in each defined method.
+* Change order of `GDD()` arguments. Previous versions used `GDD(object, day.one = NULL, degree.days = NULL, base = 10, span = 150, ...)`. From now on `GDD()` default behaviour is `GDD(object, ..., base = 10)`, with additional arguments are passed through `...` in each defined method. The function return by default the accumulated degree-days across the series.
 
 climatrends 0.1.0 (2020-02-20)
 =========================
