@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -193,7 +193,7 @@ day to capture the climate data</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a data.frame with the late frost events</p>
+    <p>A data.frame with the late frost events</p>
 <dt>id</dt><dd><p>the id generated using the indices for the rows in <var>object</var></p></dd>
 <dt>date</dt><dd><p>the first day of the event</p></dd>
 <dt>gdd</dt><dd><p>the growing degree-days accumulated during the event</p></dd>
@@ -234,13 +234,15 @@ day to capture the climate data</p></td>
 <span class='fu'>late_frost</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>,
            <span class='no'>innlandet</span>$<span class='no'>tmin</span>,
            <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>innlandet</span>$<span class='no'>date</span>,
-           <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+           <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+           <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
 
 <span class='co'># slightly different series if equation a is used</span>
 <span class='fu'>late_frost</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>,
            <span class='no'>innlandet</span>$<span class='no'>tmin</span>,
            <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>innlandet</span>$<span class='no'>date</span>,
-           <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+           <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+           <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>,
            <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"a"</span>)
 
 <span class='co'>#####################################################</span>
@@ -257,8 +259,8 @@ day to capture the climate data</p></td>
 <span class='co'># Some random points in Norway</span>
 <span class='co'># get data from NASA Power</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
-<span class='no'>lonlat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10.93</span>, <span class='fl'>10.57</span>),
-                     <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>60.77</span>, <span class='fl'>61.10</span>))
+<span class='no'>lonlat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10.93</span>, <span class='fl'>10.57</span>, <span class='fl'>11.21</span>),
+                     <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>60.77</span>, <span class='fl'>61.10</span>, <span class='fl'>60.33</span>))
 
 <span class='fu'>late_frost</span>(<span class='no'>lonlat</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2019-01-01"</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2019-07-01"</span>)
 

@@ -14,22 +14,19 @@
 #' @details 
 #' Additional arguments:
 #' 
+#' \code{equation} character to specify the equation to be used, one of \code{"default"},
+#' \code{"a"}, \code{"b"} or \code{"c"}. See Equations below 
+#' 
 #' \code{tbase_max} optional, the maximum tbase temperature, 
 #'  required if \code{equation = "c"}   
 #' 
 #' \code{return.as} character (one of, the default, \code{"acc"} or \code{"daily"},
 #'  \code{"ndays"}) to select if the function returns the accumulated gdd, or the 
-#'  daily values of gdd across the series of the number of days required to reach a
+#'  daily values of gdd across the series, or the number of days required to reach a
 #'  certain number of \code{degree.days}
 #'  
 #' \code{degree.days} an integer for the accumulated degree-days required by the 
 #'  organism. Optional if \var{return.as = "daily"} or \var{return.as = "acc"} 
-#' 
-#' \code{equation} character to specify the equation to be used, one of \code{"default"},
-#' \code{"a"}, \code{"b"} or \code{"c"}. See Equations below 
-#' 
-#' \code{dates}: a character (or Date or numeric) vector for the dates of tmax and tmin
-#'  in the \code{default} method
 #' 
 #' \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
@@ -57,7 +54,7 @@
 #'  
 #'  \code{"default"}: GDD = ((tmax + tmin) / 2) - tbase
 #'  
-#'  \code{"a"}: GDD = max(GDD, 0)
+#'  \code{"a"}: adjust tmean = tbase if tmeam < tbase
 #'  
 #'  \code{"b"}: adjust tmin = tbase if tmin < tbase,
 #'   adjust tmax = tbase if tmax < tbase
@@ -75,7 +72,7 @@
 #' @examples
 #' data("innlandet", package = "climatrends")
 #' 
-#' # use the default equation, but in this case it returns negative values
+#' # use the default equation
 #' GDD(innlandet$tmax, innlandet$tmin, tbase = 2)
 #' 
 #' # set the equation "b", which is a better option for this case
@@ -127,7 +124,6 @@ GDD.default <- function(object, tmin, ..., tbase = 10) {
   
   dots <- list(...)
   equation <- dots[["equation"]]
-  dates <- dots[["dates"]]
   return.as <- dots[["return.as"]]
   degree.days <- dots[["degree.days"]]
   tbase_max <- dots[["tbase_max"]]
@@ -140,34 +136,18 @@ GDD.default <- function(object, tmin, ..., tbase = 10) {
     equation <- "default"
   }
   
-  if (!is.null(dates)) {
-    dates <- .coerce2Date(dates)
-  }
+  result <- gdd(tmax = object,
+                tmin = tmin,
+                tbase = tbase, 
+                tbase_max = tbase_max,
+                degree.days = degree.days, 
+                equation = equation, 
+                return.as = return.as)
   
-  setnulldate <- FALSE
-  if (is.null(dates)) {
-    dates <- .coerce2Date(1:length(object))
-    setnulldate <- TRUE
-  }
+  result <- data.frame(gdd = result, stringsAsFactors = FALSE)
   
-  temp <- data.frame(id = 1, 
-                     date = dates,
-                     tmax = object, 
-                     tmin = tmin, 
-                     stringsAsFactors = FALSE)
-  
-  result <- .gdd(temp, 
-                 tbase = tbase, 
-                 tbase_max = tbase_max,
-                 degree.days = degree.days, 
-                 equation = equation, 
-                 return.as = return.as)
-  
-  if (isTRUE(setnulldate)) {
-    result <- data.frame(gdd = result[, "gdd"], stringsAsFactors = FALSE)
-    class(result) <- union("clima_df", class(result))
-  }
-  
+  class(result) <- union("clima_df", class(result))
+
   return(result)
   
 }
@@ -209,12 +189,33 @@ GDD.data.frame <- function(object, day.one, ..., tbase = 10){
   
   names(temp)[names(temp)=="value"] <- "tmax"
   
-  result <- .gdd(temp, 
-                 tbase = tbase, 
-                 tbase_max = tbase_max,
-                 degree.days = degree.days, 
-                 equation = equation, 
-                 return.as = return.as)
+  temp <- split(temp, temp$id)
+  
+  result <- lapply(temp, function(x){
+    
+    gd <- gdd(x$tmax,
+               x$tmin,
+               tbase = tbase, 
+               tbase_max = tbase_max,
+               degree.days = degree.days, 
+               equation = equation, 
+               return.as = return.as)
+    
+    r <- data.frame(gdd = gd, 
+                    stringsAsFactors = FALSE)
+    
+    if (isFALSE(return.as=="ndays")) {
+      i <- rep(x$id[1], length(gd))
+      r <- cbind(r, dates = x$date, id = i)
+      r <- r[,c("id","dates","gdd")]
+    }
+    
+    return(r)
+  })
+  
+  result <- do.call("rbind", result)
+  
+  class(result) <- union("clima_df", class(result))
   
   return(result)
 }
@@ -259,12 +260,33 @@ GDD.array <- function(object, day.one, ..., tbase = 10){
   
   names(temp)[names(temp)=="value"] <- "tmax"
   
-  result <- .gdd(temp, 
-                 tbase = tbase, 
-                 tbase_max = tbase_max,
-                 degree.days = degree.days, 
-                 equation = equation, 
-                 return.as = return.as)
+  temp <- split(temp, temp$id)
+  
+  result <- lapply(temp, function(x){
+    
+    gd <- gdd(x$tmax,
+               x$tmin,
+               tbase = tbase, 
+               tbase_max = tbase_max,
+               degree.days = degree.days, 
+               equation = equation, 
+               return.as = return.as)
+    
+    r <- data.frame(gdd = gd, 
+                    stringsAsFactors = FALSE)
+    
+    if (isFALSE(return.as=="ndays")) {
+      i <- rep(x$id[1], length(gd))
+      r <- cbind(r, dates = x$date, id = i)
+      r <- r[,c("id","dates","gdd")]
+    }
+    
+    return(r)
+  })
+  
+  result <- do.call("rbind", result)
+  
+  class(result) <- union("clima_df", class(result))
   
   return(result)
 }
@@ -301,15 +323,37 @@ GDD.sf <- function(object, day.one, ..., tbase = 10, as.sf = TRUE){
   
   names(temp)[names(temp)=="value"] <- "tmax"
   
-  result <- .gdd(temp, 
-                 tbase = tbase, 
-                 tbase_max = tbase_max,
-                 degree.days = degree.days, 
-                 equation = equation, 
-                 return.as = return.as)
+  temp <- split(temp, temp$id)
   
-  if (isTRUE(as.sf)) {
-    result <- suppressWarnings(sf::st_bind_cols(object, result))
+  result <- lapply(temp, function(x){
+    
+    gd <- gdd(x$tmax,
+               x$tmin,
+               tbase = tbase, 
+               tbase_max = tbase_max,
+               degree.days = degree.days, 
+               equation = equation, 
+               return.as = return.as)
+    
+    r <- data.frame(gdd = gd, 
+                    stringsAsFactors = FALSE)
+    
+    if (isFALSE(return.as=="ndays")) {
+      i <- rep(x$id[1], length(gd))
+      r <- cbind(r, dates = x$date, id = i)
+      r <- r[,c("id","dates","gdd")]
+    }
+    
+    return(r)
+    
+  })
+  
+  result <- do.call("rbind", result)
+  
+  class(result) <- union("clima_df", class(result))
+  
+  if (all(as.sf, return.as == "ndays")) {
+    result <- cbind(object, result)
   }
   
   return(result)
@@ -319,164 +363,86 @@ GDD.sf <- function(object, day.one, ..., tbase = 10, as.sf = TRUE){
 #' 
 #' This is the main function, the others are handling methods
 #' 
-#' @param temp data.frame with following values id, tmax, tmin and date
-#' @param tbase the tbase
+#' @param tmax a numeric vector with the maximum temperature
+#' @param tmin a numeric vector with the minimum temperature
+#' @param tbase the minimum temperature for growth
+#' @param tbase_max the maximum temperature for growth
 #' @param degree.days number of accumulated gdd required if return.as = "ndays"
 #' @param equation the equation to adjust gdd calculation
 #' @param return.as how the values will be returned
 #' @examples 
 #' data(innlandet, package = "climatrends")
 #' 
-#' .gdd(innlandet, tbase = 3, 
+#' gdd(innlandet$tmax, innlandet$tmin, tbase = 3, 
 #'      equation = "b")
 #' 
-#' .gdd(innlandet, tbase = 3, 
+#' gdd(innlandet$tmax, innlandet$tmin, tbase = 3, 
 #'      equation = "b", return.as = "daily")
 #' 
-#' .gdd(innlandet, tbase = 3, degree.days = 100,
+#' gdd(innlandet$tmax, innlandet$tmin, tbase = 3, degree.days = 100,
 #'      equation = "b", return.as = "ndays")
 #' 
 #' @noRd
-.gdd <- function(temp, tbase, tbase_max = NULL, degree.days = NULL, 
-                 equation = "default", return.as = "acc"){
+gdd <- function(tmax, tmin, tbase, tbase_max = 45, 
+                 degree.days = NULL, equation = "default", return.as = "acc"){
+  
+  eq <- c("default", "a", "b", "c")
+  ret <- c("acc", "daily", "ndays")
+  
+  if (isFALSE(equation %in% eq)) {
+    stop("No visible method to compute GDD with equation = '", equation, 
+         "', please provide one of the options: ", 
+         paste("'", eq,"'" , collapse = ", ", sep = ""), "\n")
+  }
+  
+  if (isFALSE(return.as %in% ret)) {
+    stop("No visible method to return GDD as '", return.as, 
+         "', please provide one of the options: ", 
+         paste("'", ret,"'" , collapse = ", ", sep = ""))
+  }
   
   if (all(return.as == "ndays", is.null(degree.days))) {
-    stop("argument degree.days is missing with no default \n")
+    stop("Please provide a value for the argument 'degree.days' \n")
   }
   
-  temp <- split(temp, temp$id)
-  
-  suppressWarnings(
-  Y <- lapply(temp, function(x){
-    
-    if (isTRUE(equation == "default")) {
-      
-      y <- .gdd_eq_default(x$tmax, x$tmin, tbase)
-    
-    }
-    
-    if (isTRUE(equation == "a")) {
-      
-      y <- .gdd_eq_a(x$tmax, x$tmin, tbase)
-      
-    }
-    
-    if (isTRUE(equation == "b")) {
-      
-      y <- .gdd_eq_b(x$tmax, x$tmin, tbase)
-      
-    }
-    
-    if (isTRUE(equation == "c")) {
-      
-      y <- .gdd_eq_c(x$tmax, x$tmin, tbase, tbase_max)
-      
-    }
-    
-    # sum temperature values until reach the defined degree days
-    if (isTRUE(return.as == "ndays")) {
-      y[is.na(y)] <- 0
-      y <- cumsum(y)
-      y <- sum(y <= degree.days)
-      
-      return(y)
-      
-    }
-    
-    if (isTRUE(return.as == "daily")) {
-      
-      y <- data.frame(id = as.integer(x$id),
-                      date = x$date,
-                      gdd = y,
-                      stringsAsFactors = FALSE)
-      
-      return(y)
-      
-    }
-    
-    if(isTRUE(return.as == "acc")) {
-      
-      y <- data.frame(id = as.integer(x$id),
-                      date = x$date,
-                      gdd = cumsum(y),
-                      stringsAsFactors = FALSE)
-      
-      return(y)
-      
-      
-    }
-  
-  })
-  )
-  
-  result <- do.call("rbind", Y)
-  
-  if (isTRUE(return.as == "ndays")) {
-    
-    result <- data.frame(gdd = result, stringsAsFactors = FALSE)
-  
+  if (isTRUE(equation == "default")) {
+    g <- ((tmax + tmin) / 2) - tbase
   }
   
-  rownames(result) <- seq_along(result[,1])
+  if (isTRUE(equation == "a")) {
+    g <- ((tmax + tmin) / 2) - tbase
+    g[g < 0] <- 0
+  }
+    
+  if (isTRUE(equation == "b")) {
+    tmin[tmin < tbase] <- tbase
+    tmax[tmax < tbase] <- tbase
+    g <- ((tmax + tmin) / 2) - tbase
+  }
   
-  class(result) <- union("clima_df", class(result))
-  
-  return(result)
-  
-}
-
-# not modified
-# take the temperature data as it is and compute the gdd
-.gdd_eq_default <- function(tmax, tmin, tbase) {
-  
-  g <- ((tmax + tmin) / 2) - tbase
-  
-  return(g)
-}
-
-# modify for max(gdd, 0) if gdd < 0
-.gdd_eq_a <- function(tmax, tmin, tbase) {
-  
-  g <- ((tmax + tmin) / 2) - tbase
-  
+  if (isTRUE(equation == "c")) {
+    tmax[tmax > tbase_max] <- tbase_max
+    tmin[tmin < tbase] <- tbase
+    g <- ((tmax + tmin) / 2) - tbase
+  }
+    
   g[g < 0] <- 0
-  
-  return(g)
-  
+    
+  # sum temperature values until reach the defined degree days
+  if (isTRUE(return.as == "ndays")) {
+    g[is.na(g)] <- 0
+    g <- cumsum(g)
+    g <- sum(g <= degree.days)
+    return(g)
+  }
+    
+ if (isTRUE(return.as == "daily")) {
+    return(g)
+  }
+    
+ if(isTRUE(return.as == "acc")) {
+    g <- cumsum(g)
+    return(g)
+ }
+
 }
-
-# modify for tmin and tmax if 
-# tmin < tbase
-# tmax < tbase
-.gdd_eq_b <- function(tmax, tmin, tbase){
-  
-  tmin_adj <- tmin
-  tmax_adj <- tmax
-  
-  tmin_adj[tmin_adj < tbase] <- tbase
-  
-  tmax_adj[tmax_adj < tbase] <- tbase
-  
-  g <- ((tmax_adj + tmin_adj) / 2) - tbase
-  
-  return(g)
-}
-
-# modify for tmin and tmax if 
-# tmax > tbase_max
-# tmin < tbase
-.gdd_eq_c <- function(tmax, tmin, tbase, tbase_max = 40){
-  
-  tmin_adj <- tmin
-  tmax_adj <- tmax
-
-  tmax_adj[tmax_adj > tbase_max] <- tbase_max
-  
-  tmin_adj[tmin_adj < tbase] <- tbase
-  
-  g <- ((tmax_adj + tmin_adj) / 2) - tbase
-
-  return(g)
-  
-}
-

@@ -227,7 +227,7 @@ crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
   
   if (isTRUE(as.sf)) {
     
-    result <- suppressWarnings(sf::st_bind_cols(object, result))
+    result <- cbind(object, result)
     
   }
   

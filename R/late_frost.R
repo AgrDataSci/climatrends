@@ -48,13 +48,15 @@
 #' late_frost(innlandet$tmax, 
 #'            innlandet$tmin, 
 #'            dates = innlandet$date, 
-#'            base = 2)
+#'            tbase = 2, 
+#'            tfrost = -2)
 #' 
 #' # slightly different series if equation a is used
 #' late_frost(innlandet$tmax, 
 #'            innlandet$tmin, 
 #'            dates = innlandet$date, 
-#'            base = 2,
+#'            tbase = 2,
+#'            tfrost = -2,
 #'            equation = "a")
 #' 
 #' #####################################################
@@ -71,11 +73,11 @@
 #' # Some random points in Norway
 #' # get data from NASA Power
 #' library("nasapower")
-#' lonlat <- data.frame(lon = c(10.93, 10.57),
-#'                      lat = c(60.77, 61.10))
+#' lonlat <- data.frame(lon = c(10.93, 10.57, 11.21),
+#'                      lat = c(60.77, 61.10, 60.33))
 #' 
 #' late_frost(lonlat, day.one = "2019-01-01", last.day = "2019-07-01")
-#'     
+#'      
 #' }
 #' 
 #' @export
@@ -107,13 +109,7 @@ late_frost.default <- function(object, tmin, ..., tbase = 4, tfrost = -2) {
     dates <- rep(NA, times = length(object))
   }
   
-  temp <- data.frame(id = 1, 
-                     tmax = object, 
-                     tmin = tmin, 
-                     date = dates, 
-                     stringsAsFactors = FALSE)
-  
-  result <- .late_frost(temp, tbase, tfrost, equation)
+  result <- latefrost(object, tmin, dates, tbase, tfrost, equation)
   
   return(result)
   
@@ -152,7 +148,19 @@ late_frost.data.frame <- function(object, day.one, ..., tbase = 4, tfrost = -2){
   
   names(temp)[names(temp)=="value"] <- "tmax"
   
-  result <- .late_frost(temp, tbase, tfrost, equation)
+  temp <- split(temp, temp$id)
+  
+  result <- lapply(temp, function(x){
+    lf <- latefrost(x$tmax, x$tmin, dates = x$date, tbase, tfrost, equation)
+    i <- rep(x$id[1], times = dim(lf)[[1]])
+    lf <- cbind(id = i, lf)
+  })
+  
+  result <- do.call("rbind", result)
+  
+  row.names(result) <- seq_len(dim(result)[[1]])
+  
+  class(result) <- union("clima_df", class(result))
   
   return(result)
 }
@@ -190,7 +198,19 @@ late_frost.array <- function(object, day.one, ..., tbase = 4, tfrost = -2){
   
   names(temp)[names(temp)=="value"] <- "tmax"
   
-  result <- .late_frost(temp, tbase, tfrost, equation)
+  temp <- split(temp, temp$id)
+  
+  result <- lapply(temp, function(x){
+    lf <- latefrost(x$tmax, x$tmin, dates = x$date, tbase, tfrost, equation)
+    i <- rep(x$id[1], times = dim(lf)[[1]])
+    lf <- cbind(id = i, lf)
+  })
+  
+  result <- do.call("rbind", result)
+  
+  row.names(result) <- seq_len(dim(result)[[1]])
+  
+  class(result) <- union("clima_df", class(result))
   
   return(result)
 }
@@ -220,8 +240,19 @@ late_frost.sf <- function(object, day.one, ..., tbase = 4, tfrost = -2){
   
   names(temp)[names(temp)=="value"] <- "tmax"
   
-  result <- .late_frost(temp, tbase, tfrost, equation)
+  temp <- split(temp, temp$id)
   
+  result <- lapply(temp, function(x){
+    lf <- latefrost(x$tmax, x$tmin, dates = x$date, tbase, tfrost, equation)
+    i <- rep(x$id[1], times = dim(lf)[[1]])
+    lf <- cbind(id = i, lf)
+  })
+  
+  result <- do.call("rbind", result)
+  
+  row.names(result) <- seq_len(dim(result)[[1]])
+  
+  class(result) <- union("clima_df", class(result))
   
   return(result)
 }
@@ -230,94 +261,81 @@ late_frost.sf <- function(object, day.one, ..., tbase = 4, tfrost = -2){
 #' 
 #' This is the main function, the others are handling methods
 #' 
-#' @param obj data.frame with following values id, tmax, tmin and date
+#' @param tmax a numeric vector with the maximum temperature
+#' @param tmin a numeric vector with the minimum temperature
+#' @param dates a 'Date' object for the days of tmax tmin
 #' @param tbase the tbase
 #' @param tfrost the frost temperature
 #' @param equation the equation to adjust gdd calculation
 #' @examples 
 #' data(innlandet, package = "climatrends")
 #' 
-#' .late_frost(innlandet, tbase = 2, tfrost = -2)
+#' latefrost(innlandet$tmax, innlandet$tmin, tbase = 2, tfrost = -2)
 #' 
 #' @noRd
-.late_frost <- function(obj, tbase, tfrost, equation = "b") {
+latefrost <- function(tmax, tmin, dates, tbase, tfrost, equation = "b") {
 
-  obj <- split(obj, obj$id)
-
-  result <- lapply(obj, function(temp){
-    # get tmin
-    tmin <- temp$tmin
-
-    # calculate GDD
-    g <- .gdd(temp,
-              tbase = tbase,
-              equation = equation,
-              return.as = "daily")$gdd
-
-    # get a vector where 1 are the frost events and 0 are the non-frost
-    frost <- as.integer(tmin <= tfrost & g == 0)
-
-    # apply rle function to find the lengths of
-    # each event (frost and non-frost)
-    r <- rle(frost)
-
-    # rep the lengths to create an id for each event
-    rids <- r$lengths
-    rids <- rep(1:length(rids), rids)
-    
-    isfrost <- which(r$values == 1)
-
-    # create a data frame with this data
-    dat <- data.frame(id = temp$id[1],
-                      frost_id = rids,
-                      date = temp$date,
-                      gdd = g,
-                      frost = frost,
-                      stringsAsFactors = FALSE)
-
-    # and split it to get the summaries of each event
-    dat <- split(dat, dat$frost_id)
-
-    dat <- lapply(dat, function(x){
-      data.frame(id = x$id[1],
-                 frost_id = x$frost_id[1],
-                 date = x$date[1],
-                 gdd = sum(x$gdd, na.rm = TRUE),
-                 event = NA,
-                 duration = length(x$frost_id))
-    })
-
-    dat <- do.call("rbind", dat)
-    
-    # find the latent events, where the tempeture dont drops below tfrost
-    # but also there is no GDD accumulated
-    l <- !dat$frost_id %in% isfrost & dat$gdd == 0
-    
-    dat$event[l] <- "latent"
-    
-    # add the frost events
-    dat$event[dat$frost_id %in% isfrost] <- "frost"
-    
-    # and the others are the warming events
-    dat$event[is.na(dat$event)] <- "warming"
-    
-    return(dat)
-    
+  # calculate GDD
+  g <- GDD(tmax,
+           tmin,
+           tbase = tbase,
+           equation = equation,
+           return.as = "daily")$gdd
+  
+  # get a vector where 1 are the frost events and 0 are the non-frost
+  frost <- as.integer(tmin <= tfrost & g == 0)
+  
+  # apply rle function to find the lengths of
+  # each event (frost and non-frost)
+  r <- rle(frost)
+  
+  # rep the lengths to create an id for each event
+  rids <- r$lengths
+  rids <- rep(1:length(rids), rids)
+  
+  isfrost <- which(r$values == 1)
+  
+  # create a data frame with this data
+  dat <- data.frame(frost_id = rids,
+                    date = dates,
+                    gdd = g,
+                    frost = frost,
+                    stringsAsFactors = FALSE)
+  
+  # and split it to get the summaries of each event
+  dat <- split(dat, dat$frost_id)
+  
+  dat <- lapply(dat, function(x){
+    data.frame(frost_id = x$frost_id[1],
+               date = x$date[1],
+               gdd = sum(x$gdd, na.rm = TRUE),
+               event = NA,
+               duration = length(x$frost_id))
   })
-
-  result <- do.call("rbind", result)
-
-  result <- result[, -which(names(result) == "frost_id")]
-
-  rownames(result) <- seq_len(dim(result)[[1]])
   
-  result$event <- factor(result$event, 
-                         levels = c("frost","latent","warming"))
+  dat <- do.call("rbind", dat)
   
-  result$id <- as.integer(result$id)
+  # find the latent events, where the tempeture dont drops below tfrost
+  # but also there is no GDD accumulated
+  l <- !dat$frost_id %in% isfrost & dat$gdd == 0
+  
+  dat$event[l] <- "latent"
+  
+  # add the frost events
+  dat$event[dat$frost_id %in% isfrost] <- "frost"
+  
+  # and the others are the warming events
+  dat$event[is.na(dat$event)] <- "warming"
 
-  class(result) <- union("clima_df", class(result))
+  dat <- dat[, -which(names(dat) == "frost_id")]
 
-  return(result)
+  rownames(dat) <- seq_len(dim(dat)[[1]])
+  
+  dat$event <- factor(dat$event, 
+                      levels = c("frost","latent","warming"))
+  
+  class(dat) <- union("clima_df", class(dat))
+
+  return(dat)
 
 }

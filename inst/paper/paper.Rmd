@@ -1,5 +1,5 @@
 ---
-title: 'climatrends: Precipitation and temperature indices for climate variability analysis in R'
+title: 'Climate variability indices for ecological and crop models in R: the `climatrends` package'
 tags:
 - climate data
 - climatology
@@ -31,12 +31,6 @@ bibliography: paper.bib
 output: pdf_document
 ---
 
->Kauê de Sousa^1,2[*]^, Jacob van Etten^2^, Svein Øivind Solberg^1^  
-^1^ Department of Agricultural Sciences, Inland Norway University of Applied Sciences, 2318 Hamar, Norway  
-^2^ Bioversity International, 00054 Maccarese, Rome, Italy  
-^[*]^Correspondence should be addressed to: <kaue.desousa@inn.no>
-
-\
 ```{r get data, include=FALSE}
 library("knitr")
 library("kableExtra")
@@ -44,6 +38,13 @@ library("magrittr")
 funtbl <- read.csv("available_functions.csv")
 ```
 
+
+>Kauê de Sousa^1,2[*]^, Jacob van Etten^2^, Svein Øivind Solberg^1^  
+^1^ Department of Agricultural Sciences, Inland Norway University of Applied Sciences, 2318 Hamar, Norway  
+^2^ Bioversity International, 00054 Maccarese, Rome, Italy  
+^[*]^Correspondence should be addressed to: <kaue.desousa@inn.no>
+
+\
 
 # Introduction
 
@@ -59,7 +60,7 @@ Raw temperature and precipitation values are ... to describe how organisms inter
 
 ## Implementation
 
-Six main functions are provided, `crop_sensitive()`, `ETo()`, `GDD()`, `late_frost()`, `rainfall()` and `temperature()` with a default method for numeric 'vector's and additional methods [@RCoreTeam] for classes 'matrix' (or array), 'data.frame', and 'sf' (of geometry POINT or POLYGON) [@sf]. The later two are designed to fetch data from cloud sources. 
+Six main functions are provided, `crop_sensitive()`, `ETo()`, `GDD()`, `late_frost()`, `rainfall()` and `temperature()` with a default method for numeric 'vector's and additional methods implemented via the package `methods` [@RCoreTeam] for classes 'matrix' (or array), 'data.frame', and 'sf' (of geometry POINT or POLYGON) [@sf]. The later two are designed to fetch data from cloud sources. 
 
 
 
@@ -79,6 +80,9 @@ kable(funtbl,
   column_spec(4, width = "1.7in")
 ```
 
+## Temperature and precipitation indices
+
+
 
 ## Growing degree-days
 
@@ -90,7 +94,7 @@ $$GDD = \frac{T_{max} + T_{min}}{2} - T_{0}$$
 
 Where $T_{max}$ is the maximum temperature in the given day, $T_{min}$ is the minimum temperature in the given day and $T_{0}$ is the minimum temperature for growth (as per the physiology of the focal organism or ecosystem averages). 
 
-Additionally, the function `GDD()` offers three modified equations (two) designed for cold environments and (one) for tropical environments. For cold environments, where $T_{min}$ may be lower than $T_{0}$, there are two variants of the previous equation to adjust either $T_{mean}$ (variant a) or $T_{min}$ (variant b). The variant a changes $T_{mean}$ to $T_{0}$ if $T_{mean} < T_{0}$ and is expressed as follows.
+Additionally, the function `GDD()` offers three modified equations designed for cold environments and for tropical environments. For cold environments, where $T_{min}$ may be lower than $T_{0}$, there are two modified equations that adjusts either $T_{mean}$ (variant a) or $T_{min}$ (variant b). The variant a changes $T_{mean}$ to $T_{0}$ if $T_{mean} < T_{0}$ and is expressed as follows.
 
 Equation [2]
 
@@ -114,24 +118,27 @@ Where $T_{0^{max}}$ is the maximum base temperature for growth, defined in `GDD(
 
 These modified equations are defined as 'a', 'b' and 'c', respectively, and can be selected using the argument `equation`.
 
-By default, the function returns the degree-days that is accumulated over the time series using Equation 1. Additionally, the function may return the daily values of degree-days or the number of days that a given organism required to reach a certain number of accumulated degree-days. These values are defined by 'acc', 'daily' or 'ndays' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset the photosynthesis [@JWu2013]. In that case, `GDD()` will calculate the growing degree-days ($gdd$) and sum up the values until it reaches the defined gdd (105 $^\circ C$) and return the number of days needed in the given season ($GDD_{ndays}$), as follows.
+By default, the function returns the degree-days that is accumulated over the time series using Equation 1. Additionally, the function may return the daily values of degree-days or the number of days that a given organism required to reach a certain number of accumulated degree-days. These values are defined by 'acc', 'daily' or 'ndays' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset the photosynthesis [@JWu2013]. In that case, `GDD()` will calculate the growing degree-days ($gdd$) and sum up the values until it reaches 105 $^\circ C$ and return the number of days required in the given season ($GDD_{r}$), as follows.
 
 Equation [5]
 
-$$\parallel GDD_{ndays} \parallel \: = \; ggd_1 \;+ \; ...  \; +  \; gdd_n$$
+$$\parallel GDD_{r} \parallel \: = \; ggd_1 \;+ \; ...  \; +  \; gdd_n$$
 
+## Late-spring frost
 
-## Reference evapotranspiration
+## Crop-related indices
+
+Two functions in **climatrends** are mainly designed to capture the effects of climate on the development and stress of crop species, `crop_sensitive` computes indices that aims to capture the changes in temperature extremes during key phenological stages (e.g. anthesis), and `ETo()` computes the reference evapotranspiration. 
 
 The reference evapotranspiration measures the influence of the climate on a given organism water needs, generally a crop species [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle method, a general theoretical method used when only air-temperature is available locally. It should be noted that this method is not very accurate and aims to provide the order of magnitude of evapotranspitation. The reference evapotranspiration is calculated using the following equation.
 
-Equation [5]
+Equation [6]
 
 $$ETo = p \times \left(0.46 \times \frac{T_{max} + T_{min}}{2} + 8 \right) \times K_c$$
 
 Where $p$ is the mean daily percentage of annual daytime hours, $T_{max}$ is the maximum temperature, $T_{min}$ is the minimum temperature, and $K_c$ is the factor for organism water need.
 
-The percentage of daytime hours ($p$) is calculated internally by most methods in `ETo()` (except the array method) using the given latitude (taken from the inputted `object`) and date (taken from the inputted `day.one`). It matches the latitude and date with a table of daylight percentage derived from Brouwer and Heibloem [-@Brouwer1986]. The table can be verified using `climatrends:::daylight`.
+The percentage of daytime hours ($p$) is calculated internally by the 'data.frame' and 'sf' methods in `ETo()` using the given latitude (taken from the inputted `object`) and date (taken from the inputted `day.one`). It matches the latitude and date with a table of daylight percentage derived from Brouwer and Heibloem [-@Brouwer1986]. The table can be verified using `climatrends:::daylight`.
 
 # Examples
 
@@ -154,5 +161,13 @@ Integration with other datasets as they become available in `R` via API client p
 # Acknowledgements
 
 This work was supported by The Nordic Joint Committee for Agricultural and Food Research (grant num. 202100-2817).
+
+# Authors' contributions
+
+KdS and JvE conceived the ideas of implementing an `R` package. JvE and SØS assisted in the implementation of methods. KdS wrote and documented the software. [add other contributions...]
+
+# Data availability statement
+
+The source code has been archived at [**add link**] as `climatrends` version **X.Y.Z**. To explore the latest functionalities of `climatrends`, please check the package's updates at CRAN (https://cran.r-project.org/package=climatrends).
 
 # References

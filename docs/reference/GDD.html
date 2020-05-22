@@ -82,7 +82,7 @@ are calculated by taking the integral of warmth above a base temperature." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -200,18 +200,16 @@ day to capture the climate data</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Additional arguments:</p>
+<p><code>equation</code> character to specify the equation to be used, one of <code>"default"</code>,
+<code>"a"</code>, <code>"b"</code> or <code>"c"</code>. See Equations below</p>
 <p><code>tbase_max</code> optional, the maximum tbase temperature, 
  required if <code>equation = "c"</code></p>
 <p><code>return.as</code> character (one of, the default, <code>"acc"</code> or <code>"daily"</code>,
  <code>"ndays"</code>) to select if the function returns the accumulated gdd, or the 
- daily values of gdd across the series of the number of days required to reach a
+ daily values of gdd across the series, or the number of days required to reach a
  certain number of <code>degree.days</code></p> 
 <p><code>degree.days</code> an integer for the accumulated degree-days required by the 
  organism. Optional if <var>return.as = "daily"</var> or <var>return.as = "acc"</var></p>
-<p><code>equation</code> character to specify the equation to be used, one of <code>"default"</code>,
-<code>"a"</code>, <code>"b"</code> or <code>"c"</code>. See Equations below</p>
-<p><code>dates</code>: a character (or Date or numeric) vector for the dates of tmax and tmin
- in the <code>default</code> method</p>
 <p><code>last.day</code>: an object (optional to <var>span</var>) of class <code>Date</code> or
  any other object that can be coerced to <code>Date</code> (e.g. integer, character 
  YYYY-MM-DD) for the last day of the time series. For <code>data.frame</code>, 
@@ -231,7 +229,7 @@ day to capture the climate data</p></td>
  
 <p>Equations:</p> 
 <p><code>"default"</code>: GDD = ((tmax + tmin) / 2) - tbase</p> 
-<p><code>"a"</code>: GDD = max(GDD, 0)</p> 
+<p><code>"a"</code>: adjust tmean = tbase if tmeam &lt; tbase</p> 
 <p><code>"b"</code>: adjust tmin = tbase if tmin &lt; tbase,
   adjust tmax = tbase if tmax &lt; tbase</p> 
 <p><code>"c"</code>: adjust tmin = tbase if tmin &lt; tbase, 
@@ -254,7 +252,7 @@ day to capture the climate data</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"innlandet"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
-<span class='co'># use the default equation, but in this case it returns negative values</span>
+<span class='co'># use the default equation</span>
 <span class='fu'>GDD</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>, <span class='no'>innlandet</span>$<span class='no'>tmin</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>2</span>)
 
 <span class='co'># set the equation "b", which is a better option for this case</span>

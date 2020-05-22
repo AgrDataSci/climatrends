@@ -49,22 +49,19 @@ are calculated by taking the integral of warmth above a base temperature.
 \details{
 Additional arguments:
 
+\code{equation} character to specify the equation to be used, one of \code{"default"},
+\code{"a"}, \code{"b"} or \code{"c"}. See Equations below 
+
 \code{tbase_max} optional, the maximum tbase temperature, 
  required if \code{equation = "c"}   
 
 \code{return.as} character (one of, the default, \code{"acc"} or \code{"daily"},
  \code{"ndays"}) to select if the function returns the accumulated gdd, or the 
- daily values of gdd across the series of the number of days required to reach a
+ daily values of gdd across the series, or the number of days required to reach a
  certain number of \code{degree.days}
  
 \code{degree.days} an integer for the accumulated degree-days required by the 
  organism. Optional if \var{return.as = "daily"} or \var{return.as = "acc"} 
-
-\code{equation} character to specify the equation to be used, one of \code{"default"},
-\code{"a"}, \code{"b"} or \code{"c"}. See Equations below 
-
-\code{dates}: a character (or Date or numeric) vector for the dates of tmax and tmin
- in the \code{default} method
 
 \code{last.day}: an object (optional to \var{span}) of class \code{Date} or
  any other object that can be coerced to \code{Date} (e.g. integer, character 
@@ -92,7 +89,7 @@ Equations:
  
  \code{"default"}: GDD = ((tmax + tmin) / 2) - tbase
  
- \code{"a"}: GDD = max(GDD, 0)
+ \code{"a"}: adjust tmean = tbase if tmeam < tbase
  
  \code{"b"}: adjust tmin = tbase if tmin < tbase,
   adjust tmax = tbase if tmax < tbase
@@ -103,7 +100,7 @@ Equations:
 \examples{
 data("innlandet", package = "climatrends")
 
-# use the default equation, but in this case it returns negative values
+# use the default equation
 GDD(innlandet$tmax, innlandet$tmin, tbase = 2)
 
 # set the equation "b", which is a better option for this case

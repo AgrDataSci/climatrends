@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
       </span>
     </div>
 
@@ -131,7 +131,7 @@ temperature(innlandet$tmax, innlandet$tmin)
    maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p
    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
 1: 15.13 -14.86  6.77 -19.25     6     0     0   115     4     5 -15.81  9.09</pre></div>
-<p>The indices can be splitted for in intervals for series analysis. Here we get the temperature indices with intervals of 30 days.</p>
+<p>The indices can be splitted in intervals for series analysis. Here we get the temperature indices with intervals of 30 days.</p>
 <div class="sourceCode" id="cb4"><pre class="r">
 temperature(innlandet$tmax, innlandet$tmin,
             dates = innlandet$day, 

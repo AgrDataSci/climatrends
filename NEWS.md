@@ -1,9 +1,10 @@
-climatrends 0.1.6-1 (2020-05-20)
+climatrends 0.1.7 (2020-05-23)
 =========================
 
 * Add suggested CITATION
 * Fix documentation typos
 * Fix a bug in computing equation c in `GDD()`
+* Improve speed of functions `GDD()` and `late_frost()`
 
 climatrends 0.1.6 (2020-05-19)
 =========================

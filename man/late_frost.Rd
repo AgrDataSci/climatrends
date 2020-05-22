@@ -38,7 +38,7 @@ coerced to \code{Date} (e.g. integer, character YYYY-MM-DD) for the starting
 day to capture the climate data}
 }
 \value{
-a data.frame with the late frost events
+A data.frame with the late frost events
 \item{id}{the id generated using the indices for the rows in \var{object}}
 \item{date}{the first day of the event}
 \item{gdd}{the growing degree-days accumulated during the event}
@@ -76,13 +76,15 @@ data("innlandet", package = "climatrends")
 late_frost(innlandet$tmax, 
            innlandet$tmin, 
            dates = innlandet$date, 
-           base = 2)
+           tbase = 2, 
+           tfrost = -2)
 
 # slightly different series if equation a is used
 late_frost(innlandet$tmax, 
            innlandet$tmin, 
            dates = innlandet$date, 
-           base = 2,
+           tbase = 2,
+           tfrost = -2,
            equation = "a")
 
 #####################################################
@@ -99,11 +101,11 @@ late_frost(temp_dat, day.one = "2013-10-27")
 # Some random points in Norway
 # get data from NASA Power
 library("nasapower")
-lonlat <- data.frame(lon = c(10.93, 10.57),
-                     lat = c(60.77, 61.10))
+lonlat <- data.frame(lon = c(10.93, 10.57, 11.21),
+                     lat = c(60.77, 61.10, 60.33))
 
 late_frost(lonlat, day.one = "2019-01-01", last.day = "2019-07-01")
-    
+     
 }
 
 }
