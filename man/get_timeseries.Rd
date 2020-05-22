@@ -97,7 +97,7 @@ get_timeseries(rain_dat, "2013-10-28", span = span)
 ########################################################
 \donttest{
 library("nasapower")
-
+library("sf")
 # Fetch data from NASA POWER using 'sf' method
 data("lonlatsf", package = "climatrends")
 

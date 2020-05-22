@@ -105,6 +105,7 @@
 #' 
 #' # Using remote sources of climate data
 #' library("nasapower")
+#' library("sf")
 #' data("lonlatsf", package = "climatrends")
 #' 
 #' # some random dates provided as integers and coerced to Dates internally
@@ -256,20 +257,9 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   
   indices <- .temperature_indices(temp, timeseries, intervals)
   
-  if (all(as.sf, timeseries)) {
-  
-    xy <- .lonlat_from_sf(object)
-    xy <- as.data.frame(xy)
-    xy$id <- 1:dim(xy)[[1]]
-    xy <- merge(xy, indices, by = "id")
-    
-    indices <- sf::st_as_sf(xy, coords = c("lon", "lat"), crs = 4326)
-      
-  }
-  
   if (isTRUE(as.sf) & isFALSE(timeseries)) {
     
-    indices <- suppressWarnings(sf::st_bind_cols(object, indices))
+    indices <- cbind(object, indices)
   
   }
   

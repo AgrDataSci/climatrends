@@ -1,10 +1,11 @@
-climatrends 0.1.7 (2020-05-23)
+climatrends 0.1.7 (2020-05-22)
 =========================
 
 * Add suggested CITATION
 * Fix documentation typos
-* Fix a bug in computing equation c in `GDD()`
+* Fix a bug in computing equation 'c' in `GDD()`
 * Improve speed of functions `GDD()` and `late_frost()`
+* package 'sf' is a suggestion not dependency
 
 climatrends 0.1.6 (2020-05-19)
 =========================

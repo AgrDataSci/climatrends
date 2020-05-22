@@ -139,6 +139,7 @@ temperature(temp_dat,
 
 # Using remote sources of climate data
 library("nasapower")
+library("sf")
 data("lonlatsf", package = "climatrends")
 
 # some random dates provided as integers and coerced to Dates internally

@@ -114,7 +114,7 @@
 <div id="usage" class="section level1">
 <h1 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h1>
-<p>By default, the functions in <strong>climatrends</strong> requires a vector with climate data, and optionally a vector of dates that can be linked to the data for time series analysis. The package also provides methods for objects of classes <code>array</code> (or <code>matrix</code>), <code>sf</code> and <code>data.frame</code>, where the last two are designed to be used to request remote data from <code>R</code> packages that uses API clients, such as nasapower<span class="citation"><sup>8</sup></span>. This vignette presents the main functions and the methods available in <strong>climatrends</strong>. Overall, these applications can be generalised to all functions.</p>
+<p>By default, the functions in <strong>climatrends</strong> requires a vector with climate data, and optionally a vector of dates that can be linked to the data for time series analysis. The package also provides methods for objects of classes <code>array</code> (or <code>matrix</code>), <code>sf</code> and <code>data.frame</code>, where the last two are designed to be used to request remote data from <code>R</code> packages that uses API clients, such as nasapower<span class="citation"><sup>8</sup></span>. This vignette presents the main functions and the methods available in <strong>climatrends</strong>. Overall, these applications can be generalized to all functions.</p>
 <div id="temperature" class="section level2">
 <h2 class="hasAnchor">
 <a href="#temperature" class="anchor"></a>Temperature</h2>
@@ -223,7 +223,8 @@
 <h2 class="hasAnchor">
 <a href="#crop-sensitive-indices" class="anchor"></a>Crop sensitive indices</h2>
 <p>These indices are designed to capture variability in sensitive stages of crop development<span class="citation"><sup>3,4</sup></span> and can be computed using the function <code><a href="../reference/crop_sensitive.html">crop_sensitive()</a></code>. Here we use the <code>sf</code> method with 5 random points across the Sinop municipality in Brazil.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"lonlatsf"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"climatrends"</span>)
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"sf"</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"lonlatsf"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"climatrends"</span>)
 
 <span class="fu"><a href="../reference/crop_sensitive.html">crop_sensitive</a></span>(<span class="no">lonlatsf</span>,
                <span class="kw">day.one</span> <span class="kw">=</span> <span class="st">"2018-12-01"</span>,
@@ -234,7 +235,7 @@
 <div id="reference-evapotranspiration" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reference-evapotranspiration" class="anchor"></a>Reference evapotranspiration</h2>
-<p>Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth’s surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function <code><a href="../reference/ETo.html">ETo()</a></code> which computes the evapotranspiration based on the Blaney-Criddle method<span class="citation"><sup>11</sup></span>, an ideal equation when only air-temperature data sets are available for a site. Here we use the <code>array</code> method to compute the reference evapotranspiration. And the duration of the timeseries in each row is adjusted with the argument <code>span</code> based on the duration of the anthesis period in the latitude 25N, adjusted with argument <code>lat</code>.</p>
+<p>Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth’s surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function <code><a href="../reference/ETo.html">ETo()</a></code> which computes the evapotranspiration based on the Blaney-Criddle method<span class="citation"><sup>11</sup></span>, an ideal equation when only air-temperature data sets are available for a site. Here we use the <code>array</code> method to compute the reference evapotranspiration. And the duration of the time series in each row is adjusted with the argument <code>span</code> based on the duration of the anthesis period in the latitude 25N, adjusted with argument <code>lat</code>.</p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"temp_dat"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"climatrends"</span>)
 
 <span class="no">eto</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ETo.html">ETo</a></span>(<span class="no">temp_dat</span>,

@@ -23,7 +23,7 @@ Understanding how climate variability influences ecological processes is a key a
 
 # Usage
 
-By default, the functions in **climatrends** requires a vector with climate data, and optionally a vector of dates that can be linked to the data for time series analysis. The package also provides methods for objects of classes `array` (or `matrix`), `sf` and `data.frame`, where the last two are designed to be used to request remote data from `R` packages that uses API clients, such as nasapower[@Sparks2018]. This vignette presents the main functions and the methods available in **climatrends**. Overall, these applications can be generalised to all functions.
+By default, the functions in **climatrends** requires a vector with climate data, and optionally a vector of dates that can be linked to the data for time series analysis. The package also provides methods for objects of classes `array` (or `matrix`), `sf` and `data.frame`, where the last two are designed to be used to request remote data from `R` packages that uses API clients, such as nasapower[@Sparks2018]. This vignette presents the main functions and the methods available in **climatrends**. Overall, these applications can be generalized to all functions.
 
 ## Temperature 
 
@@ -111,6 +111,7 @@ rain
 These indices are designed to capture variability in sensitive stages of crop development [@Challinor2016; @Trnka2014] and can be computed using the function `crop_sensitive()`. Here we use the `sf` method with 5 random points across the Sinop municipality in Brazil.
 
 ```{r csenstive, message=FALSE, eval=FALSE, echo=TRUE}
+library("sf")
 data("lonlatsf", package = "climatrends")
 
 crop_sensitive(lonlatsf, 
@@ -123,7 +124,7 @@ Additionally the thresholds for each index can be adjusted using the argument `*
 
 ## Reference evapotranspiration
 
-Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth's surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function `ETo()` which computes the evapotranspiration based on the Blaney-Criddle method[@Brouwer1986], an ideal equation when only air-temperature data sets are available for a site. Here we use the `array` method to compute the reference evapotranspiration. And the duration of the timeseries in each row is adjusted with the argument `span` based on the duration of the anthesis period in the latitude 25N, adjusted with argument `lat`.
+Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth's surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function `ETo()` which computes the evapotranspiration based on the Blaney-Criddle method[@Brouwer1986], an ideal equation when only air-temperature data sets are available for a site. Here we use the `array` method to compute the reference evapotranspiration. And the duration of the time series in each row is adjusted with the argument `span` based on the duration of the anthesis period in the latitude 25N, adjusted with argument `lat`.
 
 
 ```{r eto, message=TRUE, eval=TRUE, echo=TRUE}

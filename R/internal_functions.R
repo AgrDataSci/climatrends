@@ -75,17 +75,20 @@
 #' 
 #' .lonlat_from_sf(lonlat)
 #' 
-#' @importFrom sf st_geometry_type st_centroid
 #' @noRd
 .lonlat_from_sf <- function(object){
   # check geometry type
   type <- c("POINT", "POLYGON")
   
-  # check for supported types 
-  supp_type <- c(all(grepl(type[[1]], sf::st_geometry_type(object))),
-                 all(grepl(type[[2]], sf::st_geometry_type(object))))
+  args <- list(x = object)
   
-  if (!any(supp_type)) {
+  geo <- as.character(do.call("st_geometry_type", args))
+  
+  # check for supported types 
+  supp_type <- c(all(grepl(type[[1]], geo)),
+                 all(grepl(type[[2]], geo)))
+  
+  if (isFALSE(any(supp_type))) {
     stop("The sf geometry type is not supported. ",
          "Please provide a sf object of geometry type ",
          "'POINT' or 'POLYGON'\n")
@@ -93,15 +96,13 @@
   
   type <- type[which(supp_type)]
   
-  nr <- dim(object)[[1]]
-  
-  # find the sf_column
-  index <- attr(object, "sf_column")
-  
-  # get the sf column
-  lonlat <- object[[index]]
-  
   if (type == "POINT") {
+    
+    # find the sf_column
+    index <- attr(object, "sf_column")
+    
+    # get the sf column
+    lonlat <- object[[index]]
     
     # unlist the sf_column
     lonlat <- unlist(object[[index]])
@@ -111,12 +112,15 @@
   if (type == "POLYGON") {
     
     # set centroid to validade lonlat
-    lonlat <- sf::st_centroid(lonlat)
+    args <- list(x = object)
+    lonlat <- do.call("st_centroid", args)
     
     # unlist the sf_column
     lonlat <- unlist(lonlat)
     
   }
+  
+  nr <- length(lonlat) / 2
   
   lonlat <- matrix(lonlat,
                    nrow = nr,

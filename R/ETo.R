@@ -78,6 +78,7 @@
 #' \donttest{
 #' #######################################
 #' library("nasapower")
+#' library("sf")
 #' data("lonlatsf", package = "climatrends")
 #' 
 #' ETo(lonlatsf,
@@ -85,7 +86,6 @@
 #'     last.day = "2015-06-22",
 #'     pars = c("T10M_MAX", "T10M_MIN"))
 #' }
-#' @importFrom sf st_bind_cols
 #' @export
 ETo <- function(object, ..., Kc = 1){
   
@@ -250,7 +250,7 @@ ETo.sf <- function(object, day.one, ..., Kc = 1, as.sf = TRUE){
   result <- .eto(temp, Kc, p)
   
   if (isTRUE(as.sf)) {
-    result <- suppressWarnings(sf::st_bind_cols(object, result))
+    result <- cbind(object, result)
   }
   
   return(result)

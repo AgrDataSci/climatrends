@@ -19,13 +19,13 @@ Depends:
     R (>= 3.5.0), 
     methods
 Imports:
-    sf,
     stats
 Suggests: 
     knitr,
     MODISTools,
     nasapower,
     rmarkdown,
+    sf,
     testthat
 Language: en-GB
 RoxygenNote: 7.1.0

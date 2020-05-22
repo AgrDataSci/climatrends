@@ -112,6 +112,7 @@ ETo(temp_dat,
 \donttest{
 #######################################
 library("nasapower")
+library("sf")
 data("lonlatsf", package = "climatrends")
 
 ETo(lonlatsf,

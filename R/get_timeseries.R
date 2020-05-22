@@ -56,7 +56,7 @@
 #' ########################################################
 #' \donttest{
 #' library("nasapower")
-#' 
+#' library("sf")
 #' # Fetch data from NASA POWER using 'sf' method
 #' data("lonlatsf", package = "climatrends")
 #' 
@@ -69,7 +69,6 @@
 #' g
 #' }
 #' 
-#' @importFrom sf st_centroid st_geometry_type st_as_sf
 #' @importFrom stats dist hclust cutree
 #' @export
 get_timeseries <- function(object, day.one, ...) {
