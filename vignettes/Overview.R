@@ -52,6 +52,7 @@ lf
 #  rain
 
 ## ----csenstive, message=FALSE, eval=FALSE, echo=TRUE--------------------------
+#  library("sf")
 #  data("lonlatsf", package = "climatrends")
 #  
 #  crop_sensitive(lonlatsf,
