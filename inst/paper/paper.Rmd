@@ -34,8 +34,11 @@ output: pdf_document
 ```{r get data, include=FALSE}
 library("knitr")
 library("kableExtra")
-library("magrittr")
+library("tidyverse")
+library("climatrends")
+library("PlackettLuce")
 funtbl <- read.csv("available_functions.csv")
+load("inst/paper/cbean.rda")
 ```
 
 
@@ -145,6 +148,9 @@ The percentage of daytime hours ($p$) is calculated internally by the 'data.fram
 ## Common beans
 
 Replicate part of the analysis in van Etten et al [-@vanEtten2019] with the beans data to show how we can use this package to capture the influence of climate variability on crop performance. The idea is to show the same PlackettLuce Tree.
+
+```{r }
+```
 
 ## Time series 
 
