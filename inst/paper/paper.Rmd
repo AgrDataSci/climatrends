@@ -28,7 +28,10 @@ citation_author: de Sousa et. al.
 date: "`r format(Sys.time(), '%d %B %Y')`"
 year: 2020
 bibliography: paper.bib
-output: pdf_document
+output:
+  pdf_document:
+    keep_tex: true
+header-includes: \usepackage{caption} \captionsetup[figure]{labelformat=empty}
 ---
 
 ```{r get data, include=FALSE}
@@ -38,7 +41,7 @@ library("tidyverse")
 library("climatrends")
 library("PlackettLuce")
 funtbl <- read.csv("available_functions.csv")
-load("inst/paper/cbean.rda")
+load("cbean.rda")
 ```
 
 
@@ -55,7 +58,7 @@ Abiotic factors plays an important role in most ecological and crop systems that
 
 Raw temperature and precipitation values are ... to describe how organisms interacts with the enviroment
 
-**climatrends** aims to provide the R [@RCoreTeam] toolkit to compute extreme precipitation and temperature indices that serves as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [@Prentice1992; @YLiu2018].
+`climatrends` aims to provide the R [@RCoreTeam] toolkit to compute extreme precipitation and temperature indices that serves as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [@Prentice1992; @YLiu2018].
 
 [...continue...]
 
@@ -71,17 +74,6 @@ say that the idea for the functions started with citizen science projects that i
 
 [...continue...]
 
-
-```{r characteristics, echo=FALSE, message=TRUE}
-kable(funtbl, 
-      row.names = FALSE,
-      align = "l", 
-      caption = "Main functions available in climatrends.") %>% 
-  kable_styling(latex_options = "scale_down") %>% 
-  column_spec(2, width = "1in") %>% 
-  column_spec(3, width = "1.7in") %>% 
-  column_spec(4, width = "1.7in")
-```
 
 ## Temperature and precipitation indices
 
@@ -145,20 +137,55 @@ The percentage of daytime hours ($p$) is calculated internally by the 'data.fram
 
 # Examples
 
+## Seed germination or some GDD related analysis
+
+Use the data from seed germination or crop growth to compute GDD. How many GDD a seed need to become a seedling?
+
 ## Common beans
 
-Replicate part of the analysis in van Etten et al [-@vanEtten2019] with the beans data to show how we can use this package to capture the influence of climate variability on crop performance. The idea is to show the same PlackettLuce Tree.
+During five growing seasons (from 2015 to 2016 in Nicaragua), van Etten et al [-@vanEtten2019] conducted a crowdsourcing citizen-science trial testing 11 common beans varieties (*Phaseolus vulgaris* L.) in 842 farmer-managed experimental plots. Sets of three varieties were allocated randomly to farms as incomplete blocks, maintaining spatial balance by assigning roughly equal frequencies of the varieties to each area. For the analysis the authors applied the Plackett–Luce model, which estimates for each variety the probability that it wins, beating all other varieties in the set [@Turner2020]. The research showed that this approach can register known specific effects of climate variation on crop varietal performance. An earlier version of `climatrends` was used in this research to capture the seasonal climate variation, here we replicate part of this analysis in the matter that concerns the calculation and application of the climate indices.
 
-```{r }
+Is important to mention that this analysis shaped the implementation of the methods `temperature.array()` and `rainfall.matrix()`. 
+
+```{r ggd_bean, message=FALSE, echo=TRUE, eval=FALSE}
+library("climatrends")
+library("PlackettLuce")
+library("tidyverse")
+
+# compute the number of days required to accumulate
+# gdd from planting date to maturity
+gdd <- GDD(modis, 
+           day.one = cbean$planting_date, 
+           degree.days = 900, 
+           return.as = "ndays")
+
+# add gdd to the cbean data and take the average 
+# of gdd per season
+cbean %<>%  
+  mutate(gdd = gdd$gdd) %>% 
+  group_by(season) %>% 
+  mutate(gdds = as.integer(mean(gdd)))
 ```
+
+
+```{r pltree_bean, message=FALSE, echo=TRUE, eval=FALSE}
+# compute the temperature indices from planting date to the 
+# number of days required to accumulate the gdd in each season
+temp <- temperature(modis, 
+                    day.one = cbean$planting_date, 
+                    span = cbean$gdds)
+
+# combine the indices with the main data
+cbean <- cbind(cbean, temp)
+
+# fit a Plackett-Luce tree
+plt <- pltree(G ~ maxNT, data = cbean, minsize = 200)
+```
+
 
 ## Time series 
 
 Pick some random points in Norway (or Scandinavia??) and check how the trends on temperature indices over the last 20 years. 
-
-## Seed germination or some GDD related analysis
-
-Use the data from seed germination or crop growth to compute GDD. How many GDD a seed need to become a seedling?
 
 # Further development
 
@@ -177,3 +204,26 @@ KdS and JvE conceived the ideas of implementing an `R` package. JvE and SØS ass
 The source code has been archived at [**add link**] as `climatrends` version **X.Y.Z**. To explore the latest functionalities of `climatrends`, please check the package's updates at CRAN (https://cran.r-project.org/package=climatrends).
 
 # References
+
+<div id="refs"></div>
+
+\pagebreak
+
+# Figures and tables
+
+
+```{r table1, echo=FALSE, message=TRUE}
+kable(funtbl, 
+      row.names = FALSE,
+      align = "l", 
+      caption = "Main functions available in climatrends.") %>% 
+  kable_styling(latex_options = "scale_down") %>% 
+  column_spec(2, width = "1in") %>% 
+  column_spec(4, width = "1.7in")
+```
+
+\pagebreak
+
+```{r fig_cbean, fig.cap="Fig. 1. Application of climatrends functions to support the analysis of a citizen-science data testing 11 common bean varieties in Nicaragua. (A) Days required to reach 900 growing-degree days from planting date calculated using the function GDD(). (B) Maximum night temperature (°C) distributed across seasons computed using the function temperature(). (C) Plackett-Luce Tree showing the probability of one common bean variety has to win against the others (axys X) in two different nodes splitted with the maximum night temperature (°C).", out.width = '80%', echo=FALSE}
+knitr::include_graphics("cbean.png")
+```

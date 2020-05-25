@@ -41,3 +41,4 @@ vignettes/*.pdf
 doc
 dev
 Meta
+*.pdf
