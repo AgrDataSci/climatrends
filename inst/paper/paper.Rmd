@@ -28,6 +28,7 @@ citation_author: de Sousa et. al.
 date: "`r format(Sys.time(), '%d %B %Y')`"
 year: 2020
 bibliography: paper.bib
+csl: citationstyle.csl
 output:
   pdf_document:
     keep_tex: true
@@ -54,9 +55,9 @@ load("cbean.rda")
 
 # Introduction
 
-Abiotic factors plays an important role in most ecological and crop systems that depends on certain levels of temperature, light and precipitation (and their interplay) to initiate important physiological events [@PlantEcology]. In the walk of climate change, understand how these factors drives the physiological processes is a key approach to provide recommendations for adaptation and biodiversity conservation. If translated to stress 
+Abiotic factors plays an important role in most ecological and crop systems that depends on certain levels of temperature, light and precipitation (and their interplay) to initiate important physiological events [@PlantEcology]. In the walk of climate change, understand how these factors drives the physiological processes is a key approach to provide recommendations for adaptation and biodiversity conservation.
 
-Raw temperature and precipitation values are ... to describe how organisms interacts with the enviroment
+[...continue...]
 
 `climatrends` aims to provide the R [@RCoreTeam] toolkit to compute extreme precipitation and temperature indices that serves as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [@Prentice1992; @YLiu2018].
 
@@ -68,7 +69,7 @@ Raw temperature and precipitation values are ... to describe how organisms inter
 
 Six main functions are provided, `crop_sensitive()`, `ETo()`, `GDD()`, `late_frost()`, `rainfall()` and `temperature()` with a default method for numeric 'vector's and additional methods implemented via the package `methods` [@RCoreTeam] for classes 'matrix' (or array), 'data.frame', and 'sf' (of geometry POINT or POLYGON) [@sf]. The later two are designed to fetch data from cloud sources. 
 
-
+[...continue...]
 
 say that the idea for the functions started with citizen science projects that is why `day.one` and `span` may be variable across locations. For time series analysis where fixed periods are defined across many locations the indices can be adjusted with last.day. 
 
@@ -77,7 +78,7 @@ say that the idea for the functions started with citizen science projects that i
 
 ## Temperature and precipitation indices
 
-
+Some explanation on the `temperature()` and `rainfall()` functions.
 
 ## Growing degree-days
 
@@ -103,13 +104,13 @@ $$ T < T_{0} \; \rightarrow \; T = T_{0} $$
 
 Where $T$ may refer to $T_{min}$ and/or $T_{max}$ when the condition of being below $T_{0}$ applies.
 
-For tropical areas, where the temperature may surpass a maximum threshold ($T_{0^{max}}$), resulting in limited development, the minimum temperature is adjusted using Equation 3 and the maximum temperature is adjusted to a maximum base temperature as follow.
+For tropical areas, where the temperature may surpass a maximum threshold ($T_{0_{max}}$), resulting in limited development, the minimum temperature is adjusted using Equation 3 and the maximum temperature is adjusted to a maximum base temperature as follow.
 
 Equation [4]
 
-$$ T_{max} > T_{0^{max}} \; \rightarrow \; T_{max} = T_{0^{max}} $$
+$$ T_{max} > T_{0_{max}} \; \rightarrow \; T_{max} = T_{0_{max}} $$
 
-Where $T_{0^{max}}$ is the maximum base temperature for growth, defined in `GDD()` using the argument `tbase_max`.
+Where $T_{0_{max}}$ is the maximum base temperature for growth, defined in `GDD()` using the argument `tbase_max`.
 
 These modified equations are defined as 'a', 'b' and 'c', respectively, and can be selected using the argument `equation`.
 
@@ -121,11 +122,13 @@ $$\parallel GDD_{r} \parallel \: = \; ggd_1 \;+ \; ...  \; +  \; gdd_n$$
 
 ## Late-spring frost
 
+Explain how the `late_frost()` is implemented.
+
 ## Crop-related indices
 
-Two functions in **climatrends** are mainly designed to capture the effects of climate on the development and stress of crop species, `crop_sensitive` computes indices that aims to capture the changes in temperature extremes during key phenological stages (e.g. anthesis), and `ETo()` computes the reference evapotranspiration. 
+Two functions in **climatrends** are mainly designed to capture the effects of climate on the development and stress of crop species, `crop_sensitive()` computes indices that aims to capture the changes in temperature extremes during key phenological stages (e.g. anthesis), and `ETo()` computes the reference evapotranspiration. 
 
-The reference evapotranspiration measures the influence of the climate on a given organism water needs, generally a crop species [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle method, a general theoretical method used when only air-temperature is available locally. It should be noted that this method is not very accurate and aims to provide the order of magnitude of evapotranspitation. The reference evapotranspiration is calculated using the following equation.
+The reference evapotranspiration measures the influence of the climate on a given plant water needs [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle method, a general theoretical method used when only air-temperature is available locally. It should be noted that this method is not very accurate and aims to provide the order of magnitude of evapotranspitation. The reference evapotranspiration is calculated using the following equation.
 
 Equation [6]
 
@@ -137,15 +140,20 @@ The percentage of daytime hours ($p$) is calculated internally by the 'data.fram
 
 # Examples
 
-## Seed germination or some GDD related analysis
+## Some GDD related analysis
 
-Use the data from seed germination or crop growth to compute GDD. How many GDD a seed need to become a seedling?
+Use the data from seed germination or crop growth to compute GDD. Maybe some GDD analysis in Scandinavia with data from the reindeer project.
 
 ## Common beans
 
-During five growing seasons (from 2015 to 2016 in Nicaragua), van Etten et al [-@vanEtten2019] conducted a crowdsourcing citizen-science trial testing 11 common beans varieties (*Phaseolus vulgaris* L.) in 842 farmer-managed experimental plots. Sets of three varieties were allocated randomly to farms as incomplete blocks, maintaining spatial balance by assigning roughly equal frequencies of the varieties to each area. For the analysis the authors applied the Plackett–Luce model, which estimates for each variety the probability that it wins, beating all other varieties in the set [@Turner2020]. The research showed that this approach can register known specific effects of climate variation on crop varietal performance. An earlier version of `climatrends` was used in this research to capture the seasonal climate variation, here we replicate part of this analysis in the matter that concerns the calculation and application of the climate indices.
+During five growing seasons (from 2015 to 2017 in Nicaragua), van Etten et al. [-@vanEtten2019] conducted a crowdsourcing citizen-science trial testing 11 common beans varieties (*Phaseolus vulgaris* L.) in 842 farmer-managed experimental plots. Sets of three varieties were allocated randomly to farms as incomplete blocks. A Plackett–Luce model was used to analyse the data, this model estimates for each variety the probability that it wins, beating all other varieties in the set [@Turner2020]. An earlier version of `climatrends` was used in this research to capture the seasonal climate variation, here we reproduce part of this analysis regarding calculation and application of the climate indices. The approach here is slightly different because if considers the growing-degree days from planting date to maturity (the earlier study used planting date to the end of reproductive stage) and add new indices to illustrate the package implementation.
 
-Is important to mention that this analysis shaped the implementation of the methods `temperature.array()` and `rainfall.matrix()`. 
+The data used here is available as supplementary materials (**zenodo ref**) as `cbean`. This contains a data.frame with a Plackett-Luce grouped rankings, the geographical coordinates of each sampled plot and the planting dates from where each farmer decided to start the experiment. The dates can differ from each other in the same season. The temperature data used was the land surface temperature MODIS (MYD11A2) [@Wan2015] and is storaged as an array with two layers (1st for the day and 2nd for the night temperatures). Each column corresponds to the dates (from 2015-09-10 to 2017-06-09) and the rows corresponds to the rows in the `cbean` data.frame.
+
+Since the phenological stages were not available, we estimate these stages based on the amount of growing degree-days required to reach a given stage using the function `GDD()`. For common beans, we define 900 degree-days, from planting date to maturity [@deMedeiros2016]. The input data is the array with the temperature data, the vector with planting dates (`cbean$planting_date`), the required amount of degree-days passed to the argument `degree.days` and the character string 'ndays' specifying that the function must return the values as number of days. `GDD()` calls internally the function `get_timeseries()` which will match the given dates in `day.one` with the column names in the array and concatenate the values for each row. Then `GDD()` computes the degree-days for the time series and return the length of the vector where the accumulated gdd reached the pre-defined threshold (900).
+
+The degree-days spanned from 54 to 100 days as shown in Fig. 2a. For simplicity we take the average per season and use this vector to compute the temperature indices. 
+
 
 ```{r ggd_bean, message=FALSE, echo=TRUE, eval=FALSE}
 library("climatrends")
@@ -167,6 +175,9 @@ cbean %<>%
   mutate(gdds = as.integer(mean(gdd)))
 ```
 
+To compute the temperature indices we use the array with tempeture data, the vector with planting dates, and the seasonal averaged degree-days passed as a vector using the argument `span`. `temperature()` concatenates the data from the given `day.one` to the given `span` and compute the indices for each row.
+
+In van Etten [-@vanEtten2019], a forward variable selection was applied to retain the most representative covariates based on the deviance reduction. This analysis retained the maximum night temperature (maxNT) as the most representative covariate. To illustrate how the Plackett-Luce trees can grow in complexity as we add more indices, we included the summer days (SU, number of days with maximum day temperature > 30 $^\circ C$) together with maxNT.
 
 ```{r pltree_bean, message=FALSE, echo=TRUE, eval=FALSE}
 # compute the temperature indices from planting date to the 
@@ -179,9 +190,11 @@ temp <- temperature(modis,
 cbean <- cbind(cbean, temp)
 
 # fit a Plackett-Luce tree
-plt <- pltree(G ~ maxNT, data = cbean, minsize = 200)
+plt <- pltree(G ~ maxNT + SU, data = cbean, minsize = 50)
 ```
 
+
+Across-season distribution of maxNT captured for each sample plot in this experiment is shown in Fig. 2b. The data has a bimodal distribution which is reflected in the splitting value (18.7 $^\circ C$) for the Plackett-Luce trees in Fig. 2c. The upper node splits with 49 summer days (SU). We can interpret these results as that differences in growing performance of common beans is led by a considerable amount of diurnal temperature above a warmer threshold of 30 $^\circ C$ (in this case >70% of the growing days) and warmer nights (> 18.7 $^\circ C$).
 
 ## Time series 
 
@@ -224,6 +237,6 @@ kable(funtbl,
 
 \pagebreak
 
-```{r fig_cbean, fig.cap="Fig. 1. Application of climatrends functions to support the analysis of a citizen-science data testing 11 common bean varieties in Nicaragua. (A) Days required to reach 900 growing-degree days from planting date calculated using the function GDD(). (B) Maximum night temperature (°C) distributed across seasons computed using the function temperature(). (C) Plackett-Luce Tree showing the probability of one common bean variety has to win against the others (axys X) in two different nodes splitted with the maximum night temperature (°C).", out.width = '80%', echo=FALSE}
+```{r fig_cbean, fig.cap="Fig. 1. Application of climatrends functions to support the analysis of a citizen-science data testing 11 common bean varieties in Nicaragua. (A) Days required to reach 900 growing-degree days from planting date calculated using the function GDD(). (B) Maximum night temperature (°C) distributed across seasons computed using the function temperature(). (C) Plackett-Luce Tree showing the probability of one common bean variety has to win against the others (axys X) in three different nodes splitted with the summer days (day temperature > 30 °C) and maximum night temperature (°C). Note: the first season (primera, Pr) spans from May to August, the second (postrera, Po) from September to October, and the third (apante, Ap) from November to January.", out.width = '80%', echo=FALSE}
 knitr::include_graphics("cbean.png")
 ```

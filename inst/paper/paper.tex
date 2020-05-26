@@ -147,20 +147,18 @@ Italy\\
 Abiotic factors plays an important role in most ecological and crop
 systems that depends on certain levels of temperature, light and
 precipitation (and their interplay) to initiate important physiological
-events (Schulze et al. 2019). In the walk of climate change, understand
+events (Schulze et al., 2019). In the walk of climate change, understand
 how these factors drives the physiological processes is a key approach
 to provide recommendations for adaptation and biodiversity conservation.
-If translated to stress
 
-Raw temperature and precipitation values are \ldots{} to describe how
-organisms interacts with the enviroment
+{[}\ldots continue\ldots{]}
 
-\texttt{climatrends} aims to provide the R (R Core Team 2020) toolkit to
-compute extreme precipitation and temperature indices that serves as
-input for climate and crop models (van Etten et al. 2019; Kehel, Crossa,
-and Reynolds 2016), trends in climate change (Aguilar et al. 2005; de
-Sousa et al. 2018) and applied ecology (Prentice et al. 1992; Liu and
-El-Kassaby 2018).
+\texttt{climatrends} aims to provide the R (R Core Team, 2020) toolkit
+to compute extreme precipitation and temperature indices that serves as
+input for climate and crop models (Kehel, Crossa, \& Reynolds, 2016; van
+Etten et al., 2019), trends in climate change (Aguilar et al., 2005; de
+Sousa et al., 2018) and applied ecology (Prentice et al., 1992; Liu \&
+El-Kassaby, 2018).
 
 {[}\ldots continue\ldots{]}
 
@@ -174,9 +172,11 @@ Six main functions are provided, \texttt{crop\_sensitive()},
 \texttt{ETo()}, \texttt{GDD()}, \texttt{late\_frost()},
 \texttt{rainfall()} and \texttt{temperature()} with a default method for
 numeric `vector's and additional methods implemented via the package
-\texttt{methods} (R Core Team 2020) for classes 'matrix' (or array),
-`data.frame', and `sf' (of geometry POINT or POLYGON) (Pebesma 2018).
+\texttt{methods} (R Core Team, 2020) for classes 'matrix' (or array),
+`data.frame', and `sf' (of geometry POINT or POLYGON) (Pebesma, 2018).
 The later two are designed to fetch data from cloud sources.
+
+{[}\ldots continue\ldots{]}
 
 say that the idea for the functions started with citizen science
 projects that is why \texttt{day.one} and \texttt{span} may be variable
@@ -189,12 +189,15 @@ defined across many locations the indices can be adjusted with last.day.
 \subsection{Temperature and precipitation
 indices}\label{temperature-and-precipitation-indices}}
 
+Some explanation on the \texttt{temperature()} and \texttt{rainfall()}
+functions.
+
 \hypertarget{growing-degree-days}{%
 \subsection{Growing degree-days}\label{growing-degree-days}}
 
 Growing degree-days (gdd) is an heuristic tool in phenology that
 measures heat accumulation and is used to predict plant and animal
-development rates (Prentice et al. 1992). Growing degree-days are
+development rates (Prentice et al., 1992). Growing degree-days are
 calculated by taking the integral of warmth above a base temperature
 (\(T_{0}\)). The function \texttt{GDD()} applies by default the
 following equation.
@@ -254,11 +257,11 @@ degree-days. These values are defined by `acc', `daily' or `ndays' and
 can be adjusted using the argument \texttt{return.as}. The required
 accumulated gdd is defined with argument \texttt{degree.days}. For
 example, the Korean pine (\emph{Pinus koraiensis}) requires 105
-\(^\circ C\) accumulated gdd to onset the photosynthesis (Wu et al.
-2013). In that case, \texttt{GDD()} will calculate the growing
-degree-days (\(gdd\)) and sum up the values until it reaches 105
-\(^\circ C\) and return the number of days required in the given season
-(\(GDD_{r}\)), as follows.
+\(^\circ C\) accumulated gdd to onset the photosynthesis (Wu, Guan,
+Yuan, Wang, \& Jin, 2013). In that case, \texttt{GDD()} will calculate
+the growing degree-days (\(gdd\)) and sum up the values until it reaches
+105 \(^\circ C\) and return the number of days required in the given
+season (\(GDD_{r}\)), as follows.
 
 Equation {[}5{]}
 
@@ -266,6 +269,8 @@ Equation {[}5{]}
 
 \hypertarget{late-spring-frost}{%
 \subsection{Late-spring frost}\label{late-spring-frost}}
+
+Explain how the \texttt{late\_frost()} is implemented.
 
 \hypertarget{crop-related-indices}{%
 \subsection{Crop-related indices}\label{crop-related-indices}}
@@ -278,8 +283,8 @@ changes in temperature extremes during key phenological stages
 evapotranspiration.
 
 The reference evapotranspiration measures the influence of the climate
-on a given organism water needs, generally a crop species (Brouwer and
-Heibloem 1986). The function \texttt{ETo()} applies the Blaney-Criddle
+on a given organism water needs, generally a crop species (Brouwer \&
+Heibloem, 1986). The function \texttt{ETo()} applies the Blaney-Criddle
 method, a general theoretical method used when only air-temperature is
 available locally. It should be noted that this method is not very
 accurate and aims to provide the order of magnitude of
@@ -304,33 +309,61 @@ The table can be verified using \texttt{climatrends:::daylight}.
 \hypertarget{examples}{%
 \section{Examples}\label{examples}}
 
-\hypertarget{seed-germination-or-some-gdd-related-analysis}{%
-\subsection{Seed germination or some GDD related
-analysis}\label{seed-germination-or-some-gdd-related-analysis}}
+\hypertarget{some-gdd-related-analysis}{%
+\subsection{Some GDD related analysis}\label{some-gdd-related-analysis}}
 
-Use the data from seed germination or crop growth to compute GDD. How
-many GDD a seed need to become a seedling?
+Use the data from seed germination or crop growth to compute GDD. Maybe
+some GDD analysis in Scandinavia with data from the reindeer project.
 
 \hypertarget{common-beans}{%
 \subsection{Common beans}\label{common-beans}}
 
-During five growing seasons (from 2015 to 2016 in Nicaragua), van Etten
-et al (2019) conducted a crowdsourcing citizen-science trial testing 11
+During five growing seasons (from 2015 to 2017 in Nicaragua), van Etten
+et al.~(2019) conducted a crowdsourcing citizen-science trial testing 11
 common beans varieties (\emph{Phaseolus vulgaris} L.) in 842
 farmer-managed experimental plots. Sets of three varieties were
-allocated randomly to farms as incomplete blocks, maintaining spatial
-balance by assigning roughly equal frequencies of the varieties to each
-area. For the analysis the authors applied the Plackett--Luce model,
-which estimates for each variety the probability that it wins, beating
-all other varieties in the set (Turner et al. 2020). The research showed
-that this approach can register known specific effects of climate
-variation on crop varietal performance. An earlier version of
+allocated randomly to farms as incomplete blocks. A Plackett--Luce model
+was used to analyse the data, this model estimates for each variety the
+probability that it wins, beating all other varieties in the set
+(Turner, van Etten, Firth, \& Kosmidis, 2020). An earlier version of
 \texttt{climatrends} was used in this research to capture the seasonal
-climate variation, here we replicate part of this analysis in the matter
-that concerns the calculation and application of the climate indices.
+climate variation, here we reproduce part of this analysis regarding
+calculation and application of the climate indices. The approach here is
+slightly different because if considers the growing-degree days from
+planting date to maturity (the earlier study used planting date to the
+end of reproductive stage) and add new indices to illustrate the package
+implementation.
 
-Is important to mention that this analysis shaped the implementation of
-the methods \texttt{temperature.array()} and \texttt{rainfall.matrix()}.
+The data used here is available as supplementary materials
+(\textbf{zenodo ref}) as \texttt{cbean}. This contains a data.frame with
+a Plackett-Luce grouped rankings, the geographical coordinates of each
+sampled plot and the planting dates from where each farmer decided to
+start the experiment. The dates can differ from each other in the same
+season. The temperature data used was the land surface temperature MODIS
+(MYD11A2) (Wan, Hook, \& Hulley, 2015) and is storaged as an array with
+two layers (1st for the day and 2nd for the night temperatures). Each
+column corresponds to the dates (from 2015-09-10 to 2017-06-09) and the
+rows corresponds to the rows in the \texttt{cbean} data.frame.
+
+Since the phenological stages were not available, we estimate these
+stages based on the amount of growing degree-days required to reach a
+given stage using the function \texttt{GDD()}. For common beans, we
+define 900 degree-days, from planting date to maturity (de Medeiros,
+Daniel, \& Fengler, 2016). The input data is the array with the
+temperature data, the vector with planting dates
+(\texttt{cbean\$planting\_date}), the required amount of degree-days
+passed to the argument \texttt{degree.days} and the character string
+`ndays' specifying that the function must return the values as number of
+days. \texttt{GDD()} calls internally the function
+\texttt{get\_timeseries()} which will match the given dates in
+\texttt{day.one} with the column names in the array and concatenate the
+values for each row. Then \texttt{GDD()} computes the degree-days for
+the time series and return the length of the vector where the
+accumulated gdd reached the pre-defined threshold (900).
+
+The degree-days spanned from 54 to 100 days as shown in Fig. 2a. For
+simplicity we take the average per season and use this vector to compute
+the temperature indices.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -354,6 +387,21 @@ the methods \texttt{temperature.array()} and \texttt{rainfall.matrix()}.
 \end{Highlighting}
 \end{Shaded}
 
+To compute the temperature indices we use the array with tempeture data,
+the vector with planting dates, and the seasonal averaged degree-days
+passed as a vector using the argument \texttt{span}.
+\texttt{temperature()} concatenates the data from the given
+\texttt{day.one} to the given \texttt{span} and compute the indices for
+each row.
+
+In van Etten (2019), a forward variable selection was applied to retain
+the most representative covariates based on the deviance reduction. This
+analysis retained the maximum night temperature (maxNT) as the most
+representative covariate. To illustrate how the Plackett-Luce trees can
+grow in complexity as we add more indices, we included the summer days
+(SU, number of days with maximum day temperature \textgreater{} 30
+\(^\circ C\)) together with maxNT.
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# compute the temperature indices from planting date to the }
@@ -366,9 +414,19 @@ the methods \texttt{temperature.array()} and \texttt{rainfall.matrix()}.
 \NormalTok{cbean <{-}}\StringTok{ }\KeywordTok{cbind}\NormalTok{(cbean, temp)}
 
 \CommentTok{\# fit a Plackett{-}Luce tree}
-\NormalTok{plt <{-}}\StringTok{ }\KeywordTok{pltree}\NormalTok{(G }\OperatorTok{\textasciitilde{}}\StringTok{ }\NormalTok{maxNT, }\DataTypeTok{data =}\NormalTok{ cbean, }\DataTypeTok{minsize =} \DecValTok{200}\NormalTok{)}
+\NormalTok{plt <{-}}\StringTok{ }\KeywordTok{pltree}\NormalTok{(G }\OperatorTok{\textasciitilde{}}\StringTok{ }\NormalTok{maxNT }\OperatorTok{+}\StringTok{ }\NormalTok{SU, }\DataTypeTok{data =}\NormalTok{ cbean, }\DataTypeTok{minsize =} \DecValTok{50}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+Across-season distribution of maxNT captured for each sample plot in
+this experiment is shown in Fig. 2b. The data has a bimodal distribution
+which is reflected in the splitting value (18.7 \(^\circ C\)) for the
+Plackett-Luce trees in Fig. 2c. The upper node splits with 49 summer
+days (SU). We can interpret these results as that differences in growing
+performance of common beans is led by a considerable amount of diurnal
+temperature above a warmer threshold of 30 \(^\circ C\) (in this case
+\textgreater70\% of the growing days) and warmer nights (\textgreater{}
+18.7 \(^\circ C\)).
 
 \hypertarget{time-series}{%
 \subsection{Time series}\label{time-series}}
@@ -411,81 +469,95 @@ updates at CRAN (\url{https://cran.r-project.org/package=climatrends}).
 \hypertarget{refs}{}
 \begin{cslreferences}
 \leavevmode\hypertarget{ref-Aguilar2005}{}%
-Aguilar, E., T. C. Peterson, P. Ramírez Obando, R. Frutos, J. A. Retana,
-M. Solera, J. Soley, et al. 2005. ``Changes in precipitation and
+Aguilar, E., Peterson, T. C., Obando, P. R., Frutos, R., Retana, J. A.,
+Solera, M., \ldots{} Mayorga, R. (2005). Changes in precipitation and
 temperature extremes in Central America and northern South America,
-1961--2003.'' \emph{Journal of Geophysical Research} 110 (D23): D23107.
-\url{https://doi.org/10.1029/2005JD006119}.
+1961--2003. \emph{Journal of Geophysical Research}, \emph{110}(D23),
+D23107.
+doi:\href{https://doi.org/10.1029/2005JD006119}{10.1029/2005JD006119}
 
 \leavevmode\hypertarget{ref-Brouwer1986}{}%
-Brouwer, C., and M. Heibloem. 1986. \emph{Irrigation water management:
-Irrigation water needs}. Training m. Rome, Italy: Food; Agriculture
-Organization of The United Nations.
-\url{http://www.fao.org/3/S2022E/s2022e00.htm}.
+Brouwer, C., \& Heibloem, M. (1986). \emph{Irrigation water management:
+Irrigation water needs} (Training m). Rome, Italy: Food; Agriculture
+Organization of The United Nations. Retrieved from
+\url{http://www.fao.org/3/S2022E/s2022e00.htm}
+
+\leavevmode\hypertarget{ref-deMedeiros2016}{}%
+de Medeiros, G. A., Daniel, L. A., \& Fengler, F. H. (2016). Growth,
+Development, and Water Consumption of Irrigated Bean Crop Related to
+Growing Degree-Days on Different Soil Tillage Systems in Southeast
+Brazil. \emph{International Journal of Agronomy}, \emph{2016}, 8065985.
+doi:\href{https://doi.org/10.1155/2016/8065985}{10.1155/2016/8065985}
 
 \leavevmode\hypertarget{ref-deSousa2018}{}%
-de Sousa, Kauê, Fernando Casanoves, Jorge Sellare, Alejandra Ospina,
-Jose Gabriel Suchini, Amilcar Aguilar, and Leida Mercado. 2018. ``How
-climate awareness influences farmers' adaptation decisions in Central
-America?'' \emph{Journal of Rural Studies} 64: 11--19.
-\url{https://doi.org/10.1016/j.jrurstud.2018.09.018}.
+de Sousa, K., Casanoves, F., Sellare, J., Ospina, A., Suchini, J. G.,
+Aguilar, A., \& Mercado, L. (2018). How climate awareness influences
+farmers' adaptation decisions in Central America? \emph{Journal of Rural
+Studies}, \emph{64}, 11--19.
+doi:\href{https://doi.org/10.1016/j.jrurstud.2018.09.018}{10.1016/j.jrurstud.2018.09.018}
 
 \leavevmode\hypertarget{ref-Kehel2016}{}%
-Kehel, Z., J. Crossa, and M. Reynolds. 2016. ``Identifying Climate
+Kehel, Z., Crossa, J., \& Reynolds, M. (2016). Identifying Climate
 Patterns during the Crop-Growing Cycle from 30 Years of CIMMYT Elite
-Spring Wheat International Yield Trials.'' In \emph{Applied Mathematics
-and Omics to Assess Crop Genetic Resources for Climate Change Adaptive
-Traits}, edited by Abdallah Bari, Ardeshir B. Damania, Michael Mackay,
-and Selvadurai Dayanandan, 151--74. CRC Press.
+Spring Wheat International Yield Trials. In A. Bari, A. B. Damania, M.
+Mackay, \& S. Dayanandan (Eds.), \emph{Applied mathematics and omics to
+assess crop genetic resources for climate change adaptive traits} (pp.
+151--174). CRC Press.
 
 \leavevmode\hypertarget{ref-YLiu2018}{}%
-Liu, Yang, and Yousry A. El-Kassaby. 2018. ``Evapotranspiration and
-favorable growing degree-days are key to tree height growth and
-ecosystem functioning: Meta-analyses of Pacific Northwest historical
-data.'' \emph{Scientific Reports} 8228 (October).
-\url{https://doi.org/10.1038/s41598-018-26681-1}.
+Liu, Y., \& El-Kassaby, Y. A. (2018). Evapotranspiration and favorable
+growing degree-days are key to tree height growth and ecosystem
+functioning: Meta-analyses of Pacific Northwest historical data.
+\emph{Scientific Reports}, \emph{8228}.
+doi:\href{https://doi.org/10.1038/s41598-018-26681-1}{10.1038/s41598-018-26681-1}
 
 \leavevmode\hypertarget{ref-sf}{}%
-Pebesma, Edzer. 2018. ``Simple Features for R: Standardized Support for
-Spatial Vector Data.'' \emph{The R Journal} 10 (1): 439--46.
-\url{https://doi.org/10.32614/RJ-2018-009}.
+Pebesma, E. (2018). Simple Features for R: Standardized Support for
+Spatial Vector Data. \emph{The R Journal}, \emph{10}(1), 439--446.
+doi:\href{https://doi.org/10.32614/RJ-2018-009}{10.32614/RJ-2018-009}
 
 \leavevmode\hypertarget{ref-Prentice1992}{}%
-Prentice, I. Colin, Wolfgang Cramer, Sandy P. Harrison, Rik Leemans,
-Robert A. Monserud, and Allen M. Solomon. 1992. ``Special Paper: A
-Global Biome Model Based on Plant Physiology and Dominance, Soil
-Properties and Climate.'' \emph{Journal of Biogeography} 19 (2): 117.
-\url{https://doi.org/10.2307/2845499}.
+Prentice, I. C., Cramer, W., Harrison, S. P., Leemans, R., Monserud, R.
+A., \& Solomon, A. M. (1992). Special Paper: A Global Biome Model Based
+on Plant Physiology and Dominance, Soil Properties and Climate.
+\emph{Journal of Biogeography}, \emph{19}(2), 117.
+doi:\href{https://doi.org/10.2307/2845499}{10.2307/2845499}
 
 \leavevmode\hypertarget{ref-RCoreTeam}{}%
-R Core Team. 2020. ``R: A language and environment for statistical
-computing. version 4.0.0.'' Vienna, Austria: CRAN R Project.
-\url{https://www.r-project.org/}.
+R Core Team. (2020). R: A language and environment for statistical
+computing. version 4.0.0. Vienna, Austria: CRAN R Project. Retrieved
+from \url{https://www.r-project.org/}
 
 \leavevmode\hypertarget{ref-PlantEcology}{}%
-Schulze, Ernst-Detlef, Erwin Beck, Nina Buchmann, Stephan Clemens, Klaus
-Müller-Hohenstein, and Michael Scherer-Lorenzen. 2019. \emph{Plant
-Ecology}. Second Edi. Berlin, Germany: Springer.
-\url{https://doi.org/10.1007/978-3-662-56233-8}.
+Schulze, E.-D., Beck, E., Buchmann, N., Clemens, S., Müller-Hohenstein,
+K., \& Scherer-Lorenzen, M. (2019). \emph{Plant Ecology} (Second Edi, p.
+925). Berlin, Germany: Springer.
+doi:\href{https://doi.org/10.1007/978-3-662-56233-8}{10.1007/978-3-662-56233-8}
 
 \leavevmode\hypertarget{ref-Turner2020}{}%
-Turner, Heather L, Jacob van Etten, David Firth, and Ioannis Kosmidis.
-2020. ``Modelling rankings in R: the PlackettLuce package.''
-\emph{Computational Statistics}.
-\url{https://doi.org/10.1007/s00180-020-00959-3}.
+Turner, H. L., van Etten, J., Firth, D., \& Kosmidis, I. (2020).
+Modelling rankings in R: the PlackettLuce package. \emph{Computational
+Statistics}.
+doi:\href{https://doi.org/10.1007/s00180-020-00959-3}{10.1007/s00180-020-00959-3}
 
 \leavevmode\hypertarget{ref-vanEtten2019}{}%
-van Etten, Jacob, Kauê de Sousa, Amílcar Aguilar, Mirna Barrios, Allan
-Coto, Matteo Dell'Acqua, Carlo Fadda, et al. 2019. ``Crop variety
-management for climate adaptation supported by citizen science.''
-\emph{Proceedings of the National Academy of Sciences} 116 (10):
-4194--9. \url{https://doi.org/10.1073/pnas.1813720116}.
+van Etten, J., de Sousa, K., Aguilar, A., Barrios, M., Coto, A.,
+Dell'Acqua, M., \ldots{} Steinke, J. (2019). Crop variety management for
+climate adaptation supported by citizen science. \emph{Proceedings of
+the National Academy of Sciences}, \emph{116}(10), 4194--4199.
+doi:\href{https://doi.org/10.1073/pnas.1813720116}{10.1073/pnas.1813720116}
+
+\leavevmode\hypertarget{ref-Wan2015}{}%
+Wan, Z., Hook, S., \& Hulley, G. (2015). MYD11A1 MODIS/Aqua Land Surface
+Temperature/Emissivity Daily L3 Global 1km SIN Grid V006 {[}Data set{]}.
+\emph{NASA EOSDIS LP DAAC}.
+doi:\href{https://doi.org/10.5067/MODIS/MYD11A1.006}{10.5067/MODIS/MYD11A1.006}
 
 \leavevmode\hypertarget{ref-JWu2013}{}%
-Wu, Jiabing, Dexin Guan, Fenhui Yuan, Anzhi Wang, and Changjie Jin.
-2013. ``Soil Temperature Triggers the Onset of Photosynthesis in Korean
-Pine.'' Edited by Carl J. Bernacchi. \emph{PLoS ONE} 8 (6): e65401.
-\url{https://doi.org/10.1371/journal.pone.0065401}.
+Wu, J., Guan, D., Yuan, F., Wang, A., \& Jin, C. (2013). Soil
+Temperature Triggers the Onset of Photosynthesis in Korean Pine.
+\emph{PLoS ONE}, \emph{8}(6), e65401.
+doi:\href{https://doi.org/10.1371/journal.pone.0065401}{10.1371/journal.pone.0065401}
 \end{cslreferences}
 
 \pagebreak
@@ -520,7 +592,7 @@ temperature() & Temperature indices & Either the indices considering the series 
 \pagebreak
 
 \begin{figure}
-\includegraphics[width=0.8\linewidth]{cbean} \caption{Fig. 1. Application of climatrends functions to support the analysis of a citizen-science data testing 11 common bean varieties in Nicaragua. (A) Days required to reach 900 growing-degree days from planting date calculated using the function GDD(). (B) Maximum night temperature (°C) distributed across seasons computed using the function temperature(). (C) Plackett-Luce Tree showing the probability of one common bean variety has to win against the others (axys X) in two different nodes splitted with the maximum night temperature (°C).}\label{fig:fig_cbean}
+\includegraphics[width=0.8\linewidth]{cbean} \caption{Fig. 1. Application of climatrends functions to support the analysis of a citizen-science data testing 11 common bean varieties in Nicaragua. (A) Days required to reach 900 growing-degree days from planting date calculated using the function GDD(). (B) Maximum night temperature (°C) distributed across seasons computed using the function temperature(). (C) Plackett-Luce Tree showing the probability of one common bean variety has to win against the others (axys X) in three different nodes splitted with the summer days (day temperature > 30 °C) and maximum night temperature (°C). Note: the first season (primera, Pr) spans from May to August, the second (postrera, Po) from September to October, and the third (apante, Ap) from November to January.}\label{fig:fig_cbean}
 \end{figure}
 
 \end{document}
