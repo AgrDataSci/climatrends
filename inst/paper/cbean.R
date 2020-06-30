@@ -29,12 +29,17 @@ temp <- temperature(modis,
                     day.one = cbean$planting_date, 
                     span = cbean$gdds)
 
+rain <- rainfall(chirps, 
+                    day.one = cbean$planting_date, 
+                    span = cbean$gdds)
+
+
 # round values to 3 decimals, this will not change the main result, but will 
 # help in visualizing the tree 
 temp[1:ncol(temp)] <- lapply(temp[1:ncol(temp)], function(x) round(x, 2))
 
 # combine the indices with the main data
-cbean <- cbind(cbean, temp)
+cbean <- cbind(cbean, temp, rain)
 
 # fit a PL tree
 plt <- pltree(G ~ maxNT + SU, data = cbean, minsize = 50)
@@ -130,6 +135,5 @@ ggsave(paste0("inst/paper/cbean.png"),
        height = 14,
        dpi = 1000,
        units = "cm")
-
 
 

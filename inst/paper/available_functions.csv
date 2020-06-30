@@ -1,7 +1,0 @@
-﻿Name,Function,Output
-crop_sensitive(),Compute crop sensitive indices ,A data frame with crop sensitive indices with n columns depending on the number of thresholds passed to each index
-Eto(),Reference evapotranspiration,The reference evapotranspiration
-GDD(),Compute growing degree-days,"Either the cumulative sum of gdd across time (the default), or the gdd obtained in each day, or the number of days required to reach a certain amount of gdd"
-late_frost(),Compute the occurrence of late-spring frost,"A data.frame with the duration and gdd accumulated during the events of frost, latency (where there is no frost event, but also there is no gdd), and warming (where gdd is accumulated)"
-rainfall(),Precipitation indices,"Either the indices considering the series as a whole, or time series indices splitted into equal intervals of days"
-temperature(),Temperature indices,"Either the indices considering the series as a whole, or time series indices splitted into equal intervals of days"
