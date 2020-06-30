@@ -9,6 +9,7 @@
 [![codecov](https://codecov.io/gh/agrobioinfoservices/climatrends/master.svg)](https://codecov.io/github/agrobioinfoservices/climatrends?branch=master)
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![DOI](https://zenodo.org/badge/239103060.svg)](https://zenodo.org/badge/latestdoi/239103060)
 <!-- badges: end -->
 
 # *climatrends*: Climate Variability Indices for Ecological Modelling <img align="right" src="man/figures/logo.png">
