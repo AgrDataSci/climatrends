@@ -5,19 +5,19 @@ library("nasapower")
 library("tidyverse")
 library("mapview")
 
-e <- matrix(c(7, 59,
-              17, 59,
-              17, 63,
-              7, 63,
-              7, 59),
-            nrow = 5, ncol = 2, byrow = TRUE)
-
-# e <- matrix(c(-7.5, 37.2,
-#                  -2, 37.2,
-#                  -2, 40.5,
-#               -7.5, 40.5,
-#               -7.5, 37.2),
+# e <- matrix(c(7, 59,
+#               17, 59,
+#               17, 63,
+#               7, 63,
+#               7, 59),
 #             nrow = 5, ncol = 2, byrow = TRUE)
+
+e <- matrix(c(-7.5, 37.2,
+                 -2, 37.2,
+                 -2, 40.5,
+              -7.5, 40.5,
+              -7.5, 37.2),
+            nrow = 5, ncol = 2, byrow = TRUE)
 e
 
 e <- st_polygon(list(e))
@@ -29,16 +29,18 @@ p <- st_as_sf(p, crs = 4326)
 mapview(p)
 
 temp <- temperature(p, 
-                    day.one = "2020-03-01", 
-                    last.day = "2020-04-01", 
+                    day.one = "2000-01-01", 
+                    last.day = "2019-12-31", 
                     timeseries = TRUE, 
                     intervals = 365)
+
+save(temp, file = "inst/paper/climatology.rda")
 
 i <- c("CSDI","WSDI")
 
 
 temp %>% 
-  #filter(index %in% i) %>% 
+  filter(index %in% i) %>% 
   group_by(index) %>% 
   mutate(ab = mean(value)) %>% 
   ggplot() +
@@ -67,7 +69,7 @@ i <- c("T10p","T90p")
 
 
 temp %>% 
-  filter(index %in% i) %>% 
+  #filter(index %in% i) %>% 
   group_by(index) %>% 
   mutate(ab = mean(value)) %>% 
   ggplot() +
@@ -94,5 +96,4 @@ gg2
 
 
 gg1 / gg2
-
 

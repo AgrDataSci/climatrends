@@ -45,10 +45,11 @@ load("cbean.rda")
 ```
 
 
->Kauê de Sousa^1,2[*]^, Jacob van Etten^2^, Svein Øivind Solberg^1^  
+>Kauê de Sousa^1,2[*]^, Magne Neby^3^, Jacob van Etten^2^, Svein Øivind Solberg^1^  
 ^1^ Department of Agricultural Sciences, Inland Norway University of Applied Sciences, 2318 Hamar, Norway  
 ^2^ Bioversity International, 00054 Maccarese, Rome, Italy  
-^[*]^Correspondence should be addressed to: <kaue.desousa@inn.no>
+^3^ Department of Forest and Field Sciences, Inland Norway University of Applied Sciences, 2480 Koppang, Norway    
+^[*]^ Correspondence should be addressed to: <kaue.desousa@inn.no>
 
 \
 
@@ -145,10 +146,6 @@ The percentage of daytime hours ($p$) is calculated internally by the 'data.fram
 
 # Examples
 
-## Some GDD related analysis
-
-Use the data from seed germination or crop growth to compute GDD. Maybe a GDD analysis in Scandinavia with data from the reindeer project.
-
 ## Common bean 
 
 During five growing seasons (from 2015 to 2017) in Nicaragua, van Etten et al. [-@vanEtten2019] conducted a crowdsourcing citizen-science experiment testing 11 common bean varieties (*Phaseolus vulgaris* L.) in 842 farmer-managed plots. Sets of three varieties were allocated randomly to farms as incomplete blocks. A Plackett–Luce model was used to analyse the data, this model estimates for each variety the probability that it wins, beating all other varieties in the set [@Turner2020]. An earlier version of `climatrends` was used in this research to capture the seasonal climate variation, here we reproduce part of this analysis regarding calculation and application of the climate indices. The approach here is slightly different because it considers the growing-degree days from planting date to maturity (the earlier study used planting date to the end of reproductive stage) and add new indices to illustrate the package implementation.
@@ -201,9 +198,14 @@ plt <- pltree(G ~ maxNT + SU, data = cbean, minsize = 50)
 
 Across-season distribution of maxNT captured for each sample plot in this experiment is shown in Fig. 2b. The data has a bimodal distribution which is reflected in the splitting value (18.7 $^\circ C$) for the Plackett-Luce trees in Fig. 2c. The upper node splits with 49 summer days (SU). We can interpret these results as that differences in growing performance of common beans is led by a considerable amount of diurnal temperature above a warmer threshold of 30 $^\circ C$ (in this case >70% of the growing days) and warmer nights (> 18.7 $^\circ C$).
 
-## Time series 
+## Trends in climate variability in Norway and Sweden 
 
-Pick some random points in Norway (or Scandinavia??) and check how the trends on temperature indices over the last 20 years. 
+Pick some random points in Norway and Sweden and check how the trends on temperature indices over the last 20 years. 
+
+## Impact of early thaw on vole populations
+
+From [Johnsen et al (2016)](https://doi.org/10.1002/ece3.2635) and [Boonstra et al (2016)](http://bioscience.oxfordjournals.org/content/early/2016/07/19/biosci.biw080.full.pdf). The snowpack of European boreal forest contains relatively dense snow because of snow falling at temperatures just below freezing and because of the formation of ice crusts owing to thaw–freeze cycles during the relatively mild winters. The formation of ice due to freeze–thaw cycles during winter may be limiting vole availability to bilberries and other edible food items by encrusting them in ice and therefore limiting the peak phase of the cycles. If there falls snow in autumn but then it becomes above zero and the snow starts melting but then it starts freezing again, an ice layer is formed which has important implications in ecology. This might be calculated / predicted with the `late_frost()` function, but then applied as 'early thaw' function. 
+
 
 # Further development
 
@@ -211,7 +213,7 @@ Integration with other datasets as they become available in `R` via API client p
 
 # Acknowledgements
 
-This work was supported by The Nordic Joint Committee for Agricultural and Food Research (grant num. 202100-2817).
+This work was supported by The Nordic Joint Committee for Agricultural and Food Research (grant num. 202100-2817). We thank Julian Ramirez-Villegas and Marcel Schrijvers-Gonlag for the useful insights and discussion that helped in the development of this study.
 
 # Authors' contributions
 
