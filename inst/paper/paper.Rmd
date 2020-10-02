@@ -29,7 +29,7 @@ affiliations:
   - name: Department of Forest and Field Sciences, Inland Norway University of Applied Sciences, 2480 Koppang, Norway
     index: 3
 citation_author: de Sousa et. al.
-date: "`r format(Sys.time(), '%d %B %Y')`"
+date: "A preprint"
 year: 2020
 bibliography: paper.bib
 csl: citationstyle.csl
@@ -105,8 +105,8 @@ index <- as.data.frame(matrix(
     "CFD", "Consecutive frosty days, number of days with temperature < 0 °C", "days",
     "WSDI","Maximum warm spell duration, consecutive days with temperature > 90th percentile", "days",
     "CSDI","Maximum cold spell duration, consecutive nights with temperature < 10th percentile","days",
-    "T10p","The 10th percentile of night tempeture","°C",
-    "T90p","The 90th percentile of day tempeture","°C",
+    "T10p","The 10th percentile of night temperature","°C",
+    "T90p","The 90th percentile of day temperature","°C",
     "MLDS", "Maximum length of consecutive dry day, rain < 1 mm", "days",
     "MLWS", "Maximum length of consecutive wet day, rain >= 1 mm", "days",
     "R10mm", "Heavy precipitation days 10 >= rain < 20 mm", "days",
@@ -227,7 +227,7 @@ The data used here is available as supplementary material (**zenodo ref**) as `c
 
 Since the phenological stages were not available, we estimate these stages based on the amount of growing degree-days required to reach a given stage using the function `GDD()`. For common beans, we define 900 degree-days, from planting date to maturity [@deMedeiros2016]. The input data is the array with the temperature data, the vector with planting dates (`cbean$planting_date`), the required amount of degree-days passed to the argument `degree.days` and the character string 'ndays' specifying that the function must return the values as number of days. `GDD()` calls internally the function `get_timeseries()` which will match the given dates in `day.one` with the column names in the array and concatenate the values for each row. Then `GDD()` computes the degree-days for the time series and return the length of the vector where the accumulated gdd reached the pre-defined threshold (900).
 
-The degree-days spanned from 54 to 100 days as shown in Fig. 2a. For simplicity we take the average per season and use this vector to compute the temperature indices. 
+The degree-days spanned from 54 to 100 days as shown in Fig. 1a. For simplicity we take the average per season and use this vector to compute the temperature indices. 
 
 
 ```{r ggd_bean, message=FALSE, echo=TRUE, eval=FALSE}
@@ -269,37 +269,62 @@ plt <- pltree(G ~ maxNT + SU, data = cbean, minsize = 50)
 ```
 
 
-Across-season distribution of maxNT captured for each sample plot in this experiment is shown in Fig. 2b. The data has a bimodal distribution which is reflected in the splitting value (18.7 $^\circ C$) for the Plackett-Luce trees in Fig. 2c. The upper node splits with 49 summer days (SU). We can interpret these results as that differences in growing performance of common beans is led by a considerable amount of diurnal temperature above a warmer threshold of 30 $^\circ C$ (in this case >70% of the growing days) and warmer nights (> 18.7 $^\circ C$).
+Across-season distribution of maxNT captured for each sample plot in this experiment is shown in Fig. 1b. The data has a bimodal distribution which is reflected in the splitting value (18.7 $^\circ C$) for the Plackett-Luce trees in Fig. 1c. The upper node splits with 49 summer days (SU). We can interpret these results as that differences in growing performance of common beans is led by a considerable amount of diurnal temperature above a warmer threshold of 30 $^\circ C$ (in this case >70% of the growing days) and warmer nights (> 18.7 $^\circ C$).
 
-```{r fig_cbean, fig.cap="Fig. 1. Application of climatrends functions to support the analysis of a citizen-science data testing 11 common bean varieties in Nicaragua. (A) Days required to reach 900 growing-degree days from planting date calculated using the function GDD(). (B) Maximum night temperature (°C) distributed across seasons computed using the function temperature(). (C) Plackett-Luce Tree showing the probability of one common bean variety has to win against the others (axys X) in three different nodes splitted with the summer days (day temperature > 30 °C) and maximum night temperature (°C). Note: the first season (primera, Pr) spans from May to August, the second (postrera, Po) from September to October, and the third (apante, Ap) from November to January.", out.width = '80%', echo=FALSE}
+```{r fig_cbean, fig.cap="Fig. 1. Application of climatrends functions to support the analysis of a citizen-science data testing 11 common bean varieties in Nicaragua. (A) Days required to reach 900 growing-degree days from planting date calculated using the function GDD(). (B) Maximum night temperature (°C) distributed across seasons computed using the function temperature(). (C) Plackett-Luce Tree showing the probability of one common bean variety has to win against the others (axys X) in three different nodes splitted with the summer days (day temperature > 30 °C) and maximum night temperature (°C). Note: the first season (primera, Pr) spans from May to August, the second (postrera, Po) from September to October, and the third (apante, Ap) from November to January.", out.width = '80%', echo=FALSE, fig.align="center"}
 knitr::include_graphics("cbean.png")
 ```
 
+\pagebreak 
 
 ## Trends in climate variability in Norway and Sweden 
 
-Pick some random points in Norway and Sweden and check how the trends on temperature indices over the last 20 years. 
+We randomly selected 100 points in hexagonal within the coordinates 7$^\circ$ and 17$^\circ$ W, and 59 $^\circ$ and 63 $^\circ$ N, that comprises Norway and Sweden before the Arctic Circle. We compute the temperature indices from 2000-01-01 to 2019-12-31 using the function `temperature()` with the method for objects of class 'sf'. The temperature data is fetched from from the NASA Langley Research Center POWER Project funded through the NASA Earth Science Directorate Applied Science Program (<https://power.larc.nasa.gov/>), using the R package `nasapower` [@Sparks2018].
 
-## Impact of early thaw on vole populations
+```{r nordic, message=FALSE, echo=TRUE, eval=FALSE}
+library("climatrends")
+library("sf")
+library("nasapower")
 
-From [Johnsen et al (2016)](https://doi.org/10.1002/ece3.2635) and [Boonstra et al (2016)](http://bioscience.oxfordjournals.org/content/early/2016/07/19/biosci.biw080.full.pdf). The snowpack of European boreal forest contains relatively dense snow because of snow falling at temperatures just below freezing and because of the formation of ice crusts owing to thaw–freeze cycles during the relatively mild winters. The formation of ice due to freeze–thaw cycles during winter may be limiting vole availability to bilberries and other edible food items by encrusting them in ice and therefore limiting the peak phase of the cycles. If there falls snow in autumn but then it becomes above zero and the snow starts melting but then it starts freezing again, an ice layer is formed which has important implications in ecology. This might be calculated / predicted with the `late_frost()` function, but then applied as 'early thaw' function. 
+# create a polygon within the coordinates 7, 17, 59, 63
+e <- matrix(c(7, 59, 17, 59, 17, 63,
+              7, 63, 7, 59), 
+            nrow = 5, ncol = 2, byrow = TRUE)
 
+e <- st_polygon(list(e))
+
+# sample 100 points in the hexagonal type
+p <- st_sample(e, 100, type = "hexagonal")
+p <- st_as_sf(p, crs = 4326)
+
+# compute the temperature indices using the random points 
+temp <- temperature(p, 
+                    day.one = "2000-01-01", 
+                    last.day = "2019-12-31", 
+                    timeseries = TRUE, 
+                    intervals = 365)
+
+```
+
+We then select the indices CSDI (cold spell duration of night temperature), WSDI (warm spell duration of day temperature), and their associated indices the T10p (the 10th percentile of night temperature) and T90p (the 90th percentile of day temperature), in Figure 2. Plots are generated with `ggplot2` [@ggplot2] and `patchwork` [@patchwork].
+
+The trends show a decrease in the cold spell duration (number of consecutive cold nights bellow the 10th percentile) and warm spell duration (number of consecutive warm days above the 90th percentile). However, the values of the percentiles show an increase over the time series. The T10p index shows a decrease around the year of 2010, but again rises up to the a value around the -10 $^\circ$C, meaning that the could nights are becoming a bit warmer over the time. The T90p index also shows an increase in the temperature across the sampled area, with the average 90th percentile rising from ~ 16 $^\circ$C to ~ 18 $^\circ$C over the time series. 
+
+```{r fig_nordic, fig.cap="Fig. 2. Trends in temperature indices across Southern Norway and Sweeden from 2000 to 2019. CSDI, maximum cold spell duration, consecutive nights with temperature < 10th percentile. WSDI, maximum warm spell duration, consecutive days with temperature > 90th percentile. T10p, the 10th percentile of night temperature. T90p, the 90th percentile of day temperature. Red line indicates the historical mean of each index in the time series. Blue line indicates the smoothed trends in each index using the 'loess' method.", out.width = '80%', echo=FALSE, fig.align="center"}
+knitr::include_graphics("nordic.png")
+```
 
 # Further development
 
-Integration with other datasets as they become available in `R` via API client packages. New indices related to the physiology of crops to be implemented while I work on the rice data.
+The package can support the integration with other datasets as they become available in `R` via API client packages. Also new indices related to the physiology of crops could be implemented.
 
 # Acknowledgements
 
 This work was supported by The Nordic Joint Committee for Agricultural and Food Research (grant num. 202100-2817). We thank Julian Ramirez-Villegas and Marcel Schrijvers-Gonlag for the useful insights and discussion that helped in the development of this study.
 
-# Authors' contributions
-
-KdS and JvE conceived the ideas of implementing an `R` package. JvE and SØS assisted in the implementation of methods. KdS wrote and documented the software. [add other contributions...]
-
 # Data availability statement
 
-The source code has been archived at [**add link**] as `climatrends` version **X.Y.Z**. To explore the latest functionalities of `climatrends`, please check the package's updates at CRAN (https://cran.r-project.org/package=climatrends).
+To explore the latest functionalities of `climatrends`, please check the package's updates at CRAN (https://cran.r-project.org/package=climatrends).
 
 # References
 

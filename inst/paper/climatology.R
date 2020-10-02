@@ -5,20 +5,20 @@ library("nasapower")
 library("tidyverse")
 library("mapview")
 
-# e <- matrix(c(7, 59,
-#               17, 59,
-#               17, 63,
-#               7, 63,
-#               7, 59),
-#             nrow = 5, ncol = 2, byrow = TRUE)
-
-e <- matrix(c(-7.5, 37.2,
-                 -2, 37.2,
-                 -2, 40.5,
-              -7.5, 40.5,
-              -7.5, 37.2),
+e <- matrix(c(7, 59,
+              17, 59,
+              17, 63,
+              7, 63,
+              7, 59),
             nrow = 5, ncol = 2, byrow = TRUE)
-e
+
+# e <- matrix(c(-7.5, 37.2,
+#                  -2, 37.2,
+#                  -2, 40.5,
+#               -7.5, 40.5,
+#               -7.5, 37.2),
+#             nrow = 5, ncol = 2, byrow = TRUE)
+# e
 
 e <- st_polygon(list(e))
 plot(e)
@@ -38,6 +38,7 @@ save(temp, file = "inst/paper/climatology.rda")
 
 i <- c("CSDI","WSDI")
 
+#i <- c("TR", "minDT", "maxDT", "maxNT", "minNT", "DTR")
 
 temp %>% 
   filter(index %in% i) %>% 
@@ -69,7 +70,7 @@ i <- c("T10p","T90p")
 
 
 temp %>% 
-  #filter(index %in% i) %>% 
+  filter(index %in% i) %>% 
   group_by(index) %>% 
   mutate(ab = mean(value)) %>% 
   ggplot() +
@@ -95,5 +96,11 @@ temp %>%
 gg2
 
 
-gg1 / gg2
+pl <- gg1 / gg2
 
+ggsave(paste0("inst/paper/nordic.png"),
+       plot = pl,
+       width = 15,
+       height = 15,
+       dpi = 800,
+       units = "cm")
