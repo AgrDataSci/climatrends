@@ -48,11 +48,11 @@ library("PlackettLuce")
 load("cbean.rda")
 ```
 
+\pagenumbering{gobble}
 
->Kauê de Sousa^1,2[*]^, Magne Neby^3^, Jacob van Etten^2^, Svein Øivind Solberg^1^  
+>Kauê de Sousa^1,2[*]^, Jacob van Etten^2^, Svein Øivind Solberg^1^  
 ^1^ Department of Agricultural Sciences, Inland Norway University of Applied Sciences, 2318 Hamar, Norway  
-^2^ Bioversity International, 00054 Maccarese, Rome, Italy  
-^3^ Department of Forest and Field Sciences, Inland Norway University of Applied Sciences, 2480 Koppang, Norway    
+^2^ Bioversity International, 00054 Maccarese, Rome, Italy    
 ^[*]^ Correspondence should be addressed to: <kaue.desousa@inn.no>
 
 \
@@ -223,7 +223,7 @@ The percentage of daytime hours ($p$) is calculated internally by the 'data.fram
 
 During five growing seasons (from 2015 to 2017) in Nicaragua, van Etten et al. [-@vanEtten2019] conducted a crowdsourcing citizen-science experiment testing 11 common bean varieties (*Phaseolus vulgaris* L.) in 842 farmer-managed plots. Sets of three varieties were allocated randomly to farms as incomplete blocks. A Plackett–Luce model was used to analyse the data, this model estimates for each variety the probability that it wins, beating all other varieties in the set [@Turner2020]. An earlier version of `climatrends` was used in this research to capture the seasonal climate variation, here we reproduce part of this analysis regarding calculation and application of the climate indices. The approach here is slightly different because it considers the growing-degree days from planting date to maturity (the earlier study used planting date to the end of reproductive stage) and add new indices to illustrate the package implementation.
 
-The data used here is available as supplementary material (**zenodo ref**) as `cbean`. This contains a data.frame with a Plackett-Luce grouped rankings, the geographical coordinates of each sampled plot and the planting dates from where each farmer decided to start the experiment. The planting dates differ from each other in the same season. The temperature data used was the land surface temperature MODIS (MYD11A2) [@Wan2015] and is storaged as an array with two layers (1st for the day and 2nd for the night temperatures). Each column corresponds to the dates (from 2015-09-10 to 2017-06-09) and the rows corresponds to the rows in the `cbean` data.frame.
+The data used here is available as supplementary material as `cbean`. This contains a data.frame with a Plackett-Luce grouped rankings, the geographical coordinates of each sampled plot and the planting dates from where each farmer decided to start the experiment. The planting dates differ from each other in the same season. The temperature data used was the land surface temperature MODIS (MYD11A2) [@Wan2015] and is storaged as an array with two layers (1st for the day and 2nd for the night temperatures). Each column corresponds to the dates (from 2015-09-10 to 2017-06-09) and the rows corresponds to the rows in the `cbean` data.frame.
 
 Since the phenological stages were not available, we estimate these stages based on the amount of growing degree-days required to reach a given stage using the function `GDD()`. For common beans, we define 900 degree-days, from planting date to maturity [@deMedeiros2016]. The input data is the array with the temperature data, the vector with planting dates (`cbean$planting_date`), the required amount of degree-days passed to the argument `degree.days` and the character string 'ndays' specifying that the function must return the values as number of days. `GDD()` calls internally the function `get_timeseries()` which will match the given dates in `day.one` with the column names in the array and concatenate the values for each row. Then `GDD()` computes the degree-days for the time series and return the length of the vector where the accumulated gdd reached the pre-defined threshold (900).
 

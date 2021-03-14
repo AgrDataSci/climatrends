@@ -113,7 +113,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/agrobioinfoservices/climatrends/">
+  <a href="https://github.com/team-adds/climatrends/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -132,7 +132,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Temperature indices</h1>
-    <small class="dont-index">Source: <a href='https://github.com/agrobioinfoservices/climatrends/blob/master/R/temperature.R'><code>R/temperature.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/team-adds/climatrends/blob/master/R/temperature.R'><code>R/temperature.R</code></a></small>
     <div class="hidden name"><code>temperature.Rd</code></div>
     </div>
 
@@ -265,19 +265,31 @@ temperature &lt; 10th percentile</p></dd>
 <code><a href='crop_sensitive.html'>crop_sensitive</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># the default method</span>
+    <pre class="examples"><div class='input'><span class='co'># the default method</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"innlandet"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='co'># a single temporal observation</span>
-<span class='fu'>temperature</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>, <span class='no'>innlandet</span>$<span class='no'>tmin</span>)
-
+<span class='fu'>temperature</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>, <span class='no'>innlandet</span>$<span class='no'>tmin</span>)</div><div class='output co'>#&gt;    maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p
+#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1: 15.13 -14.86  6.77 -19.25     6     0     0   115     4     5 -15.81  9.09</div><div class='input'>
 <span class='co'># return as timeseries with 30-day intervals</span>
 <span class='fu'>temperature</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>,
             <span class='no'>innlandet</span>$<span class='no'>tmin</span>,
             <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>innlandet</span>$<span class='no'>dates</span>,
             <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-            <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>30</span>)
-
+            <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>30</span>)</div><div class='output co'>#&gt;        id       date index  value
+#&gt;     &lt;int&gt;     &lt;date&gt; &lt;chr&gt;  &lt;dbl&gt;
+#&gt; 1:      1 2019-01-01 maxDT  -0.15
+#&gt; 2:      1 2019-01-01 minDT -14.86
+#&gt; 3:      1 2019-01-01 maxNT  -3.41
+#&gt; 4:      1 2019-01-01 minNT -18.67
+#&gt; 5:      1 2019-01-01   DTR   4.35
+#&gt; ---                              
+#&gt; 68:     1 2019-05-31   CFD   3.00
+#&gt; 69:     1 2019-05-31  WSDI   2.00
+#&gt; 70:     1 2019-05-31  CSDI   3.00
+#&gt; 71:     1 2019-05-31  T10p   0.20
+#&gt; 72:     1 2019-05-31  T90p  11.14</div><div class='input'>
 <span class='co'>#####################################################</span>
 
 <span class='co'># array method</span>
@@ -285,8 +297,18 @@ temperature &lt; 10th percentile</p></dd>
 
 <span class='fu'>temperature</span>(<span class='no'>temp_dat</span>,
             <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
-            <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>12</span>)
-
+            <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>12</span>)</div><div class='output co'>#&gt;     maxDT minDT maxNT minNT   DTR    SU    TR   CFD  WSDI  CSDI  T10p  T90p
+#&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1:  33.50 33.20  8.40  8.20    25    12     0     0     5     2  8.21 33.50
+#&gt; 2:  34.90 34.60  9.50  8.90    25    12     0     0     6     2  8.91 34.90
+#&gt; 3:  32.30 31.70  8.50  8.00    23    12     0     0     8     2  8.01 32.00
+#&gt; 4:  27.50 26.90  2.10  1.50    25     0     0     0     2     5  1.60 27.40
+#&gt; 5:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58
+#&gt; 6:  27.60 26.90  6.50  5.90    20     0     0     0     2     2  6.01 27.40
+#&gt; 7:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58
+#&gt; 8:  31.90 31.00  4.90  4.60    26    12     0     0     2     2  4.61 31.57
+#&gt; 9:  32.60 31.30  5.10  4.30    27    12     0     0     2     3  4.30 32.27
+#&gt; 10: 28.70 28.00  4.40  2.70    24     0     0     0     2     2  2.81 28.50</div><div class='input'>
 <span class='co'># \donttest{</span>
 <span class='co'>#####################################################</span>
 
@@ -304,16 +326,35 @@ temperature &lt; 10th percentile</p></dd>
 <span class='no'>temp1</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
                      <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
                      <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='no'>temp1</span>
-
+                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>temp1</span></div><div class='output co'>#&gt;    maxDT minDT maxNT minNT   DTR    SU    TR   CFD  WSDI  CSDI  T10p  T90p
+#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1: 28.40 23.39 21.61 15.62     7     0     0     0     2     2 17.77 27.64
+#&gt; 2: 28.27 23.39 21.68 15.62     7     0     0     0     2     2 17.77 27.93
+#&gt; 3: 28.28 23.47 21.93 15.36     7     0     0     0     2     2 17.39 27.92
+#&gt; 4: 28.34 23.47 21.66 15.36     7     0     0     0     2     2 17.39 27.67
+#&gt; 5: 28.28 23.47 21.93 15.36     7     0     0     0     1     2 17.39 27.69</div><div class='input'>
 <span class='co'># get temperature indices from "2010-12-01" to "2011-01-31"</span>
 <span class='no'>temp2</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
                      <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2010-12-01"</span>,
-                     <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2011-01-31"</span>)
-<span class='no'>temp2</span>
-
-<span class='co'># }</span></pre>
+                     <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2011-01-31"</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>temp2</span></div><div class='output co'>#&gt; Simple feature collection with 5 features and 12 fields
+#&gt; geometry type:  POINT
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: -55.64 ymin: -11.91 xmax: -55.41 ymax: -11.63
+#&gt; geographic CRS: WGS 84
+#&gt;   maxDT minDT maxNT minNT DTR SU TR CFD WSDI CSDI   T10p   T90p
+#&gt; 1 30.10 24.63 22.88 18.73   5  1  0   0    3    4 20.443 28.839
+#&gt; 2 30.10 24.63 22.88 18.73   5  1  0   0    3    4 20.443 28.839
+#&gt; 3 29.98 24.38 22.90 18.28   5  0  0   0    3    5 20.515 28.746
+#&gt; 4 29.98 24.38 22.90 18.28   5  0  0   0    3    5 20.515 28.746
+#&gt; 5 29.98 24.38 22.90 18.28   5  0  0   0    3    5 20.515 28.746
+#&gt;                geometry
+#&gt; 1 POINT (-55.41 -11.91)
+#&gt; 2 POINT (-55.41 -11.74)
+#&gt; 3  POINT (-55.55 -11.8)
+#&gt; 4 POINT (-55.56 -11.63)
+#&gt; 5 POINT (-55.64 -11.82)</div><div class='input'>
+# }
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

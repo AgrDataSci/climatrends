@@ -114,7 +114,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/agrobioinfoservices/climatrends/">
+  <a href="https://github.com/team-adds/climatrends/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -133,7 +133,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Late spring frost</h1>
-    <small class="dont-index">Source: <a href='https://github.com/agrobioinfoservices/climatrends/blob/master/R/late_frost.R'><code>R/late_frost.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/team-adds/climatrends/blob/master/R/late_frost.R'><code>R/late_frost.R</code></a></small>
     <div class="hidden name"><code>late_frost.Rd</code></div>
     </div>
 
@@ -226,7 +226,7 @@ day to capture the climate data</p></td>
 <code><a href='GDD.html'>GDD</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># default method</span>
+    <pre class="examples"><div class='input'><span class='co'># default method</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"innlandet"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
 <span class='co'># equation b is set by default</span>
@@ -235,24 +235,52 @@ day to capture the climate data</p></td>
            <span class='no'>innlandet</span>$<span class='no'>tmin</span>,
            <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>innlandet</span>$<span class='no'>date</span>,
            <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-           <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)
-
+           <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>)</div><div class='output co'>#&gt;          date    gdd   event duration
+#&gt;        &lt;date&gt;  &lt;dbl&gt;   &lt;fct&gt;    &lt;int&gt;
+#&gt; 1: 2019-01-01   0.00   frost      108
+#&gt; 2: 2019-04-19   0.66 warming        1
+#&gt; 3: 2019-04-20   0.00   frost        1
+#&gt; 4: 2019-04-21   5.23 warming       10
+#&gt; 5: 2019-05-01   0.00   frost       14
+#&gt; 6: 2019-05-15  34.71 warming       13
+#&gt; 7: 2019-05-28   0.00   frost        4
+#&gt; 8: 2019-06-01 124.29 warming       31</div><div class='input'>
 <span class='co'># slightly different series if equation a is used</span>
 <span class='fu'>late_frost</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>,
            <span class='no'>innlandet</span>$<span class='no'>tmin</span>,
            <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>innlandet</span>$<span class='no'>date</span>,
            <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>2</span>,
            <span class='kw'>tfrost</span> <span class='kw'>=</span> -<span class='fl'>2</span>,
-           <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"a"</span>)
-
+           <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"a"</span>)</div><div class='output co'>#&gt;           date    gdd   event duration
+#&gt;         &lt;date&gt;  &lt;dbl&gt;   &lt;fct&gt;    &lt;int&gt;
+#&gt; 1:  2019-01-01   0.00   frost      108
+#&gt; 2:  2019-04-19   0.00  latent        1
+#&gt; 3:  2019-04-20   0.00   frost        1
+#&gt; 4:  2019-04-21   0.00  latent        2
+#&gt; 5:  2019-04-23   0.00   frost        2
+#&gt; 6:  2019-04-25   2.80 warming        6
+#&gt; 7:  2019-05-01   0.00   frost       14
+#&gt; 8:  2019-05-15  31.38 warming       11
+#&gt; 9:  2019-05-26   0.00   frost        6
+#&gt; 10: 2019-06-01 118.12 warming       31</div><div class='input'>
 <span class='co'>#####################################################</span>
 
 <span class='co'># demo of the array method but no frost event is returned </span>
 <span class='co'># because the data comes from the tropics</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"temp_dat"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
 
-<span class='fu'>late_frost</span>(<span class='no'>temp_dat</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-27"</span>)
-
+<span class='fu'>late_frost</span>(<span class='no'>temp_dat</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-27"</span>)</div><div class='output co'>#&gt;        id       date    gdd   event duration
+#&gt;     &lt;int&gt;     &lt;date&gt;  &lt;dbl&gt;   &lt;fct&gt;    &lt;int&gt;
+#&gt; 1:      1 2013-10-27 236.15 warming       14
+#&gt; 2:      2 2013-10-27 251.90 warming       14
+#&gt; 3:      3 2013-10-27 225.75 warming       14
+#&gt; 4:      4 2013-10-27 162.70 warming       14
+#&gt; 5:      5 2013-10-27 212.25 warming       14
+#&gt; 6:      6 2013-10-27 178.60 warming       14
+#&gt; 7:      7 2013-10-27 212.25 warming       14
+#&gt; 8:      8 2013-10-27 196.15 warming       14
+#&gt; 9:      9 2013-10-27 198.90 warming       14
+#&gt; 10:    10 2013-10-27 171.15 warming       14</div><div class='input'>
 <span class='co'>#####################################################</span>
 
 <span class='co'># \donttest{</span>
@@ -262,9 +290,22 @@ day to capture the climate data</p></td>
 <span class='no'>lonlat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>10.93</span>, <span class='fl'>10.57</span>, <span class='fl'>11.21</span>),
                      <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>60.77</span>, <span class='fl'>61.10</span>, <span class='fl'>60.33</span>))
 
-<span class='fu'>late_frost</span>(<span class='no'>lonlat</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2019-01-01"</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2019-07-01"</span>)
+<span class='fu'>late_frost</span>(<span class='no'>lonlat</span>, <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2019-01-01"</span>, <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2019-07-01"</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='output co'>#&gt;        id       date    gdd   event duration
+#&gt;     &lt;int&gt;     &lt;date&gt;  &lt;dbl&gt;   &lt;fct&gt;    &lt;int&gt;
+#&gt; 1:      1 2019-01-01   0.00   frost       48
+#&gt; 2:      1 2019-02-18   0.00  latent        1
+#&gt; 3:      1 2019-02-19   0.00   frost       38
+#&gt; 4:      1 2019-03-29   0.00  latent        2
+#&gt; 5:      1 2019-03-31   0.00   frost        4
+#&gt; ---                                         
+#&gt; 29:     3 2019-03-27   5.95 warming        4
+#&gt; 30:     3 2019-03-31   0.00   frost        2
+#&gt; 31:     3 2019-04-02   8.30 warming        6
+#&gt; 32:     3 2019-04-08   0.00   frost        4
+#&gt; 33:     3 2019-04-12 567.52 warming       81</div><div class='input'>     
+# }
 
-<span class='co'># }</span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

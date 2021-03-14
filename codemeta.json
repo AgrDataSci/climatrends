@@ -7,17 +7,16 @@
   "identifier": "climatrends",
   "description": "Supports analysis of trends in climate change, ecological and crop modelling.",
   "name": "climatrends: Climate Variability Indices for Ecological Modelling",
-  "codeRepository": "https://agrobioinfoservices.github.io/climatrends",
-  "issueTracker": "https://github.com/agrobioinfoservices/climatrends/issues",
+  "codeRepository": "https://github.com/agrobioinfoservices/climatrends",
+  "issueTracker": "https://github.com/team-adds/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
   "version": "0.1.7",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "4.0.0",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.0.0 (2020-04-24)",
+  "runtimePlatform": "R version 4.0.3 (2020-10-10)",
   "author": [
     {
       "@type": "Person",
@@ -157,20 +156,16 @@
     }
   ],
   "releaseNotes": "https://github.com/agrobioinfoservices/climatrends/blob/master/NEWS.md",
-  "readme": "https://github.com/agrobioinfoservices/climatrends/blob/master/README.md",
-  "contIntegration": [
-    "https://ci.appveyor.com/project/kauedesousa/gosset",
-    "https://travis-ci.org/agrobioinfoservices/gosset",
-    "https://codecov.io/github/agrobioinfoservices/gosset?branch=master"
-  ],
-  "developmentStatus": "https://www.repostatus.org/#active",
+  "readme": "https://github.com/TEAM-ADDS/climatrends/blob/master/README.md",
+  "contIntegration": ["https://travis-ci.org/team-adds/climatrends", "https://codecov.io/github/team-adds/climatrends?branch=master"],
+  "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
     "name": "Comprehensive R Archive Network (CRAN)",
     "url": "https://cran.r-project.org"
   },
-  "relatedLink": "https://CRAN.R-project.org/package=climatrends",
+  "relatedLink": ["https://team-adds.github.io/climatrends", "https://CRAN.R-project.org/package=climatrends"],
   "citation": [
     {
       "@type": "SoftwareSourceCode",
@@ -196,5 +191,7 @@
       "url": "https://CRAN.R-project.org/package=climatrends",
       "description": "R package version 0.1.6"
     }
-  ]
+  ],
+  "fileSize": "23492.249KB",
+  "keywords": ["climate-data", "climatology", "timeseries-analysis"]
 }
