@@ -9,8 +9,8 @@ Authors@R: c(person("Kauê", "de Sousa",
         comment = c(ORCID = "0000-0001-7554-2558")),
         person("Svein Ø.", "Solberg", role = c("ctb","ths"),
         comment = c(ORCID = "0000-0002-4491-4483")))
-URL: https://team-adds.github.io/climatrends
-BugReports: https://github.com/team-adds/climatrends/issues
+URL: https://agrdatasci.github.io/climatrends
+BugReports: https://github.com/agrdatasci/climatrends/issues
 Description: Supports analysis of trends in climate change, ecological and crop modelling.
 License: MIT + file LICENSE
 Encoding: UTF-8

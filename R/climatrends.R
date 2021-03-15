@@ -8,10 +8,10 @@
 #'\strong{Useful links:}
 #' \itemize{
 #' \item{Development repository: 
-#'  \url{https://github.com/agrobioinfoservices/climatrends}}
+#'  \url{https://github.com/agrdatasci/climatrends}}
 #' \item{Static documentation: 
-#'  \url{https://agrobioinfoservices.github.io/climatrends/}}
+#'  \url{https://agrdatasci.github.io/climatrends/}}
 #' \item{Report bugs: 
-#'  \url{https://github.com/agrobioinfoservices/climatrends/issues}}
+#'  \url{https://github.com/agrdatasci/climatrends/issues}}
 #' }
 "_PACKAGE"

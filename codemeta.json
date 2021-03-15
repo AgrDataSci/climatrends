@@ -8,7 +8,7 @@
   "description": "Supports analysis of trends in climate change, ecological and crop modelling.",
   "name": "climatrends: Climate Variability Indices for Ecological Modelling",
   "codeRepository": "https://github.com/agrobioinfoservices/climatrends",
-  "issueTracker": "https://github.com/team-adds/climatrends/issues",
+  "issueTracker": "https://github.com/agrdatasci/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
   "version": "0.1.7",
   "programmingLanguage": {
@@ -156,8 +156,8 @@
     }
   ],
   "releaseNotes": "https://github.com/agrobioinfoservices/climatrends/blob/master/NEWS.md",
-  "readme": "https://github.com/TEAM-ADDS/climatrends/blob/master/README.md",
-  "contIntegration": ["https://travis-ci.org/team-adds/climatrends", "https://codecov.io/github/team-adds/climatrends?branch=master"],
+  "readme": "https://github.com/AgrDataSci/climatrends/blob/master/README.md",
+  "contIntegration": ["https://travis-ci.org/agrdatasci/climatrends", "https://codecov.io/github/agrdatasci/climatrends?branch=master"],
   "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
   "provider": {
     "@id": "https://cran.r-project.org",
@@ -165,7 +165,7 @@
     "name": "Comprehensive R Archive Network (CRAN)",
     "url": "https://cran.r-project.org"
   },
-  "relatedLink": ["https://team-adds.github.io/climatrends", "https://CRAN.R-project.org/package=climatrends"],
+  "relatedLink": ["https://agrdatasci.github.io/climatrends", "https://CRAN.R-project.org/package=climatrends"],
   "citation": [
     {
       "@type": "SoftwareSourceCode",
@@ -192,6 +192,10 @@
       "description": "R package version 0.1.6"
     }
   ],
-  "fileSize": "23492.249KB",
-  "keywords": ["climate-data", "climatology", "timeseries-analysis"]
+  "fileSize": "23516.602KB",
+  "keywords": [
+    "climate-data",
+    "climatology",
+    "timeseries-analysis"
+  ]
 }

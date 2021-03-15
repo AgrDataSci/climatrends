@@ -5,8 +5,8 @@
 [![CRAN status](https://www.r-pkg.org/badges/version/climatrends)](https://cran.r-project.org/package=climatrends)
 [![cran checks](https://cranchecks.info/badges/worst/climatrends)](https://cran.r-project.org/web/checks/check_results_climatrends.html)
 [![Downloads](https://cranlogs.r-pkg.org/badges/climatrends)](https://cran.r-project.org/package=climatrends)
-[![Build Status](https://travis-ci.org/team-adds/climatrends.svg?branch=master)](https://travis-ci.org/team-adds/climatrends)
-[![codecov](https://codecov.io/gh/team-adds/climatrends/master.svg)](https://codecov.io/github/team-adds/climatrends?branch=master)
+[![Build Status](https://travis-ci.org/agrdatasci/climatrends.svg?branch=master)](https://travis-ci.org/agrdatasci/climatrends)
+[![codecov](https://codecov.io/gh/agrdatasci/climatrends/master.svg)](https://codecov.io/github/agrdatasci/climatrends?branch=master)
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![DOI](https://zenodo.org/badge/239103060.svg)](https://zenodo.org/badge/latestdoi/239103060)
@@ -20,7 +20,7 @@ The **climatrends** package provides methods to compute precipitation and temper
 
 ## Package website
 
-<https://team-adds.github.io/climatrends/>
+<https://agrdatasci.github.io/climatrends/>
 
 ## Installation
 
@@ -34,7 +34,7 @@ The development version can be installed via
 
 ``` r
 library("remotes")
-install_github("team-adds/climatrends", build_vignettes = TRUE)
+install_github("agrdatasci/climatrends", build_vignettes = TRUE)
 ```
 
 ## Example
@@ -80,7 +80,7 @@ temperature(innlandet$tmax, innlandet$tmin,
 
 ## Going further
 
-The full functionality of **climatrends** is illustrated in the package vignette. The vignette can be found on the [package website](https://team-adds.github.io/climatrends/) or from within `R` once the package has been installed, e.g. via
+The full functionality of **climatrends** is illustrated in the package vignette. The vignette can be found on the [package website](https://agrdatasci.github.io/climatrends/) or from within `R` once the package has been installed, e.g. via
 
 ``` r
 vignette("Overview", package = "climatrends")
@@ -88,9 +88,9 @@ vignette("Overview", package = "climatrends")
 
 ## Meta
 
-  - Package [website](https://team-adds.github.io/climatrends/)
+  - Package [website](https://agrdatasci.github.io/climatrends/)
   
-  - Please [report any issues or bugs](https://github.com/team-adds/climatrends/issues).
+  - Please [report any issues or bugs](https://github.com/agrdatasci/climatrends/issues).
 
   - License: [MIT](https://opensource.org/licenses/MIT)
 
