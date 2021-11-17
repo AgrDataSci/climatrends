@@ -72,7 +72,7 @@ Methods to compute rainfall indices over a time series
  is: 'nasapower'
 
 \code{pars}: character vector for the precipitation data to be fetched. If 
- \code{data.from} is 'nasapower', the default precipitation parameter is "PRECTOT".
+ \code{data.from} is 'nasapower', the default precipitation parameter is "PRECTOTCORR".
 
 \code{days.before}: optional, an integer for the number of days before 
  \var{day.one} to be included in the timespan.

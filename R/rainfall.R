@@ -28,7 +28,7 @@
 #'  is: 'nasapower'
 #' 
 #' \code{pars}: character vector for the precipitation data to be fetched. If 
-#'  \code{data.from} is 'nasapower', the default precipitation parameter is "PRECTOT".
+#'  \code{data.from} is 'nasapower', the default precipitation parameter is "PRECTOTCORR".
 #' 
 #' \code{days.before}: optional, an integer for the number of days before 
 #'  \var{day.one} to be included in the timespan.
@@ -170,7 +170,7 @@ rainfall.data.frame <- function(object, day.one, span = NULL, ...,
   day.one <- as.data.frame(day.one)[, 1]
   
   if (is.null(pars)) {
-    pars <- "PRECTOT"
+    pars <- "PRECTOTCORR"
   }
   
   rain <- get_timeseries(object, day.one, span, pars = pars, ...)[[1]]

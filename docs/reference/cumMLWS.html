@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Climate Variability Indices for Ecological Modelling — climatrends • climatrends</title>
+<title>Cumulative sum of rainfall — cumMLWS • climatrends</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,9 @@
 
 
 
-<meta property="og:title" content="Climate Variability Indices for Ecological Modelling — climatrends" />
-<meta property="og:description" content="
-Supports analysis of trends in climate change, ecological and crop modelling." />
+<meta property="og:title" content="Cumulative sum of rainfall — cumMLWS" />
+<meta property="og:description" content="Returns a vector with the cumulative sum of 
+ the maximum length of wet spell (MLWS)" />
 <meta property="og:image" content="/logo.svg" />
 
 
@@ -132,33 +132,54 @@ Supports analysis of trends in climate change, ecological and crop modelling." /
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Climate Variability Indices for Ecological Modelling</h1>
-    <small class="dont-index">Source: <a href='https://github.com/agrdatasci/climatrends/blob/master/R/climatrends.R'><code>R/climatrends.R</code></a></small>
-    <div class="hidden name"><code>climatrends.Rd</code></div>
+    <h1>Cumulative sum of rainfall</h1>
+    <small class="dont-index">Source: <a href='https://github.com/agrdatasci/climatrends/blob/master/R/cumMLWS.R'><code>R/cumMLWS.R</code></a></small>
+    <div class="hidden name"><code>cumMLWS.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><img src='figures/logo.png' align='right' alt='logo' width='120' /></p>
-<p>Supports analysis of trends in climate change, ecological and crop modelling.</p>
+    <p>Returns a vector with the cumulative sum of 
+ the maximum length of wet spell (MLWS)</p>
     </div>
 
+    <pre class="usage"><span class='fu'>cumMLWS</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>a numeric vector</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <div class='dont-index'><p><strong>Useful links:</strong></p><ul>
-<li><p>Development repository: 
- <a href='https://github.com/agrdatasci/climatrends'>https://github.com/agrdatasci/climatrends</a></p></li>
-<li><p>Static documentation: 
- <a href='https://agrdatasci.github.io/climatrends/'>https://agrdatasci.github.io/climatrends/</a></p></li>
-<li><p>Report bugs: 
- <a href='https://github.com/agrdatasci/climatrends/issues'>https://github.com/agrdatasci/climatrends/issues</a></p></li>
-</ul>
-</div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+    <p>a vector with the cumulative sum of MLWS</p>
 
-    <p>Kauê de Sousa and Jacob van Etten and Svein Ø. Solberg</p>
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Example 1</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>rain</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.2</span>,<span class='fl'>1.4</span>,<span class='fl'>6.1</span>,<span class='fl'>1.4</span>,<span class='fl'>5.1</span>,<span class='fl'>1.5</span>,<span class='fl'>1.6</span>,<span class='fl'>0.1</span>,<span class='fl'>0</span>,<span class='fl'>7</span>,<span class='fl'>6</span>,<span class='fl'>4</span>,<span class='fl'>6</span>,<span class='fl'>1.1</span>,<span class='fl'>1.2</span>,<span class='fl'>1.5</span>,<span class='fl'>0</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>cumMLWS</span><span class='op'>(</span><span class='va'>rain</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] 0 0 1 2 3 4 5 6 6 6 6 6 6 6 6 6 7 7</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># should return this vector</span></span>
+<span class='r-in'><span class='co'># raincum &lt;- c(0,0,1,2,3,4,5,6,6,6,6,6,6,6,6,6,7,7)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Example 2</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>rain2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>cumMLWS</span><span class='op'>(</span><span class='va'>rain2</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] 1 1 1 2 2 2 2 2 3 3 3 3 3</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># should return this </span></span>
+<span class='r-in'><span class='co'># raincum2 &lt;- c(1,1,1,2,2,2,2,2,3,3,3,3,3)</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

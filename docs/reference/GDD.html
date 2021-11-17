@@ -82,7 +82,7 @@ are calculated by taking the integral of warmth above a base temperature." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.11</span>
       </span>
     </div>
 
@@ -90,7 +90,7 @@ are calculated by taking the integral of warmth above a base temperature." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -116,7 +116,7 @@ are calculated by taking the integral of warmth above a base temperature." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/agrdatasci/climatrends/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -144,19 +144,19 @@ is used to predict plant and animal development rates. Growing degree-days
 are calculated by taking the integral of warmth above a base temperature.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+    <pre class="usage"><span class='fu'>GDD</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span>, tbase <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>tmin</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+<span class='fu'>GDD</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>tmin</span>, <span class='va'>...</span>, tbase <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+<span class='fu'>GDD</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>day.one</span>, <span class='va'>...</span>, tbase <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># S3 method for array</span>
-<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+<span class='fu'>GDD</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>day.one</span>, <span class='va'>...</span>, tbase <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># S3 method for sf</span>
-<span class='fu'>GDD</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='no'>...</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+<span class='fu'>GDD</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>day.one</span>, <span class='va'>...</span>, tbase <span class='op'>=</span> <span class='fl'>10</span>, as.sf <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -250,91 +250,88 @@ day to capture the climate data</p></td>
 <code><a href='late_frost.html'>late_frost</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"innlandet"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
-
-<span class='co'># use the default equation</span>
-<span class='fu'>GDD</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>, <span class='no'>innlandet</span>$<span class='no'>tmin</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt;         gdd
-#&gt;       &lt;dbl&gt;
-#&gt; 1:     0.00
-#&gt; 2:     0.00
-#&gt; 3:     0.00
-#&gt; 4:     0.00
-#&gt; 5:     0.00
-#&gt; ---        
-#&gt; 178: 130.98
-#&gt; 179: 135.32
-#&gt; 180: 141.84
-#&gt; 181: 150.12
-#&gt; 182: 152.30</div><div class='input'>
-<span class='co'># set the equation "b", which is a better option for this case</span>
-<span class='co'># tmin = tbase if tmin &lt; tbase </span>
-<span class='co'># tmax = tbase if tmax &lt; tbase</span>
-<span class='fu'>GDD</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>, <span class='no'>innlandet</span>$<span class='no'>tmin</span>, <span class='kw'>tbase</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"b"</span>)</div><div class='output co'>#&gt;         gdd
-#&gt;       &lt;dbl&gt;
-#&gt; 1:     0.00
-#&gt; 2:     0.00
-#&gt; 3:     0.00
-#&gt; 4:     0.00
-#&gt; 5:     0.00
-#&gt; ---        
-#&gt; 178: 143.04
-#&gt; 179: 147.38
-#&gt; 180: 153.89
-#&gt; 181: 162.18
-#&gt; 182: 164.89</div><div class='input'>
-
-<span class='co'>#####################################################</span>
-
-<span class='co'># return as the number of days required to reach a certain accumulated GDD</span>
-<span class='co'># use equation "c", which adjusts tmax base on a tbase_max</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"temp_dat"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
-
-<span class='fu'>GDD</span>(<span class='no'>temp_dat</span>,
-    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-27"</span>,
-    <span class='kw'>degree.days</span> <span class='kw'>=</span> <span class='fl'>90</span>,
-    <span class='kw'>return.as</span> <span class='kw'>=</span> <span class='st'>"ndays"</span>,
-    <span class='kw'>tbase_max</span> <span class='kw'>=</span> <span class='fl'>32</span>,
-    <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"c"</span>)</div><div class='output co'>#&gt;       gdd
-#&gt;     &lt;int&gt;
-#&gt; 1:      8
-#&gt; 2:      8
-#&gt; 3:      8
-#&gt; 4:     10
-#&gt; 5:      8
-#&gt; 6:     10
-#&gt; 7:      8
-#&gt; 8:      8
-#&gt; 9:      8
-#&gt; 10:     9</div><div class='input'>
-<span class='co'># \donttest{</span>
-<span class='co'>#####################################################</span>
-
-<span class='co'># use the S3 method for data.frame to fetch data from nasapower</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
-
-<span class='no'>lonlat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>73.3</span>, -<span class='fl'>74.5</span>),
-                     <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>6.1</span>, - <span class='fl'>6.2</span>))
-
-<span class='fu'>GDD</span>(<span class='no'>lonlat</span>,
-    <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2015-05-01"</span>,
-    <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2015-09-30"</span>,
-    <span class='kw'>equation</span> <span class='kw'>=</span> <span class='st'>"c"</span>,
-    <span class='kw'>tbase_max</span> <span class='kw'>=</span> <span class='fl'>35</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='output co'>#&gt;         id      dates     gdd
-#&gt;      &lt;int&gt;     &lt;date&gt;   &lt;dbl&gt;
-#&gt; 1:       1 2015-05-01   15.24
-#&gt; 2:       1 2015-05-02   31.38
-#&gt; 3:       1 2015-05-03   46.94
-#&gt; 4:       1 2015-05-04   62.41
-#&gt; 5:       1 2015-05-05   77.96
-#&gt; ---                          
-#&gt; 302:     2 2015-09-26 2495.81
-#&gt; 303:     2 2015-09-27 2514.14
-#&gt; 304:     2 2015-09-28 2533.26
-#&gt; 305:     2 2015-09-29 2552.32
-#&gt; 306:     2 2015-09-30 2571.74</div><div class='input'>
-# }
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"innlandet"</span>, package <span class='op'>=</span> <span class='st'>"climatrends"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># use the default equation</span></span>
+<span class='r-in'><span class='fu'>GDD</span><span class='op'>(</span><span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmax</span>, <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmin</span>, tbase <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         gdd</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;dbl&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ---        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 178: 130.98</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 179: 135.32</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 180: 141.84</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 181: 150.12</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 182: 152.30</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># set the equation "b", which is a better option for this case</span></span>
+<span class='r-in'><span class='co'># tmin = tbase if tmin &lt; tbase </span></span>
+<span class='r-in'><span class='co'># tmax = tbase if tmax &lt; tbase</span></span>
+<span class='r-in'><span class='fu'>GDD</span><span class='op'>(</span><span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmax</span>, <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmin</span>, tbase <span class='op'>=</span> <span class='fl'>2</span>, equation <span class='op'>=</span> <span class='st'>"b"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         gdd</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;dbl&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5:     0.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ---        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 178: 143.04</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 179: 147.38</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 180: 153.89</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 181: 162.18</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 182: 164.89</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#####################################################</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># return as the number of days required to reach a certain accumulated GDD</span></span>
+<span class='r-in'><span class='co'># use equation "c", which adjusts tmax base on a tbase_max</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"temp_dat"</span>, package <span class='op'>=</span> <span class='st'>"climatrends"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>GDD</span><span class='op'>(</span><span class='va'>temp_dat</span>, </span>
+<span class='r-in'>    day.one <span class='op'>=</span> <span class='st'>"2013-10-27"</span>, </span>
+<span class='r-in'>    degree.days <span class='op'>=</span> <span class='fl'>90</span>, </span>
+<span class='r-in'>    return.as <span class='op'>=</span> <span class='st'>"ndays"</span>, </span>
+<span class='r-in'>    tbase_max <span class='op'>=</span> <span class='fl'>32</span>,</span>
+<span class='r-in'>    equation <span class='op'>=</span> <span class='st'>"c"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       gdd</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;int&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1:      8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2:      8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3:      8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4:     10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5:      8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6:     10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7:      8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8:      8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9:      8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10:     9</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='co'>#####################################################</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># use the S3 method for data.frame to fetch data from nasapower</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='st'><a href='https://docs.ropensci.org/nasapower/'>"nasapower"</a></span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>lonlat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>lon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>73.3</span>, <span class='op'>-</span><span class='fl'>74.5</span><span class='op'>)</span>,</span>
+<span class='r-in'>                     lat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>6.1</span>, <span class='op'>-</span> <span class='fl'>6.2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>GDD</span><span class='op'>(</span><span class='va'>lonlat</span>, </span>
+<span class='r-in'>    day.one <span class='op'>=</span> <span class='st'>"2015-05-01"</span>, </span>
+<span class='r-in'>    last.day <span class='op'>=</span> <span class='st'>"2015-09-30"</span>,</span>
+<span class='r-in'>    equation <span class='op'>=</span> <span class='st'>"c"</span>,</span>
+<span class='r-in'>    tbase_max <span class='op'>=</span> <span class='fl'>35</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Getting climate data from NASA POWER </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error:</span> Something went wrong with the query, no data were returned. Please see &lt;https://power.larc.nasa.gov&gt; for potential server issues.</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># }</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -350,7 +347,7 @@ day to capture the climate data</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

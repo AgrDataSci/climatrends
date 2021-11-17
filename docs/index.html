@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.11</span>
       </span>
     </div>
 
@@ -46,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -72,7 +72,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/agrdatasci/climatrends/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -113,50 +113,53 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>The package may be installed from CRAN via</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"climatrends"</span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"climatrends"</span><span class="op">)</span></code></pre></div>
 <p>The development version can be installed via</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"remotes"</span>)
-<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"agrdatasci/climatrends"</span>, <span class="kw">build_vignettes</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org">"remotes"</a></span><span class="op">)</span>
+<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"agrdatasci/climatrends"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>The default method for the function <code><a href="reference/temperature.html">temperature()</a></code> has as the basic input one numeric <code>vector</code> with the maximum temperature and one numeric <code>vector</code> with the minimum temperature:</p>
-<div class="sourceCode" id="cb3"><pre class="r">library("climatrends")
-
-data("innlandet", package = "climatrends")
-
-temperature(innlandet$tmax, innlandet$tmin)
-
-   maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p
-   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
-1: 15.13 -14.86  6.77 -19.25     6     0     0   115     4     5 -15.81  9.09</pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"climatrends"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"innlandet"</span>, <span class="at">package =</span> <span class="st">"climatrends"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">temperature</span>(innlandet<span class="sc">$</span>tmax, innlandet<span class="sc">$</span>tmin)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>   maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>   <span class="sc">&lt;</span>dbl<span class="sc">&gt;</span>  <span class="er">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>dbl<span class="sc">&gt;</span>  <span class="er">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>int<span class="sc">&gt;</span> <span class="er">&lt;</span>int<span class="sc">&gt;</span> <span class="er">&lt;</span>int<span class="sc">&gt;</span> <span class="er">&lt;</span>int<span class="sc">&gt;</span> <span class="er">&lt;</span>int<span class="sc">&gt;</span> <span class="er">&lt;</span>int<span class="sc">&gt;</span>  <span class="er">&lt;</span>dbl<span class="sc">&gt;</span> <span class="er">&lt;</span>dbl<span class="sc">&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span> <span class="fl">15.13</span> <span class="sc">-</span><span class="fl">14.86</span>  <span class="fl">6.77</span> <span class="sc">-</span><span class="fl">19.25</span>     <span class="dv">6</span>     <span class="dv">0</span>     <span class="dv">0</span>   <span class="dv">115</span>     <span class="dv">4</span>     <span class="dv">5</span> <span class="sc">-</span><span class="fl">15.81</span>  <span class="fl">9.09</span></span></code></pre></div>
 <p>The indices can be splitted in intervals for series analysis. Here we get the temperature indices with intervals of 30 days.</p>
-<div class="sourceCode" id="cb4"><pre class="r">
-temperature(innlandet$tmax, innlandet$tmin,
-            dates = innlandet$day, 
-            timeseries = TRUE, 
-            intervals = 30)
-
-       id       date index  value
-    &lt;int&gt;     &lt;date&gt; &lt;chr&gt;  &lt;dbl&gt;
-1:      1 2019-01-01 maxDT  -0.15
-2:      1 2019-01-01 minDT -14.86
-3:      1 2019-01-01 maxNT  -3.41
-4:      1 2019-01-01 minNT -18.67
-5:      1 2019-01-01   DTR   4.35
----                              
-68:     1 2019-05-31   CFD   3.00
-69:     1 2019-05-31  WSDI   2.00
-70:     1 2019-05-31  CSDI   3.00
-71:     1 2019-05-31  T10p   0.20
-72:     1 2019-05-31  T90p  11.14</pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">temperature</span>(innlandet<span class="sc">$</span>tmax, innlandet<span class="sc">$</span>tmin,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">dates =</span> innlandet<span class="sc">$</span>day, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">timeseries =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">intervals =</span> <span class="dv">30</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>       id       date index  value</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="sc">&lt;</span>int<span class="sc">&gt;</span>     <span class="er">&lt;</span>date<span class="sc">&gt;</span> <span class="er">&lt;</span>chr<span class="sc">&gt;</span>  <span class="er">&lt;</span>dbl<span class="sc">&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>      <span class="dv">1</span> <span class="dv">2019-01-01</span> maxDT  <span class="sc">-</span><span class="fl">0.15</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span>      <span class="dv">1</span> <span class="dv">2019-01-01</span> minDT <span class="sc">-</span><span class="fl">14.86</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span>      <span class="dv">1</span> <span class="dv">2019-01-01</span> maxNT  <span class="sc">-</span><span class="fl">3.41</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span><span class="sc">:</span>      <span class="dv">1</span> <span class="dv">2019-01-01</span> minNT <span class="sc">-</span><span class="fl">18.67</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span><span class="sc">:</span>      <span class="dv">1</span> <span class="dv">2019-01-01</span>   DTR   <span class="fl">4.35</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="sc">---</span>                              </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="dv">68</span><span class="sc">:</span>     <span class="dv">1</span> <span class="dv">2019-05-31</span>   CFD   <span class="fl">3.00</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="dv">69</span><span class="sc">:</span>     <span class="dv">1</span> <span class="dv">2019-05-31</span>  WSDI   <span class="fl">2.00</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="dv">70</span><span class="sc">:</span>     <span class="dv">1</span> <span class="dv">2019-05-31</span>  CSDI   <span class="fl">3.00</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="dv">71</span><span class="sc">:</span>     <span class="dv">1</span> <span class="dv">2019-05-31</span>  T10p   <span class="fl">0.20</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="dv">72</span><span class="sc">:</span>     <span class="dv">1</span> <span class="dv">2019-05-31</span>  T90p  <span class="fl">11.14</span></span></code></pre></div>
 </div>
 <div id="going-further" class="section level2">
 <h2 class="hasAnchor">
 <a href="#going-further" class="anchor"></a>Going further</h2>
 <p>The full functionality of <strong>climatrends</strong> is illustrated in the package vignette. The vignette can be found on the <a href="https://agrdatasci.github.io/climatrends/">package website</a> or from within <code>R</code> once the package has been installed, e.g. via</p>
-<div class="sourceCode" id="cb5"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span>(<span class="st">"Overview"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"climatrends"</span>)</pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span><span class="op">(</span><span class="st">"Overview"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="meta" class="section level2">
 <h2 class="hasAnchor">
@@ -165,7 +168,7 @@ temperature(innlandet$tmax, innlandet$tmin,
 <li><p>Package <a href="https://agrdatasci.github.io/climatrends/">website</a></p></li>
 <li><p>Please <a href="https://github.com/agrdatasci/climatrends/issues">report any issues or bugs</a>.</p></li>
 <li><p>License: <a href="https://opensource.org/licenses/MIT">MIT</a></p></li>
-<li><p>Get citation information for <em>climatrends</em> in R by typing <code><a href="https://rdrr.io/r/utils/citation.html">citation(package = "climatrends")</a></code>.</p></li>
+<li><p>Get citation information for <em>climatrends</em> in R by typing <code>citation(package = "climatrends")</code>.</p></li>
 <li><p>You are welcome to contribute to the <em>climatrends</em> project. Please read our <a href="CONTRIBUTING.html">contribution guide lines</a>.</p></li>
 <li><p>Please note that the <em>climatrends</em> project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in the <em>climatrends</em> project you agree to abide by its terms.</p></li>
 </ul>
@@ -237,7 +240,7 @@ temperature(innlandet$tmax, innlandet$tmin,
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

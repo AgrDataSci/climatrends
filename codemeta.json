@@ -1,22 +1,25 @@
 {
-  "@context": [
-    "https://doi.org/10.5063/schema/codemeta-2.0",
-    "http://schema.org"
-  ],
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "climatrends",
   "description": "Supports analysis of trends in climate change, ecological and crop modelling.",
   "name": "climatrends: Climate Variability Indices for Ecological Modelling",
-  "codeRepository": "https://github.com/agrobioinfoservices/climatrends",
+  "codeRepository": "https://agrdatasci.github.io/climatrends",
   "issueTracker": "https://github.com/agrdatasci/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.1.7",
+  "version": "0.1.11",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.0.3 (2020-10-10)",
+  "runtimePlatform": "R version 4.1.0 (2021-05-18)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
   "author": [
     {
       "@type": "Person",
@@ -52,8 +55,6 @@
       "@id": "https://orcid.org/0000-0002-4491-4483"
     }
   ],
-  "copyrightHolder": {},
-  "funder": {},
   "maintainer": [
     {
       "@type": "Person",
@@ -66,6 +67,18 @@
   "softwareSuggestions": [
     {
       "@type": "SoftwareApplication",
+      "identifier": "chirps",
+      "name": "chirps",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=chirps"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "knitr",
       "name": "knitr",
       "provider": {
@@ -75,18 +88,6 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=knitr"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "MODISTools",
-      "name": "MODISTools",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=MODISTools"
     },
     {
       "@type": "SoftwareApplication",
@@ -137,35 +138,26 @@
       "sameAs": "https://CRAN.R-project.org/package=testthat"
     }
   ],
-  "softwareRequirements": [
-    {
+  "softwareRequirements": {
+    "1": {
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
       "version": ">= 3.5.0"
     },
-    {
+    "2": {
       "@type": "SoftwareApplication",
       "identifier": "methods",
       "name": "methods"
     },
-    {
+    "3": {
       "@type": "SoftwareApplication",
       "identifier": "stats",
       "name": "stats"
-    }
-  ],
-  "releaseNotes": "https://github.com/agrobioinfoservices/climatrends/blob/master/NEWS.md",
-  "readme": "https://github.com/AgrDataSci/climatrends/blob/master/README.md",
-  "contIntegration": ["https://travis-ci.org/agrdatasci/climatrends", "https://codecov.io/github/agrdatasci/climatrends?branch=master"],
-  "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
-  "provider": {
-    "@id": "https://cran.r-project.org",
-    "@type": "Organization",
-    "name": "Comprehensive R Archive Network (CRAN)",
-    "url": "https://cran.r-project.org"
+    },
+    "SystemRequirements": null
   },
-  "relatedLink": ["https://agrdatasci.github.io/climatrends", "https://CRAN.R-project.org/package=climatrends"],
+  "fileSize": "23494.163KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
@@ -191,11 +183,5 @@
       "url": "https://CRAN.R-project.org/package=climatrends",
       "description": "R package version 0.1.6"
     }
-  ],
-  "fileSize": "23516.602KB",
-  "keywords": [
-    "climate-data",
-    "climatology",
-    "timeseries-analysis"
   ]
 }

@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.11</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,7 +114,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/agrdatasci/climatrends/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -140,26 +140,26 @@
     <p>Methods to compute temperature indices over a time series</p>
     </div>
 
-    <pre class="usage"><span class='fu'>temperature</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>temperature</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>temperature</span>(<span class='no'>object</span>, <span class='no'>tmin</span>, <span class='no'>...</span>, <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>temperature</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>tmin</span>, <span class='va'>...</span>, timeseries <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>temperature</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>temperature</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>day.one</span>, span <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span>, timeseries <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S3 method for array</span>
-<span class='fu'>temperature</span>(<span class='no'>object</span>, <span class='no'>day.one</span>, <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>temperature</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>day.one</span>, span <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span>, timeseries <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S3 method for sf</span>
-<span class='fu'>temperature</span>(
-  <span class='no'>object</span>,
-  <span class='no'>day.one</span>,
-  <span class='kw'>span</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+<span class='fu'>temperature</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>day.one</span>,
+  span <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>,
+  timeseries <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  as.sf <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -265,96 +265,90 @@ temperature &lt; 10th percentile</p></dd>
 <code><a href='crop_sensitive.html'>crop_sensitive</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># the default method</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"innlandet"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
-
-<span class='co'># a single temporal observation</span>
-<span class='fu'>temperature</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>, <span class='no'>innlandet</span>$<span class='no'>tmin</span>)</div><div class='output co'>#&gt;    maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p
-#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1: 15.13 -14.86  6.77 -19.25     6     0     0   115     4     5 -15.81  9.09</div><div class='input'>
-<span class='co'># return as timeseries with 30-day intervals</span>
-<span class='fu'>temperature</span>(<span class='no'>innlandet</span>$<span class='no'>tmax</span>,
-            <span class='no'>innlandet</span>$<span class='no'>tmin</span>,
-            <span class='kw'>dates</span> <span class='kw'>=</span> <span class='no'>innlandet</span>$<span class='no'>dates</span>,
-            <span class='kw'>timeseries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-            <span class='kw'>intervals</span> <span class='kw'>=</span> <span class='fl'>30</span>)</div><div class='output co'>#&gt;        id       date index  value
-#&gt;     &lt;int&gt;     &lt;date&gt; &lt;chr&gt;  &lt;dbl&gt;
-#&gt; 1:      1 2019-01-01 maxDT  -0.15
-#&gt; 2:      1 2019-01-01 minDT -14.86
-#&gt; 3:      1 2019-01-01 maxNT  -3.41
-#&gt; 4:      1 2019-01-01 minNT -18.67
-#&gt; 5:      1 2019-01-01   DTR   4.35
-#&gt; ---                              
-#&gt; 68:     1 2019-05-31   CFD   3.00
-#&gt; 69:     1 2019-05-31  WSDI   2.00
-#&gt; 70:     1 2019-05-31  CSDI   3.00
-#&gt; 71:     1 2019-05-31  T10p   0.20
-#&gt; 72:     1 2019-05-31  T90p  11.14</div><div class='input'>
-<span class='co'>#####################################################</span>
-
-<span class='co'># array method</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"temp_dat"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
-
-<span class='fu'>temperature</span>(<span class='no'>temp_dat</span>,
-            <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2013-10-28"</span>,
-            <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>12</span>)</div><div class='output co'>#&gt;     maxDT minDT maxNT minNT   DTR    SU    TR   CFD  WSDI  CSDI  T10p  T90p
-#&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1:  33.50 33.20  8.40  8.20    25    12     0     0     5     2  8.21 33.50
-#&gt; 2:  34.90 34.60  9.50  8.90    25    12     0     0     6     2  8.91 34.90
-#&gt; 3:  32.30 31.70  8.50  8.00    23    12     0     0     8     2  8.01 32.00
-#&gt; 4:  27.50 26.90  2.10  1.50    25     0     0     0     2     5  1.60 27.40
-#&gt; 5:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58
-#&gt; 6:  27.60 26.90  6.50  5.90    20     0     0     0     2     2  6.01 27.40
-#&gt; 7:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58
-#&gt; 8:  31.90 31.00  4.90  4.60    26    12     0     0     2     2  4.61 31.57
-#&gt; 9:  32.60 31.30  5.10  4.30    27    12     0     0     2     3  4.30 32.27
-#&gt; 10: 28.70 28.00  4.40  2.70    24     0     0     0     2     2  2.81 28.50</div><div class='input'>
-<span class='co'># \donttest{</span>
-<span class='co'>#####################################################</span>
-
-<span class='co'># Using remote sources of climate data</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"nasapower"</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"sf"</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"lonlatsf"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"climatrends"</span>)
-
-<span class='co'># some random dates provided as integers and coerced to Dates internally</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>2718279</span>)
-<span class='no'>dates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>5</span>, <span class='fl'>17660</span>, <span class='fl'>17675</span>))
-
-<span class='co'># get temperature indices for 30 days after day.one</span>
-<span class='co'># return a data.frame</span>
-<span class='no'>temp1</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
-                     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='no'>dates</span>,
-                     <span class='kw'>span</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-                     <span class='kw'>as.sf</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>temp1</span></div><div class='output co'>#&gt;    maxDT minDT maxNT minNT   DTR    SU    TR   CFD  WSDI  CSDI  T10p  T90p
-#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-#&gt; 1: 28.40 23.39 21.61 15.62     7     0     0     0     2     2 17.77 27.64
-#&gt; 2: 28.27 23.39 21.68 15.62     7     0     0     0     2     2 17.77 27.93
-#&gt; 3: 28.28 23.47 21.93 15.36     7     0     0     0     2     2 17.39 27.92
-#&gt; 4: 28.34 23.47 21.66 15.36     7     0     0     0     2     2 17.39 27.67
-#&gt; 5: 28.28 23.47 21.93 15.36     7     0     0     0     1     2 17.39 27.69</div><div class='input'>
-<span class='co'># get temperature indices from "2010-12-01" to "2011-01-31"</span>
-<span class='no'>temp2</span> <span class='kw'>&lt;-</span> <span class='fu'>temperature</span>(<span class='no'>lonlatsf</span>,
-                     <span class='kw'>day.one</span> <span class='kw'>=</span> <span class='st'>"2010-12-01"</span>,
-                     <span class='kw'>last.day</span> <span class='kw'>=</span> <span class='st'>"2011-01-31"</span>)</div><div class='output co'>#&gt; <span class='message'>Getting climate data from NASA POWER </span></div><div class='input'><span class='no'>temp2</span></div><div class='output co'>#&gt; Simple feature collection with 5 features and 12 fields
-#&gt; geometry type:  POINT
-#&gt; dimension:      XY
-#&gt; bbox:           xmin: -55.64 ymin: -11.91 xmax: -55.41 ymax: -11.63
-#&gt; geographic CRS: WGS 84
-#&gt;   maxDT minDT maxNT minNT DTR SU TR CFD WSDI CSDI   T10p   T90p
-#&gt; 1 30.10 24.63 22.88 18.73   5  1  0   0    3    4 20.443 28.839
-#&gt; 2 30.10 24.63 22.88 18.73   5  1  0   0    3    4 20.443 28.839
-#&gt; 3 29.98 24.38 22.90 18.28   5  0  0   0    3    5 20.515 28.746
-#&gt; 4 29.98 24.38 22.90 18.28   5  0  0   0    3    5 20.515 28.746
-#&gt; 5 29.98 24.38 22.90 18.28   5  0  0   0    3    5 20.515 28.746
-#&gt;                geometry
-#&gt; 1 POINT (-55.41 -11.91)
-#&gt; 2 POINT (-55.41 -11.74)
-#&gt; 3  POINT (-55.55 -11.8)
-#&gt; 4 POINT (-55.56 -11.63)
-#&gt; 5 POINT (-55.64 -11.82)</div><div class='input'>
-# }
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># the default method</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"innlandet"</span>, package <span class='op'>=</span> <span class='st'>"climatrends"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># a single temporal observation</span></span>
+<span class='r-in'><span class='fu'>temperature</span><span class='op'>(</span><span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmax</span>, <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmin</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1: 15.13 -14.86  6.77 -19.25     6     0     0   115     4     5 -15.81  9.09</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># return as timeseries with 30-day intervals</span></span>
+<span class='r-in'><span class='fu'>temperature</span><span class='op'>(</span><span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmax</span>, </span>
+<span class='r-in'>            <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmin</span>, </span>
+<span class='r-in'>            dates <span class='op'>=</span> <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>dates</span>,</span>
+<span class='r-in'>            timeseries <span class='op'>=</span> <span class='cn'>TRUE</span>, </span>
+<span class='r-in'>            intervals <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        id       date index  value</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;int&gt;     &lt;date&gt; &lt;chr&gt;  &lt;dbl&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1:      1 2019-01-01 maxDT  -0.15</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2:      1 2019-01-01 minDT -14.86</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3:      1 2019-01-01 maxNT  -3.41</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4:      1 2019-01-01 minNT -18.67</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5:      1 2019-01-01   DTR   4.35</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ---                              </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 68:     1 2019-05-31   CFD   3.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 69:     1 2019-05-31  WSDI   2.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 70:     1 2019-05-31  CSDI   3.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 71:     1 2019-05-31  T10p   0.20</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 72:     1 2019-05-31  T90p  11.14</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#####################################################</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># array method</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"temp_dat"</span>, package <span class='op'>=</span> <span class='st'>"climatrends"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>temperature</span><span class='op'>(</span><span class='va'>temp_dat</span>,</span>
+<span class='r-in'>            day.one <span class='op'>=</span> <span class='st'>"2013-10-28"</span>,</span>
+<span class='r-in'>            span <span class='op'>=</span> <span class='fl'>12</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     maxDT minDT maxNT minNT   DTR    SU    TR   CFD  WSDI  CSDI  T10p  T90p</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1:  33.50 33.20  8.40  8.20    25    12     0     0     5     2  8.21 33.50</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2:  34.90 34.60  9.50  8.90    25    12     0     0     6     2  8.91 34.90</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3:  32.30 31.70  8.50  8.00    23    12     0     0     8     2  8.01 32.00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4:  27.50 26.90  2.10  1.50    25     0     0     0     2     5  1.60 27.40</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6:  27.60 26.90  6.50  5.90    20     0     0     0     2     2  6.01 27.40</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8:  31.90 31.00  4.90  4.60    26    12     0     0     2     2  4.61 31.57</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9:  32.60 31.30  5.10  4.30    27    12     0     0     2     3  4.30 32.27</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10: 28.70 28.00  4.40  2.70    24     0     0     0     2     2  2.81 28.50</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='co'>#####################################################</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Using remote sources of climate data</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='st'><a href='https://docs.ropensci.org/nasapower/'>"nasapower"</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='st'><a href='https://r-spatial.github.io/sf/'>"sf"</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"lonlatsf"</span>, package <span class='op'>=</span> <span class='st'>"climatrends"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># some random dates provided as integers and coerced to Dates internally</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>2718279</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>dates</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>17660</span>, <span class='fl'>17675</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># get temperature indices for 30 days after day.one</span></span>
+<span class='r-in'><span class='co'># return a data.frame</span></span>
+<span class='r-in'><span class='va'>temp1</span> <span class='op'>&lt;-</span> <span class='fu'>temperature</span><span class='op'>(</span><span class='va'>lonlatsf</span>,</span>
+<span class='r-in'>                     day.one <span class='op'>=</span> <span class='va'>dates</span>,</span>
+<span class='r-in'>                     span <span class='op'>=</span> <span class='fl'>30</span>,</span>
+<span class='r-in'>                     as.sf <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Getting climate data from NASA POWER </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error:</span> Something went wrong with the query, no data were returned. Please see &lt;https://power.larc.nasa.gov&gt; for potential server issues.</span>
+<span class='r-in'><span class='va'>temp1</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos):</span> object 'temp1' not found</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># get temperature indices from "2010-12-01" to "2011-01-31"</span></span>
+<span class='r-in'><span class='va'>temp2</span> <span class='op'>&lt;-</span> <span class='fu'>temperature</span><span class='op'>(</span><span class='va'>lonlatsf</span>,</span>
+<span class='r-in'>                     day.one <span class='op'>=</span> <span class='st'>"2010-12-01"</span>,</span>
+<span class='r-in'>                     last.day <span class='op'>=</span> <span class='st'>"2011-01-31"</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Getting climate data from NASA POWER </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error:</span> Something went wrong with the query, no data were returned. Please see &lt;https://power.larc.nasa.gov&gt; for potential server issues.</span>
+<span class='r-in'><span class='va'>temp2</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos):</span> object 'temp2' not found</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># }</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -370,7 +364,7 @@ temperature &lt; 10th percentile</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -402,13 +402,14 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
 #' @param pars character vector of solar, meteorological or climatology parameters 
 #' to download. See help("parameters", "nasapower") for details.
 #' @examples 
-#'  
+#'   
+#' library("nasapower")
 #' lonlat <- data.frame(lon = c(-66.48, -83.08, -66.45, -66.4),
 #'                      lat = c(-4.60, 9.85, -5.19, -0.15))
 #' 
-#' climatrends:::.nasapower(dates = c("2010-01-01", "2010-01-30"),
-#'                          lonlat = lonlat,
-#'                          pars = c("T2M_MAX","T2M_MIN"))
+#' .nasapower(dates = c("2010-01-01", "2010-01-30"),
+#'            lonlat = lonlat,
+#'            pars = c("T2M_MAX","T2M_MIN"))
 #' 
 #' 
 #'                      
@@ -418,11 +419,11 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
   message("Getting climate data from NASA POWER \n")
   
   if (is.null(community)) {
-    community <- "AG"
+    community <- "ag"
   }
   
   if (is.null(temporal_average)) {
-    temporal_average <- "DAILY"
+    temporal_average <- "daily"
   }
   
   nr <- dim(lonlat)[[1]]
@@ -463,15 +464,15 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
     lonlat_i <- lonlat[r_i, ]
     
     # define geographic boundaries for lonlat
-    lims <- with(lonlat, c(floor(min(lonlat_i[,1])), 
-                           floor(min(lonlat_i[,2])),
-                           ceiling(max(lonlat_i[,1])), 
-                           ceiling(max(lonlat_i[,2]))))
+    lims <- with(lonlat, c(floor(min(lonlat_i[, 1])), 
+                           floor(min(lonlat_i[, 2])),
+                           ceiling(max(lonlat_i[, 1])), 
+                           ceiling(max(lonlat_i[, 2]))))
     
     args <- list(community = community,
                  lonlat = lims,
                  dates = dates,
-                 temporal_average = temporal_average, 
+                 temporal_api = temporal_average, 
                  pars = pars)
     
     # get NASA POWER

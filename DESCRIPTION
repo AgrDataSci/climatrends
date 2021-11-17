@@ -1,7 +1,7 @@
 Package: climatrends
 Type: Package
 Title: Climate Variability Indices for Ecological Modelling
-Version: 0.1.7
+Version: 0.1.11
 Authors@R: c(person("Kauê", "de Sousa", 
         email = "kaue.desousa@inn.no", role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-7571-7845")),
@@ -21,12 +21,12 @@ Depends:
 Imports:
     stats
 Suggests: 
+    chirps,
     knitr,
-    MODISTools,
     nasapower,
     rmarkdown,
     sf,
     testthat
 Language: en-GB
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
