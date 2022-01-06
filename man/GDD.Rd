@@ -122,30 +122,13 @@ GDD(temp_dat,
     tbase_max = 32,
     equation = "c")
 
-\donttest{
-#####################################################
-
-# use the S3 method for data.frame to fetch data from nasapower
-
-library("nasapower")
-
-lonlat <- data.frame(lon = c(-73.3, -74.5),
-                     lat = c(-6.1, - 6.2))
-
-GDD(lonlat, 
-    day.one = "2015-05-01", 
-    last.day = "2015-09-30",
-    equation = "c",
-    tbase_max = 35)
-
-}
 }
 \references{
 Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 
-\cr\url{https://doi.org/10.2307/2845499}
+\doi{https://doi.org/10.2307/2845499}
 
 Baskerville, G., & Emin, P. (1969). Ecology, 50(3), 514-517. 
-\cr\url{https://doi.org/10.2307/1933912}
+\doi{https://doi.org/10.2307/1933912}
 }
 \seealso{
 Other temperature functions: 

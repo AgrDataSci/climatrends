@@ -4,7 +4,7 @@
 \alias{cumMLWS}
 \title{Cumulative sum of rainfall}
 \usage{
-cumMLWS(object, ...)
+cumMLWS(object)
 }
 \arguments{
 \item{object}{a numeric vector}

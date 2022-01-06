@@ -75,7 +75,7 @@
 #' \item{T90p}{the 90th percentile of day tempeture (degree Celsius)}
 #' @references 
 #' Aguilar E., et al. (2005). Journal of Geophysical Research, 
-#' 110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
+#' 110(D23), D23107. \doi{https://doi.org/10.1029/2005JD006119}
 #' 
 #' @examples
 #' # the default method
@@ -100,33 +100,7 @@
 #'             day.one = "2013-10-28",
 #'             span = 12)
 #' 
-#' \donttest{
-#' #####################################################
 #' 
-#' # Using remote sources of climate data
-#' library("nasapower")
-#' library("sf")
-#' data("lonlatsf", package = "climatrends")
-#' 
-#' # some random dates provided as integers and coerced to Dates internally
-#' set.seed(2718279)
-#' dates <- as.integer(runif(5, 17660, 17675))
-#' 
-#' # get temperature indices for 30 days after day.one
-#' # return a data.frame
-#' temp1 <- temperature(lonlatsf,
-#'                      day.one = dates,
-#'                      span = 30,
-#'                      as.sf = FALSE)
-#' temp1
-#' 
-#' # get temperature indices from "2010-12-01" to "2011-01-31"
-#' temp2 <- temperature(lonlatsf,
-#'                      day.one = "2010-12-01",
-#'                      last.day = "2011-01-31")
-#' temp2
-#' 
-#' }
 #' @export
 temperature <- function(object, ...)
 {

@@ -94,21 +94,18 @@ data("rain_dat", package = "climatrends")
 
 get_timeseries(rain_dat, "2013-10-28", span = span)
 
-########################################################
-\donttest{
-library("nasapower")
-library("sf")
-# Fetch data from NASA POWER using 'sf' method
-data("lonlatsf", package = "climatrends")
-
-g <- get_timeseries(lonlatsf, 
-                    day.one = "2018-05-16", 
-                    last.day = "2018-05-30",
-                    pars = c("PRECTOT", "T2M", "T10M"))
-
-
-g
-}
+# library("nasapower")
+# library("sf")
+# # Fetch data from NASA POWER using 'sf' method
+# data("lonlatsf", package = "climatrends")
+# 
+# g <- get_timeseries(lonlatsf, 
+#                     day.one = "2018-05-16", 
+#                     last.day = "2018-05-30",
+#                     pars = c("PRECTOT", "T2M", "T10M"))
+# 
+# 
+# g
 
 }
 \concept{GET functions}

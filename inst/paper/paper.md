@@ -24,109 +24,115 @@ authors:
 affiliations:
   - name: Department of Agricultural Sciences, Inland Norway University of Applied Sciences, Hamar, Norway
     index: 1
-  - name: Bioversity International, Rome, Italy
+  - name: Systems Transformation Group, Bioversity International, Montpellier, France
     index: 2
   - name: Department of Forest and Field Sciences, Inland Norway University of Applied Sciences, 2480 Koppang, Norway
     index: 3
 citation_author: de Sousa et. al.
-date: "A preprint"
-year: 2020
+year: 2022
 bibliography: paper.bib
-csl: citationstyle.csl
-output:
-  pdf_document:
-    keep_tex: false
-header-includes: \usepackage{caption} \captionsetup[figure]{labelformat=empty}
+output: rticles::joss_article
+journal: JOSS
+# output:
+#   pdf_document:
+#     keep_tex: false
+# header-includes: \usepackage{caption} \captionsetup[figure]{labelformat=empty}
 ---
 
-```{r get data, include=FALSE}
-library("knitr")
-library("kableExtra")
-library("tidyverse")
-library("climatrends")
-library("PlackettLuce")
-load("cbean.rda")
-```
 
-\pagenumbering{gobble}
-
->Kauê de Sousa^1,2[*]^, Jacob van Etten^2^, Svein Øivind Solberg^1^  
-^1^ Department of Agricultural Sciences, Inland Norway University of Applied Sciences, 2318 Hamar, Norway  
-^2^ Bioversity International, 00054 Maccarese, Rome, Italy    
-^[*]^ Correspondence should be addressed to: <kaue.desousa@inn.no>
-
-\
 
 # Summary
 
 Abiotic factors play an important role in most ecological and crop systems that depend on certain levels of temperature, light and precipitation (and their interplay) to initiate important physiological events [@PlantEcology]. In the walk of climate change, understanding how these factors drive the physiological processes is a key approach to provide recommendations for adaptation and biodiversity conservation. The package `climatrends` aims to provide the methods in R [@RCoreTeam] to compute precipitation and temperature indices that serve as input for climate and crop models [@vanEtten2019; @Kehel2016], trends in climate change [@Aguilar2005; @deSousa2018] and applied ecology [@Prentice1992; @YLiu2018].
 
-# Methods and features
+# Implementation
 
-## Implementation
+Six main functions are provided (Table 1), with a default method for numeric 'vector' and additional methods implemented via the package `methods` [@RCoreTeam] for classes 'matrix' (or array), 'data.frame', and 'sf' (of geometry POINT or POLYGON) [@sf]. The last two methods are designed to fetch data from cloud sources, currently from the packages `nasapower` [@Sparks2018] and `chirps` [@chirps]. 
 
-Six main functions are provided (Table 1), `crop_sensitive()`, `ETo()`, `GDD()`, `late_frost()`, `rainfall()` and `temperature()` with a default method for numeric 'vector' and additional methods implemented via the package `methods` [@RCoreTeam] for classes 'matrix' (or array), 'data.frame', and 'sf' (of geometry POINT or POLYGON) [@sf]. The last two methods are designed to fetch data from cloud sources, until now from the packages `nasapower` [@Sparks2018] and `chirps` [@chirps]. 
+\begin{table}[!h]
 
-```{r table1, echo=FALSE, results="asis"}
-tabl <- as.data.frame(matrix(
-  c("crop_sensitive()", "Compute crop sensitive indices",
-    "ETo()", "Reference evapotranspiration using the Blaney-Criddle method",
-    "GDD()", "Compute growing degree-days",
-    "late_frost()","Compute the occurrence of late-spring frost",
-    "rainfall()","Precipitation indices",
-    "temperature()","Temperature indices"),
-  nrow = 6, ncol = 2, byrow = TRUE
-))
+\caption{\label{tab:table1}Main functions available in climatrends.}
+\centering
+\begin{tabular}[t]{l|l}
+\hline
+Function & Definition\\
+\hline
+crop\_sensitive() & Compute crop sensitive indices\\
+\hline
+ETo() & Reference evapotranspiration using the Blaney-Criddle method\\
+\hline
+GDD() & Compute growing degree-days\\
+\hline
+late\_frost() & Compute the occurrence of late-spring frost\\
+\hline
+rainfall() & Precipitation indices\\
+\hline
+temperature() & Temperature indices\\
+\hline
+\end{tabular}
+\end{table}
 
-names(tabl) <- c("Function", "Definition")
 
-kable(tabl, 
-      align = "l", 
-      caption = "Main functions available in climatrends.") %>% 
-  kable_styling(latex_options = "hold_position")
-```
-
-
-These functions started as a set of scripts to compute indices in citizen science trials. In these trials. Aiming to capture the environmental variation across different sites, which can differ since each data-point generally have a different starting day and duration, the arguments `day.one` and `span` are vectorised and may be variable across data-points. For time series analysis, where fixed periods are defined across many locations, the indices can be adjusted with the argument `last.day` linked to the argument `day.one`. 
+These functions started as a set of scripts to compute indices from on-farm testing sites following a citizen science approach [@vanEtten2019]. Aiming to capture the environmental variation across different sites, which can differ as each on-farm trial generally have a different starting day and duration, the arguments `day.one` and `span` are vectorised and may be used to indicate the starting date for each data-point and the duration of the timespan to be considered for the computation of the indices. For time series analysis, fixed periods can be adjusted with the argument `last.day` linked to the argument `day.one`. 
 
 ## Temperature and precipitation indices
 
 The package `climatrends` computes 12 temperature indices and 10 precipitation indices that were suggested by previous research on climatology and crop science [@Kehel2016; @Aguilar2005]. The indices computed by the functions `temperature()` and `rainfall()` are described in Table 2.
 
-```{r table2, echo=FALSE, results="asis"}
-index <- as.data.frame(matrix(
-  c("maxDT", "Maximun day temperature", "°C",
-    "minDT", "Minimum day temperature", "°C",
-    "maxNT", "Maximun night temperature", "°C",
-    "minNT", "Minimum night temperature", "°C",
-    "DTR", "Diurnal temperature range (mean difference between DT and NT)", "°C",
-    "SU", "Summer days, number of days with maximum temperature > 30 °C", "days", 
-    "TR", "Tropical nights, number of nights with maximum temperature > 25 °C", "days",
-    "CFD", "Consecutive frosty days, number of days with temperature < 0 °C", "days",
-    "WSDI","Maximum warm spell duration, consecutive days with temperature > 90th percentile", "days",
-    "CSDI","Maximum cold spell duration, consecutive nights with temperature < 10th percentile","days",
-    "T10p","The 10th percentile of night temperature","°C",
-    "T90p","The 90th percentile of day temperature","°C",
-    "MLDS", "Maximum length of consecutive dry day, rain < 1 mm", "days",
-    "MLWS", "Maximum length of consecutive wet day, rain >= 1 mm", "days",
-    "R10mm", "Heavy precipitation days 10 >= rain < 20 mm", "days",
-    "R20mm", "Very heavy precipitation days rain >= 20", "days",
-    "Rx1day", "Maximum 1-day precipitation", "mm",
-    "Rx5day", "Maximum 5-day precipitation", "mm",
-    "R95p", "Total precipitation when rain > 95th percentile", "mm",
-    "R99p", "Total precipitation when rain > 99th percentile", "mm",
-    "Rtotal", "Total precipitation in wet days, rain >= 1 mm", "mm",
-    "SDII", "Simple daily intensity index, total precipitation divided by the number of wet days", "mm/days"),
-  nrow = 22, ncol = 3, byrow = TRUE
-))
+\begin{table}[!h]
 
-names(index) <- c("Index", "Definition", "Unit")
-
-kable(index,
-      caption = "Temperature and precipitation indices available in climatrends.") %>% 
-  kable_styling(latex_options = "hold_position") %>% 
-  column_spec(2, width = "20em")
-```
+\caption{\label{tab:table2}Temperature and precipitation indices available in climatrends.}
+\centering
+\begin{tabular}[t]{l|>{\raggedright\arraybackslash}p{20em}|l}
+\hline
+Index & Definition & Unit\\
+\hline
+maxDT & Maximun day temperature & °C\\
+\hline
+minDT & Minimum day temperature & °C\\
+\hline
+maxNT & Maximun night temperature & °C\\
+\hline
+minNT & Minimum night temperature & °C\\
+\hline
+DTR & Diurnal temperature range (mean difference between DT and NT) & °C\\
+\hline
+SU & Summer days, number of days with maximum temperature > 30 °C & days\\
+\hline
+TR & Tropical nights, number of nights with maximum temperature > 25 °C & days\\
+\hline
+CFD & Consecutive frosty days, number of days with temperature < 0 °C & days\\
+\hline
+WSDI & Maximum warm spell duration, consecutive days with temperature > 90th percentile & days\\
+\hline
+CSDI & Maximum cold spell duration, consecutive nights with temperature < 10th percentile & days\\
+\hline
+T10p & The 10th percentile of night temperature & °C\\
+\hline
+T90p & The 90th percentile of day temperature & °C\\
+\hline
+MLDS & Maximum length of consecutive dry day, rain < 1 mm & days\\
+\hline
+MLWS & Maximum length of consecutive wet day, rain >= 1 mm & days\\
+\hline
+R10mm & Heavy precipitation days 10 >= rain < 20 mm & days\\
+\hline
+R20mm & Very heavy precipitation days rain >= 20 & days\\
+\hline
+Rx1day & Maximum 1-day precipitation & mm\\
+\hline
+Rx5day & Maximum 5-day precipitation & mm\\
+\hline
+R95p & Total precipitation when rain > 95th percentile & mm\\
+\hline
+R99p & Total precipitation when rain > 99th percentile & mm\\
+\hline
+Rtotal & Total precipitation in wet days, rain >= 1 mm & mm\\
+\hline
+SDII & Simple daily intensity index, total precipitation divided by the number of wet days & mm/days\\
+\hline
+\end{tabular}
+\end{table}
 
 
 ## Growing degree-days
@@ -185,26 +191,30 @@ Two functions in **climatrends** are mainly designed to capture the effects of c
 
 The crop sensitive indices available in **climatrends** are described in Table 3. These indices were previously used in crop models to project the impacts of climate change on crop yield [@Challinor2016; @Trnka2014]. Each index has a default temperature threshold(s) which can be adjusted by using the arguments `*.threshold`. Where the `*` means the index. For example, to change the defaults for hts_max (high temperature stress), a vector with the temperature thresholds is passed through the argument `hts_max.thresholds`.  
 
-```{r cropsentbl, echo=FALSE, results="asis"}
-index <- as.data.frame(matrix(
-  c("hts_mean", "High temperature stress using daily mean temperature, and given as percentage number of days a certain threshold is exceeded", "32, 35, 38 °C",
-    "hts_max", "High temperature stress using daily max temperature, and given as percentage number of days a certain threshold is exceeded", "36, 39, 42 °C",
-    "hse", "Heat stress event, and given as percentage number of days a certain threshold is exceeded for at least two consecutive days", "31 °C", 
-    "hse_ms", "Heat stress event, and given the maximum number of days a certain threshold is exceeded for at least two consecutive days", "31 °C",
-    "cdi_mean", "Crop duration index using daily mean temperature, and given as max(Tmean - threshold, 0)", "22, 23, 24 °C",
-    "cdi_max", "Crop duration index using daily max temperature, and given as max(Tmax - threshold, 0)", "27, 28, 29 °C",
-    "lethal", "Lethal temperatures, defined as percentage of days during the timeseries where daily mean temperature exceeds a given threshold", "43, 46, 49 °C"),
-  nrow = 7, ncol = 3, byrow = TRUE
-))
+\begin{table}[!h]
 
-names(index) <- c("Index", "Definition", "Default thresholds")
-
-kable(index,
-      caption = "Crop sensitive indices computed by climatrends.") %>% 
-  kable_styling(latex_options = "hold_position") %>% 
-  column_spec(2, width = "20em")
-
-```
+\caption{\label{tab:cropsentbl}Crop sensitive indices computed by climatrends.}
+\centering
+\begin{tabular}[t]{l|>{\raggedright\arraybackslash}p{20em}|l}
+\hline
+Index & Definition & Default thresholds\\
+\hline
+hts\_mean & High temperature stress using daily mean temperature, and given as percentage number of days a certain threshold is exceeded & 32, 35, 38 °C\\
+\hline
+hts\_max & High temperature stress using daily max temperature, and given as percentage number of days a certain threshold is exceeded & 36, 39, 42 °C\\
+\hline
+hse & Heat stress event, and given as percentage number of days a certain threshold is exceeded for at least two consecutive days & 31 °C\\
+\hline
+hse\_ms & Heat stress event, and given the maximum number of days a certain threshold is exceeded for at least two consecutive days & 31 °C\\
+\hline
+cdi\_mean & Crop duration index using daily mean temperature, and given as max(Tmean - threshold, 0) & 22, 23, 24 °C\\
+\hline
+cdi\_max & Crop duration index using daily max temperature, and given as max(Tmax - threshold, 0) & 27, 28, 29 °C\\
+\hline
+lethal & Lethal temperatures, defined as percentage of days during the timeseries where daily mean temperature exceeds a given threshold & 43, 46, 49 °C\\
+\hline
+\end{tabular}
+\end{table}
 
 
 The reference evapotranspiration measures the influence of the climate on a given plant's water need [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle method, a general theoretical method used when only air-temperature is available locally. It should be noted that this method is not very accurate and aims to provide the order of magnitude of evapotranspitation. The reference evapotranspiration is calculated using the following equation.
@@ -230,7 +240,8 @@ Since the phenological stages were not available, we estimate these stages based
 The degree-days spanned from 54 to 100 days as shown in Fig. 1a. For simplicity we take the average per season and use this vector to compute the temperature indices. 
 
 
-```{r ggd_bean, message=FALSE, echo=TRUE, eval=FALSE}
+
+```r
 library("climatrends")
 library("PlackettLuce")
 library("tidyverse")
@@ -250,11 +261,12 @@ cbean %<>%
   mutate(gdds = as.integer(mean(gdd)))
 ```
 
-To compute the temperature indices we use the array with tempeture data, the vector with planting dates, and the seasonal averaged degree-days passed as a vector using the argument `span`. `temperature()` concatenates the data from the given `day.one` to the given `span` and compute the indices for each row.
+To compute the temperature indices we use the array with temperature data, the vector with planting dates, and the seasonal averaged degree-days passed as a vector using the argument `span`. The function `temperature()` concatenates the data from the given `day.one` to the given `span` and computes the indices for each row.
 
 In van Etten [-@vanEtten2019], a forward variable selection was applied to retain the most representative covariates based on the deviance reduction. This analysis retained the maximum night temperature (maxNT) as the most representative covariate. To illustrate how the Plackett-Luce trees can grow in complexity as we add more indices, we included the summer days (SU, number of days with maximum day temperature > 30 $^\circ C$) together with maxNT.
 
-```{r pltree_bean, message=FALSE, echo=TRUE, eval=FALSE}
+
+```r
 # compute the temperature indices from planting date to the 
 # number of days required to accumulate the gdd in each season
 temp <- temperature(modis, 
@@ -269,19 +281,25 @@ plt <- pltree(G ~ maxNT + SU, data = cbean, minsize = 50)
 ```
 
 
-Across-season distribution of maxNT captured for each sample plot in this experiment is shown in Fig. 1b. The data has a bimodal distribution which is reflected in the splitting value (18.7 $^\circ C$) for the Plackett-Luce trees in Fig. 1c. The upper node splits with 49 summer days (SU). We can interpret these results as that differences in growing performance of common beans is led by a considerable amount of diurnal temperature above a warmer threshold of 30 $^\circ C$ (in this case >70% of the growing days) and warmer nights (> 18.7 $^\circ C$).
+Across-season distribution of maxNT captured for each sample plot in this experiment is shown in Fig. 1b. The data has a bimodal distribution which is reflected in the splitting value (18.7 $^\circ C$) for the Plackett-Luce trees in Fig. 1c. The upper node splits with 49 summer days (SU). We can interpret these results as that the on-farm performance of common beans varieties is led by heat accumulation of diurnal temperature above 30 $^\circ C$ (in this case >70% of the growing days) and warmer nights (> 18.7 $^\circ C$).
 
-```{r fig_cbean, fig.cap="Fig. 1. Application of climatrends functions to support the analysis of a citizen-science data testing 11 common bean varieties in Nicaragua. (A) Days required to reach 900 growing-degree days from planting date calculated using the function GDD(). (B) Maximum night temperature (°C) distributed across seasons computed using the function temperature(). (C) Plackett-Luce Tree showing the probability of one common bean variety has to win against the others (axys X) in three different nodes splitted with the summer days (day temperature > 30 °C) and maximum night temperature (°C). Note: the first season (primera, Pr) spans from May to August, the second (postrera, Po) from September to October, and the third (apante, Ap) from November to January.", out.width = '80%', echo=FALSE, fig.align="center"}
-knitr::include_graphics("cbean.png")
-```
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{cbean} 
+
+}
+
+\caption{Fig. 1. Application of climatrends functions to support the analysis of on-farm trial data. (A) Days required to reach 900 growing-degree days from planting date calculated using the function GDD(). (B) Maximum night temperature (°C) distributed across seasons computed using the function temperature(). (C) Plackett-Luce Tree showing the probability that a given variety to outperform the other varieties (axys X) in three different nodes splitted with the summer days (day temperature > 30 °C) and maximum night temperature (°C). Note: the first season (primera, Pr) spans from May to August, the second (postrera, Po) from September to October, and the third (apante, Ap) from November to January.}\label{fig:fig_cbean}
+\end{figure}
 
 \pagebreak 
 
 ## Trends in climate variability in Norway and Sweden 
 
-We randomly selected 100 points in hexagonal within the coordinates 7$^\circ$ and 17$^\circ$ W, and 59 $^\circ$ and 63 $^\circ$ N, that comprises Norway and Sweden before the Arctic Circle. We compute the temperature indices from 2000-01-01 to 2019-12-31 using the function `temperature()` with the method for objects of class 'sf'. The temperature data is fetched from from the NASA Langley Research Center POWER Project funded through the NASA Earth Science Directorate Applied Science Program (<https://power.larc.nasa.gov/>), using the R package `nasapower` [@Sparks2018].
+We randomly selected 100 points in hexagonal within the coordinates 7$^\circ$ and 17$^\circ$ W, and 59 $^\circ$ and 63 $^\circ$ N, that comprises Norway and Sweden before the Arctic Circle. We compute the temperature indices from 2000-01-01 to 2019-12-31 using the function `temperature()` with the method for objects of class 'sf'. The temperature data is fetched from the NASA Langley Research Center POWER Project funded through the NASA Earth Science Directorate Applied Science Program (<https://power.larc.nasa.gov/>), using the R package `nasapower` [@Sparks2018].
 
-```{r nordic, message=FALSE, echo=TRUE, eval=FALSE}
+
+```r
 library("climatrends")
 library("sf")
 library("nasapower")
@@ -303,28 +321,28 @@ temp <- temperature(p,
                     last.day = "2019-12-31", 
                     timeseries = TRUE, 
                     intervals = 365)
-
 ```
 
 We then select the indices CSDI (cold spell duration of night temperature), WSDI (warm spell duration of day temperature), and their associated indices the T10p (the 10th percentile of night temperature) and T90p (the 90th percentile of day temperature), in Figure 2. Plots are generated with `ggplot2` [@ggplot2] and `patchwork` [@patchwork].
 
 The trends show a decrease in the cold spell duration (number of consecutive cold nights bellow the 10th percentile) and warm spell duration (number of consecutive warm days above the 90th percentile). However, the values of the percentiles show an increase over the time series. The T10p index shows a decrease around the year of 2010, but again rises up to the a value around the -10 $^\circ$C, meaning that the could nights are becoming a bit warmer over the time. The T90p index also shows an increase in the temperature across the sampled area, with the average 90th percentile rising from ~ 16 $^\circ$C to ~ 18 $^\circ$C over the time series. 
 
-```{r fig_nordic, fig.cap="Fig. 2. Trends in temperature indices across Southern Norway and Sweeden from 2000 to 2019. CSDI, maximum cold spell duration, consecutive nights with temperature < 10th percentile. WSDI, maximum warm spell duration, consecutive days with temperature > 90th percentile. T10p, the 10th percentile of night temperature. T90p, the 90th percentile of day temperature. Red line indicates the historical mean of each index in the time series. Blue line indicates the smoothed trends in each index using the 'loess' method.", out.width = '80%', echo=FALSE, fig.align="center"}
-knitr::include_graphics("nordic.png")
-```
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{nordic} 
+
+}
+
+\caption{Fig. 2. Trends in temperature indices across Southern Norway and Sweeden from 2000 to 2019. CSDI, maximum cold spell duration, consecutive nights with temperature < 10th percentile. WSDI, maximum warm spell duration, consecutive days with temperature > 90th percentile. T10p, the 10th percentile of night temperature. T90p, the 90th percentile of day temperature. Red line indicates the historical mean of each index in the time series. Blue line indicates the smoothed trends in each index using the 'loess' method.}\label{fig:fig_nordic}
+\end{figure}
 
 # Further development
 
-The package can support the integration with other datasets as they become available in `R` via API client packages. Also new indices related to the physiology of crops could be implemented.
+The package can support the integration with other datasets as they become available in `R` via API client packages. Also new indices related to the physiology of crops could be implemented. To explore the latest functionalities of `climatrends`, please check the package's updates at CRAN (https://cran.r-project.org/package=climatrends).
 
 # Acknowledgements
 
 This work was supported by The Nordic Joint Committee for Agricultural and Food Research (grant num. 202100-2817). We thank Julian Ramirez-Villegas and Marcel Schrijvers-Gonlag for the useful insights and discussion that helped in the development of this study.
-
-# Data availability statement
-
-To explore the latest functionalities of `climatrends`, please check the package's updates at CRAN (https://cran.r-project.org/package=climatrends).
 
 # References
 

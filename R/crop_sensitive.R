@@ -48,10 +48,10 @@
 #'  timeseries where daily MEAN temperature exceeds a given threshold}
 #' @references
 #' Challinor et al. (2016). Nature Climate Change 6(10):6954-958
-#' \cr\url{https://doi.org/10.1038/nclimate3061}
+#' \doi{https://doi.org/10.1038/nclimate3061}
 #' 
 #' Trnka et al. (2014). Nature Climate Change 4(7):637–43.
-#' \cr\url{https://doi.org/10.1038/nclimate2242}
+#' \doi{https://doi.org/10.1038/nclimate2242}
 #' 
 #' @examples 
 #' # the default method

@@ -34,10 +34,10 @@
 #' 
 #' @references  
 #' Trnka et al. (2014). Nature Climate Change 4(7):637–43.
-#' \cr\url{https://doi.org/10.1038/nclimate2242}
+#' \doi{https://doi.org/10.1038/nclimate2242}
 #' 
 #' Zohner et al. (2020). PNAS.
-#' \cr\url{https://doi.org/10.1073/pnas.1920816117}
+#' \doi{https://doi.org/10.1073/pnas.1920816117}
 #' 
 #' @examples 
 #' # default method
@@ -66,19 +66,6 @@
 #' data("temp_dat", package = "climatrends")
 #' 
 #' late_frost(temp_dat, day.one = "2013-10-27")
-#' 
-#' #####################################################
-#' 
-#' \donttest{
-#' # Some random points in Norway
-#' # get data from NASA Power
-#' library("nasapower")
-#' lonlat <- data.frame(lon = c(10.93, 10.57, 11.21),
-#'                      lat = c(60.77, 61.10, 60.33))
-#' 
-#' late_frost(lonlat, day.one = "2019-01-01", last.day = "2019-07-01")
-#'      
-#' }
 #' 
 #' @export
 late_frost <- function(object, ..., tbase = 4, tfrost = -2) {

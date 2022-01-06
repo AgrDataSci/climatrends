@@ -26,7 +26,7 @@
 #' # raincum2 <- c(1,1,1,2,2,2,2,2,3,3,3,3,3)
 #' 
 #' @export
-cumMLWS <- function(object, ...){
+cumMLWS <- function(object){
   
   # values higher equal or higher than 1 are coded as 1
   # lower than 1 are coded as 0

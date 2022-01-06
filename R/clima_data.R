@@ -35,11 +35,11 @@
 #' 
 #' Funk, C. et al. (2015). The climate hazards infrared precipitation 
 #' with stations—a new environmental record for monitoring extremes. 
-#' Scientific Data, 2, 150066. \url{https://doi.org/10.1038/sdata.2015.66}
+#' Scientific Data, 2, 150066. \doi{https://doi.org/10.1038/sdata.2015.66}
 #' 
 #' Wan Z, Hook S, Hulley G (2015) MYD11A1 MODIS/Aqua Land Surface 
 #' Temperature/Emissivity 8-Day L3 Global 1km
-#' SIN Grid V006 \url{http://dx.doi.org/10.5067/MODIS/MYD11A2.006}.
+#' SIN Grid V006 \doi{http://doi.org/10.5067/MODIS/MYD11A2.006}.
 #' 
 #' @format 
 #' an array with two layers (temp_dat) a matrix (rain_dat),

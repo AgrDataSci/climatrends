@@ -54,7 +54,7 @@
 #' Brouwer C. & Heibloem M. (1986). Irrigation water management: 
 #' Irrigation water needs. Food and Agriculture Organization of The 
 #' United Nations, Rome, Italy. 
-#' \url{http://www.fao.org/3/S2022E/s2022e00.htm}
+#' \url{https://www.fao.org/3/S2022E/s2022e00.htm}
 #' 
 #' @examples
 #' # the default method
@@ -75,17 +75,6 @@
 #'     span = 10,
 #'     Kc = 0.92)
 #'     
-#' \donttest{
-#' #######################################
-#' library("nasapower")
-#' library("sf")
-#' data("lonlatsf", package = "climatrends")
-#' 
-#' ETo(lonlatsf,
-#'     day.one = "2015-04-22",
-#'     last.day = "2015-06-22",
-#'     pars = c("T10M_MAX", "T10M_MIN"))
-#' }
 #' @export
 ETo <- function(object, ..., Kc = 1){
   

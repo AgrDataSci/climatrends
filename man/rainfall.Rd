@@ -110,35 +110,10 @@ rainfall(rain_dat,
          day.one = "2013-10-28",
          span = 12)
 
-#####################################################
-\donttest{
-# Using remote sources of climate data
-library("nasapower")
-library("sf")
-data("lonlatsf", package = "climatrends")
-
-# some random dates provided as integers and coerced to Dates internally
-set.seed(2718279)
-dates <- as.integer(runif(5, 17660, 17675))
-
-# get precipitation indices for 30 days after day.one
-# return a data.frame
-rain1 <- rainfall(lonlatsf,
-                  day.one = dates,
-                  span = 30,
-                  as.sf = FALSE)
-rain1
-
-# get precipitation indices from "2010-12-01" to "2011-01-31"
-rain2 <- rainfall(lonlatsf,
-                  day.one = "2010-12-01",
-                  last.day = "2011-01-31")
-rain2
-}
 
 }
 \references{
 Aguilar E., et al. (2005). Journal of Geophysical Research, 
-110(D23), D23107. \cr\url{https://doi.org/10.1029/2005JD006119}
+110(D23), D23107. \doi{https://doi.org/10.1029/2005JD006119}
 }
 \concept{precipitation functions}
