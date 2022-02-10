@@ -463,8 +463,8 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
     # define geographic boundaries for lonlat
     lims <- with(lonlat, c(floor(min(lonlat_i[, 1])), 
                            floor(min(lonlat_i[, 2])),
-                           ceiling(max(lonlat_i[, 1])), 
-                           ceiling(max(lonlat_i[, 2]))))
+                           ceiling(max(lonlat_i[, 1]) + .5), 
+                           ceiling(max(lonlat_i[, 2])) + .5))
     
     args <- list(community = community,
                  lonlat = lims,

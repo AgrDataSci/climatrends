@@ -41,8 +41,13 @@ temp[1:ncol(temp)] <- lapply(temp[1:ncol(temp)], function(x) round(x, 2))
 # combine the indices with the main data
 cbean <- cbind(cbean, temp, rain)
 
+names(cbean)
+
 # fit a PL tree
-plt <- pltree(G ~ maxNT + SU, data = cbean, minsize = 50)
+plt <- pltree(G ~ maxNT + SU + Rx5day, 
+              data = cbean, 
+              minsize = 50,
+              gamma = TRUE)
 
 plot(plt)
 
