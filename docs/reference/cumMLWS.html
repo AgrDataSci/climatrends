@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
       </span>
     </div>
 
@@ -142,7 +142,7 @@
  the maximum length of wet spell (MLWS)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cumMLWS</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>cumMLWS</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,27 +158,25 @@
     <p>a vector with the cumulative sum of MLWS</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'></span>
-<span class='r-in'><span class='co'># Example 1</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='va'>rain</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.2</span>,<span class='fl'>1.4</span>,<span class='fl'>6.1</span>,<span class='fl'>1.4</span>,<span class='fl'>5.1</span>,<span class='fl'>1.5</span>,<span class='fl'>1.6</span>,<span class='fl'>0.1</span>,<span class='fl'>0</span>,<span class='fl'>7</span>,<span class='fl'>6</span>,<span class='fl'>4</span>,<span class='fl'>6</span>,<span class='fl'>1.1</span>,<span class='fl'>1.2</span>,<span class='fl'>1.5</span>,<span class='fl'>0</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'>cumMLWS</span><span class='op'>(</span><span class='va'>rain</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] 0 0 1 2 3 4 5 6 6 6 6 6 6 6 6 6 7 7</span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># should return this vector</span></span>
-<span class='r-in'><span class='co'># raincum &lt;- c(0,0,1,2,3,4,5,6,6,6,6,6,6,6,6,6,7,7)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># Example 2</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='va'>rain2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'>cumMLWS</span><span class='op'>(</span><span class='va'>rain2</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] 1 1 1 2 2 2 2 2 3 3 3 3 3</span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># should return this </span></span>
-<span class='r-in'><span class='co'># raincum2 &lt;- c(1,1,1,2,2,2,2,2,3,3,3,3,3)</span></span>
-<span class='r-in'></span>
+    <pre class="examples">
+<span class='co'># Example 1</span>
+
+<span class='va'>rain</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.2</span>,<span class='fl'>1.4</span>,<span class='fl'>6.1</span>,<span class='fl'>1.4</span>,<span class='fl'>5.1</span>,<span class='fl'>1.5</span>,<span class='fl'>1.6</span>,<span class='fl'>0.1</span>,<span class='fl'>0</span>,<span class='fl'>7</span>,<span class='fl'>6</span>,<span class='fl'>4</span>,<span class='fl'>6</span>,<span class='fl'>1.1</span>,<span class='fl'>1.2</span>,<span class='fl'>1.5</span>,<span class='fl'>0</span><span class='op'>)</span>
+
+<span class='fu'>cumMLWS</span><span class='op'>(</span><span class='va'>rain</span><span class='op'>)</span>
+
+<span class='co'># should return this vector</span>
+<span class='co'># raincum &lt;- c(0,0,1,2,3,4,5,6,6,6,6,6,6,6,6,6,7,7)</span>
+
+<span class='co'># Example 2</span>
+
+<span class='va'>rain2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>
+
+<span class='fu'>cumMLWS</span><span class='op'>(</span><span class='va'>rain2</span><span class='op'>)</span>
+
+<span class='co'># should return this </span>
+<span class='co'># raincum2 &lt;- c(1,1,1,2,2,2,2,2,3,3,3,3,3)</span>
+
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

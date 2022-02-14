@@ -5,7 +5,6 @@
 [![CRAN status](https://www.r-pkg.org/badges/version/climatrends)](https://cran.r-project.org/package=climatrends)
 [![cran checks](https://cranchecks.info/badges/worst/climatrends)](https://cran.r-project.org/web/checks/check_results_climatrends.html)
 [![Downloads](https://cranlogs.r-pkg.org/badges/climatrends)](https://cran.r-project.org/package=climatrends)
-[![Build Status](https://travis-ci.org/agrdatasci/climatrends.svg?branch=master)](https://travis-ci.org/agrdatasci/climatrends)
 [![codecov](https://codecov.io/gh/agrdatasci/climatrends/master.svg)](https://codecov.io/github/agrdatasci/climatrends?branch=master)
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)

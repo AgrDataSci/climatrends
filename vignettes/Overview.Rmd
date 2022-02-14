@@ -3,9 +3,9 @@ title: "climatrends: Climate Variability Indices for Ecological Modelling"
 package: climatrends
 author:
 - name: Kauê de Sousa
-  affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway; and Bioversity International, Rome, Italy
+  affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway; and Bioversity International, Montpellier, France 
 - name: Jacob van Etten 
-  affiliation: Bioversity International, Rome, Italy
+  affiliation: Bioversity International, Montpellier, France
 - name: Svein Ø. Solberg 
   affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway
 output: html_document

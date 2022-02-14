@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2</span>
       </span>
     </div>
 
@@ -217,103 +217,42 @@ day to capture the climate data</p></td>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Trnka et al. (2014). Nature Climate Change 4(7):637–43.
-<br /><a href='https://doi.org/10.1038/nclimate2242'>https://doi.org/10.1038/nclimate2242</a></p>
+doi: <a href='https://doi.org/10.1038/nclimate2242'>10.1038/nclimate2242</a></p>
 <p>Zohner et al. (2020). PNAS.
-<br /><a href='https://doi.org/10.1073/pnas.1920816117'>https://doi.org/10.1073/pnas.1920816117</a></p>
+doi: <a href='https://doi.org/10.1073/pnas.1920816117'>10.1073/pnas.1920816117</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other GDD functions: 
 <code><a href='GDD.html'>GDD</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='co'># default method</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"innlandet"</span>, package <span class='op'>=</span> <span class='st'>"climatrends"</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># equation b is set by default</span></span>
-<span class='r-in'><span class='co'># where tmin and tmax are adjusted if below tbase</span></span>
-<span class='r-in'><span class='fu'>late_frost</span><span class='op'>(</span><span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmax</span>, </span>
-<span class='r-in'>           <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmin</span>, </span>
-<span class='r-in'>           dates <span class='op'>=</span> <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>date</span>, </span>
-<span class='r-in'>           tbase <span class='op'>=</span> <span class='fl'>2</span>, </span>
-<span class='r-in'>           tfrost <span class='op'>=</span> <span class='op'>-</span><span class='fl'>2</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>          date    gdd   event duration</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>        &lt;date&gt;  &lt;dbl&gt;   &lt;fct&gt;    &lt;int&gt;</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1: 2019-01-01   0.00   frost      108</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2: 2019-04-19   0.66 warming        1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3: 2019-04-20   0.00   frost        1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4: 2019-04-21   5.23 warming       10</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5: 2019-05-01   0.00   frost       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6: 2019-05-15  34.71 warming       13</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7: 2019-05-28   0.00   frost        4</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8: 2019-06-01 124.29 warming       31</span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># slightly different series if equation a is used</span></span>
-<span class='r-in'><span class='fu'>late_frost</span><span class='op'>(</span><span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmax</span>, </span>
-<span class='r-in'>           <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmin</span>, </span>
-<span class='r-in'>           dates <span class='op'>=</span> <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>date</span>, </span>
-<span class='r-in'>           tbase <span class='op'>=</span> <span class='fl'>2</span>,</span>
-<span class='r-in'>           tfrost <span class='op'>=</span> <span class='op'>-</span><span class='fl'>2</span>,</span>
-<span class='r-in'>           equation <span class='op'>=</span> <span class='st'>"a"</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>           date    gdd   event duration</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         &lt;date&gt;  &lt;dbl&gt;   &lt;fct&gt;    &lt;int&gt;</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1:  2019-01-01   0.00   frost      108</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2:  2019-04-19   0.00  latent        1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3:  2019-04-20   0.00   frost        1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4:  2019-04-21   0.00  latent        2</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5:  2019-04-23   0.00   frost        2</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6:  2019-04-25   2.80 warming        6</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7:  2019-05-01   0.00   frost       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8:  2019-05-15  31.38 warming       11</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 9:  2019-05-26   0.00   frost        6</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 10: 2019-06-01 118.12 warming       31</span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'>#####################################################</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># demo of the array method but no frost event is returned </span></span>
-<span class='r-in'><span class='co'># because the data comes from the tropics</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"temp_dat"</span>, package <span class='op'>=</span> <span class='st'>"climatrends"</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'>late_frost</span><span class='op'>(</span><span class='va'>temp_dat</span>, day.one <span class='op'>=</span> <span class='st'>"2013-10-27"</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>        id       date    gdd   event duration</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;int&gt;     &lt;date&gt;  &lt;dbl&gt;   &lt;fct&gt;    &lt;int&gt;</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1:      1 2013-10-27 236.15 warming       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2:      2 2013-10-27 251.90 warming       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3:      3 2013-10-27 225.75 warming       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4:      4 2013-10-27 162.70 warming       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5:      5 2013-10-27 212.25 warming       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 6:      6 2013-10-27 178.60 warming       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 7:      7 2013-10-27 212.25 warming       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 8:      8 2013-10-27 196.15 warming       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 9:      9 2013-10-27 198.90 warming       14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 10:    10 2013-10-27 171.15 warming       14</span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'>#####################################################</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># \donttest{</span></span>
-<span class='r-in'><span class='co'># Some random points in Norway</span></span>
-<span class='r-in'><span class='co'># get data from NASA Power</span></span>
-<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='st'><a href='https://docs.ropensci.org/nasapower/'>"nasapower"</a></span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>lonlat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>lon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10.93</span>, <span class='fl'>10.57</span>, <span class='fl'>11.21</span><span class='op'>)</span>,</span>
-<span class='r-in'>                     lat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>60.77</span>, <span class='fl'>61.10</span>, <span class='fl'>60.33</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'>late_frost</span><span class='op'>(</span><span class='va'>lonlat</span>, day.one <span class='op'>=</span> <span class='st'>"2019-01-01"</span>, last.day <span class='op'>=</span> <span class='st'>"2019-07-01"</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Getting climate data from NASA POWER </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>        id       date    gdd   event duration</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;int&gt;     &lt;date&gt;  &lt;dbl&gt;   &lt;fct&gt;    &lt;int&gt;</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1:      1 2019-01-01   0.00   frost       48</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2:      1 2019-02-18   0.00  latent        1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3:      1 2019-02-19   0.00   frost       38</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4:      1 2019-03-29   0.00  latent        2</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5:      1 2019-03-31   0.00   frost        4</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> ---                                         </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 29:     3 2019-03-27   5.96 warming        4</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 30:     3 2019-03-31   0.00   frost        2</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 31:     3 2019-04-02   8.39 warming        6</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 32:     3 2019-04-08   0.00   frost        4</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 33:     3 2019-04-12 567.46 warming       81</span>
-<span class='r-in'>     </span>
-<span class='r-in'><span class='co'># }</span></span>
-<span class='r-in'></span>
+    <pre class="examples"><span class='co'># default method</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"innlandet"</span>, package <span class='op'>=</span> <span class='st'>"climatrends"</span><span class='op'>)</span>
+
+<span class='co'># equation b is set by default</span>
+<span class='co'># where tmin and tmax are adjusted if below tbase</span>
+<span class='fu'>late_frost</span><span class='op'>(</span><span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmax</span>, 
+           <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmin</span>, 
+           dates <span class='op'>=</span> <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>date</span>, 
+           tbase <span class='op'>=</span> <span class='fl'>2</span>, 
+           tfrost <span class='op'>=</span> <span class='op'>-</span><span class='fl'>2</span><span class='op'>)</span>
+
+<span class='co'># slightly different series if equation a is used</span>
+<span class='fu'>late_frost</span><span class='op'>(</span><span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmax</span>, 
+           <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>tmin</span>, 
+           dates <span class='op'>=</span> <span class='va'>innlandet</span><span class='op'>$</span><span class='va'>date</span>, 
+           tbase <span class='op'>=</span> <span class='fl'>2</span>,
+           tfrost <span class='op'>=</span> <span class='op'>-</span><span class='fl'>2</span>,
+           equation <span class='op'>=</span> <span class='st'>"a"</span><span class='op'>)</span>
+
+<span class='co'>#####################################################</span>
+
+<span class='co'># demo of the array method but no frost event is returned </span>
+<span class='co'># because the data comes from the tropics</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"temp_dat"</span>, package <span class='op'>=</span> <span class='st'>"climatrends"</span><span class='op'>)</span>
+
+<span class='fu'>late_frost</span><span class='op'>(</span><span class='va'>temp_dat</span>, day.one <span class='op'>=</span> <span class='st'>"2013-10-27"</span><span class='op'>)</span>
+
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
