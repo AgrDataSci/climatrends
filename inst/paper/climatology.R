@@ -28,9 +28,13 @@ p <- st_as_sf(p, crs = 4326)
 
 mapview(p)
 
+p <- matrix(as.vector(unlist(p)), nrow = nrow(p), ncol = 2, by = TRUE)
+
+p <- as.data.frame(p)
+
 temp <- temperature(p, 
                     day.one = "2000-01-01", 
-                    last.day = "2019-12-31", 
+                    last.day = "2000-12-31", 
                     timeseries = TRUE, 
                     intervals = 365)
 

@@ -213,6 +213,7 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
   
   return(r)
 }
+
 #' Set up span length and organise dates
 #' 
 #' @param day.one the first day
@@ -399,10 +400,10 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
 #' @param pars character vector of solar, meteorological or climatology parameters 
 #' to download. See help("parameters", "nasapower") for details.
 #' @examples 
-#'   
+#'  
 #' library("nasapower")
-#' lonlat <- data.frame(lon = c(-66.48, -83.08, -66.45, -66.4),
-#'                      lat = c(-4.60, 9.85, -5.19, -0.15))
+#' lonlat <- data.frame(lon = c(-66.48),# -83.08, -66.45, -66.4),
+#'                      lat = c(-4.60))#, 9.85, -5.19, -0.15))
 #' 
 #' .nasapower(dates = c("2010-01-01", "2010-01-30"),
 #'            lonlat = lonlat,
@@ -411,7 +412,11 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
 #' 
 #'                      
 #' @noRd
-.nasapower <- function(dates, lonlat, pars, community = NULL, temporal_average = NULL){
+.nasapower <- function(dates, 
+                       lonlat, 
+                       pars, 
+                       community = NULL, 
+                       temporal_average = NULL){
   
   message("Getting climate data from NASA POWER \n")
   
@@ -431,7 +436,7 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
     
     h <- stats::hclust(h)
     
-    regions <- stats::cutree(h, h = 5)
+    regions <- stats::cutree(h, h = 3)
     
     nregions <- max(regions)
   }
@@ -460,17 +465,17 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
     r_i <- which(regions == i)
     lonlat_i <- lonlat[r_i, ]
     
-    # define geographic boundaries for lonlat
-    lims <- with(lonlat, c(floor(min(lonlat_i[, 1])), 
+    #define geographic boundaries for lonlat
+    lims <- with(lonlat, c(floor(min(lonlat_i[, 1])),
                            floor(min(lonlat_i[, 2])),
-                           ceiling(max(lonlat_i[, 1]) + .5), 
-                           ceiling(max(lonlat_i[, 2])) + .5))
-    
+                           ceiling(max(lonlat_i[, 1]) + 2),
+                           ceiling(max(lonlat_i[, 2])) + 2))
+
     args <- list(community = community,
                  lonlat = lims,
+                 pars = pars,
                  dates = dates,
-                 temporal_api = temporal_average, 
-                 pars = pars)
+                 temporal_api = temporal_average)
     
     # get NASA POWER
     info <- do.call("get_power", args)
