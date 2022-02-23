@@ -13,12 +13,12 @@ authors:
   - name: Kauê de Sousa
     orcid: 0000-0002-7571-7845
     affiliation: "1, 2"
-  - name: Magne Neby
-    orcid: 0000-0003-2098-7650
-    affiliation: "3"
   - name: Jacob van Etten
     orcid: 0000-0001-7554-2558
     affiliation: 2
+  - name: Magne Neby
+    orcid: 0000-0003-2098-7650
+    affiliation: "3"
   - name: Svein Ø. Solberg
     orcid: 0000-0002-4491-4483
     affiliation: 1
@@ -39,8 +39,6 @@ journal: JOSS
 #    keep_tex: false
 #header-includes: \usepackage{caption} \captionsetup[figure]{labelformat=empty}
 ---
-
-
 
 # Summary
 
