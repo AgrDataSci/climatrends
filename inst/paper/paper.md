@@ -14,6 +14,7 @@ authors:
     orcid: 0000-0002-7571-7845
     affiliation: "1, 2"
   - name: Magne Neby
+    orcid: 0000-0003-2098-7650
     affiliation: "3"
   - name: Jacob van Etten
     orcid: 0000-0001-7554-2558
@@ -33,10 +34,10 @@ year: 2022
 bibliography: paper.bib
 output: rticles::joss_article
 journal: JOSS
-# output:
-#   pdf_document:
-#     keep_tex: false
-# header-includes: \usepackage{caption} \captionsetup[figure]{labelformat=empty}
+#output:
+#  pdf_document:
+#    keep_tex: false
+#header-includes: \usepackage{caption} \captionsetup[figure]{labelformat=empty}
 ---
 
 
@@ -49,29 +50,16 @@ Abiotic factors play an important role in most ecological and crop systems that 
 
 Six main functions are provided (Table 1), with a default method for numeric 'vector' and additional methods implemented via the package `methods` [@RCoreTeam] for classes 'matrix' (or array), 'data.frame', and 'sf' (of geometry POINT or POLYGON) [@sf]. The last two methods are designed to fetch data from cloud sources, currently from the packages `nasapower` [@Sparks2018] and `chirps` [@chirps]. 
 
-\begin{table}[!h]
+Table 1: Main functions available in climatrends.
 
-\caption{\label{tab:table1}Main functions available in climatrends.}
-\centering
-\begin{tabular}[t]{l|l}
-\hline
-Function & Definition\\
-\hline
-crop\_sensitive() & Compute crop sensitive indices\\
-\hline
-ETo() & Reference evapotranspiration using the Blaney-Criddle method\\
-\hline
-GDD() & Compute growing degree-days\\
-\hline
-late\_frost() & Compute the occurrence of late-spring frost\\
-\hline
-rainfall() & Precipitation indices\\
-\hline
-temperature() & Temperature indices\\
-\hline
-\end{tabular}
-\end{table}
-
+| **Function**  | **Definition**  |
+| --------- |----------------------|
+| crop_sensitive() | Compute crop sensitive indices |
+| ETo() | Reference evapotranspiration using the Blaney-Criddle method|
+| GDD() | Compute growing degree-days|
+| late_frost() | Compute the occurrence of late-spring frost|
+| rainfall() | Precipitation indices|
+| temperature() | Temperature indices|
 
 These functions started as a set of scripts to compute indices from on-farm testing sites following a citizen science approach [@vanEtten2019]. Aiming to capture the environmental variation across different sites, which can differ as each on-farm trial generally have a different starting day and duration, the arguments `day.one` and `span` are vectorised and may be used to indicate the starting date for each data-point and the duration of the timespan to be considered for the computation of the indices. For time series analysis, fixed periods can be adjusted with the argument `last.day` linked to the argument `day.one`. 
 
@@ -79,61 +67,32 @@ These functions started as a set of scripts to compute indices from on-farm test
 
 The package `climatrends` computes 12 temperature indices and 10 precipitation indices that were suggested by previous research on climatology and crop science [@Kehel2016; @Aguilar2005]. The indices computed by the functions `temperature()` and `rainfall()` are described in Table 2.
 
-\begin{table}[!h]
+Table 2: Temperature and precipitation indices available in climatrends.
 
-\caption{\label{tab:table2}Temperature and precipitation indices available in climatrends.}
-\centering
-\begin{tabular}[t]{l|>{\raggedright\arraybackslash}p{20em}|l}
-\hline
-Index & Definition & Unit\\
-\hline
-maxDT & Maximun day temperature & °C\\
-\hline
-minDT & Minimum day temperature & °C\\
-\hline
-maxNT & Maximun night temperature & °C\\
-\hline
-minNT & Minimum night temperature & °C\\
-\hline
-DTR & Diurnal temperature range (mean difference between DT and NT) & °C\\
-\hline
-SU & Summer days, number of days with maximum temperature > 30 °C & days\\
-\hline
-TR & Tropical nights, number of nights with maximum temperature > 25 °C & days\\
-\hline
-CFD & Consecutive frosty days, number of days with temperature < 0 °C & days\\
-\hline
-WSDI & Maximum warm spell duration, consecutive days with temperature > 90th percentile & days\\
-\hline
-CSDI & Maximum cold spell duration, consecutive nights with temperature < 10th percentile & days\\
-\hline
-T10p & The 10th percentile of night temperature & °C\\
-\hline
-T90p & The 90th percentile of day temperature & °C\\
-\hline
-MLDS & Maximum length of consecutive dry day, rain < 1 mm & days\\
-\hline
-MLWS & Maximum length of consecutive wet day, rain >= 1 mm & days\\
-\hline
-R10mm & Heavy precipitation days 10 >= rain < 20 mm & days\\
-\hline
-R20mm & Very heavy precipitation days rain >= 20 & days\\
-\hline
-Rx1day & Maximum 1-day precipitation & mm\\
-\hline
-Rx5day & Maximum 5-day precipitation & mm\\
-\hline
-R95p & Total precipitation when rain > 95th percentile & mm\\
-\hline
-R99p & Total precipitation when rain > 99th percentile & mm\\
-\hline
-Rtotal & Total precipitation in wet days, rain >= 1 mm & mm\\
-\hline
-SDII & Simple daily intensity index, total precipitation divided by the number of wet days & mm/days\\
-\hline
-\end{tabular}
-\end{table}
-
+|**Index** | **Definition** | **Unit** |
+|------|------------|-------------------|
+|maxDT | Maximun day temperature | °C|
+|minDT | Minimum day temperature | °C|
+|maxNT | Maximun night temperature | °C|
+|minNT | Minimum night temperature | °C|
+|DTR | Diurnal temperature range | °C|
+|SU | Summer days t > 30 °C | days|
+|TR | Tropical nights t > 25 °C | days|
+|CFD | Consecutive frosty days t < 0 °C | days|
+|WSDI | Maximum warm spell duration | days|
+|CSDI | Maximum cold spell duration | days|
+|T10p | The 10th percentile of night temperature | °C|
+|T90p | The 90th percentile of day temperature | °C|
+|MLDS | Maximum length of consecutive dry day rain < 1 mm | days|
+|MLWS | Maximum length of consecutive wet day rain >= 1 mm | days|
+|R10mm | Heavy precipitation days 10 >= rain < 20 mm | days|
+|R20mm | Very heavy precipitation days rain >= 20 | days|
+|Rx1day | Maximum 1-day precipitation | mm |
+|Rx5day | Maximum 5-day precipitation | mm |
+|R95p | Total precipitation when rain > 95th percentile | mm |
+|R99p | Total precipitation when rain > 99th percentile | mm |
+|Rtotal | Total precipitation in wet days, rain >= 1 mm | mm |
+|SDII | Simple daily intensity index | mm/days |
 
 ## Growing degree-days
 
@@ -191,31 +150,17 @@ Two functions in **climatrends** are mainly designed to capture the effects of c
 
 The crop ecology indices available in **climatrends** are described in Table 3. These indices were previously used in crop models to project the impacts of climate change on crop yield [@Challinor2016; @Trnka2014]. Each index has a default temperature threshold(s) which can be adjusted by using the arguments `*.threshold`. Where the `*` means the index. For example, to change the defaults for hts_max (high temperature stress), a vector with the temperature thresholds is passed through the argument `hts_max.thresholds`.  
 
-\begin{table}[!h]
+Table 3: Crop sensitive indices computed by climatrends.
 
-\caption{\label{tab:cropsentbl}Crop sensitive indices computed by climatrends.}
-\centering
-\begin{tabular}[t]{l|>{\raggedright\arraybackslash}p{20em}|l}
-\hline
-Index & Definition & Default thresholds\\
-\hline
-hts\_mean & High temperature stress using daily mean temperature, and given as percentage number of days a certain threshold is exceeded & 32, 35, 38 °C\\
-\hline
-hts\_max & High temperature stress using daily max temperature, and given as percentage number of days a certain threshold is exceeded & 36, 39, 42 °C\\
-\hline
-hse & Heat stress event, and given as percentage number of days a certain threshold is exceeded for at least two consecutive days & 31 °C\\
-\hline
-hse\_ms & Heat stress event, and given the maximum number of days a certain threshold is exceeded for at least two consecutive days & 31 °C\\
-\hline
-cdi\_mean & Crop duration index using daily mean temperature, and given as max(Tmean - threshold, 0) & 22, 23, 24 °C\\
-\hline
-cdi\_max & Crop duration index using daily max temperature, and given as max(Tmax - threshold, 0) & 27, 28, 29 °C\\
-\hline
-lethal & Lethal temperatures, defined as percentage of days during the timeseries where daily mean temperature exceeds a given threshold & 43, 46, 49 °C\\
-\hline
-\end{tabular}
-\end{table}
-
+|**Index** | **Definition** | **Default thresholds**|
+|------|------------|-------------------|
+|hts_mean | High temperature stress using tmean | 32, 35, 38 °C|
+|hts_max | High temperature stress using tmax | 36, 39, 42 °C|
+|hse | Heat stress event | 31 °C|
+|hse_ms | Heat stress event for at least two consecutive days | 31 °C|
+|cdi_mean | Crop duration index | 22, 23, 24 °C|
+|cdi_max | Crop duration index max temperature | 27, 28, 29 °C|
+|lethal | Lethal temperatures | 43, 46, 49 °C|
 
 The reference evapotranspiration measures the influence of the climate on a given plant's water need [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle method, a general theoretical method used when only air-temperature is available locally. It should be noted that this method is not very accurate and aims to provide the order of magnitude of evapotranspitation. The reference evapotranspiration is calculated using the following equation.
 
@@ -313,11 +258,8 @@ p <- st_sample(e, 100, type = "hexagonal")
 p <- st_as_sf(p, crs = 4326)
 
 # compute the temperature indices using the random points 
-temp <- temperature(p, 
-                    day.one = "2000-01-01", 
-                    last.day = "2019-12-31", 
-                    timeseries = TRUE, 
-                    intervals = 365)
+temp <- temperature(p, day.one = "2000-01-01", last.day = "2019-12-31", 
+                    timeseries = TRUE, intervals = 365)
 ```
 
 We then select the indices CSDI (cold spell duration of night temperature), WSDI (warm spell duration of day temperature), and their associated indices the T10p (the 10th percentile of night temperature) and T90p (the 90th percentile of day temperature), in Figure 2. Plots are generated with `ggplot2` [@ggplot2] and `patchwork` [@patchwork].

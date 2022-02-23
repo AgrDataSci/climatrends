@@ -1,6 +1,7 @@
-climatrends 0.1.8 (2021-05-22)
+climatrends 0.2 (2022-02-14)
 =========================
 
+* Fix an issue in computing large areas with nasapower
 * Add paper
 
 climatrends 0.1.7 (2020-05-22)

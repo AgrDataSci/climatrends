@@ -4,10 +4,10 @@
   "identifier": "climatrends",
   "description": "Supports analysis of trends in climate change, ecological and crop modelling.",
   "name": "climatrends: Climate Variability Indices for Ecological Modelling",
-  "codeRepository": "https://agrdatasci.github.io/climatrends",
+  "codeRepository": "https://agrdatasci.github.io/climatrends/",
   "issueTracker": "https://github.com/agrdatasci/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.1.11",
+  "version": "0.2",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -157,7 +157,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "23494.163KB",
+  "fileSize": "22768.83KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
@@ -181,7 +181,7 @@
       ],
       "name": "climatrends: Climate Variability Indices for Ecological Modelling",
       "url": "https://CRAN.R-project.org/package=climatrends",
-      "description": "R package version 0.1.6"
+      "description": "R package version 0.2"
     }
   ]
 }

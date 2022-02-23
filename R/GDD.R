@@ -63,8 +63,7 @@
 #'   adjust tmax = tbase_max if tmax < tbase_max
 #' 
 #' @references 
-#' Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117. 
-#' \doi{https://doi.org/10.2307/2845499}
+#' Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117.
 #' 
 #' Baskerville, G., & Emin, P. (1969). Ecology, 50(3), 514-517. 
 #' \doi{https://doi.org/10.2307/1933912}
