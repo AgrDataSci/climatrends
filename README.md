@@ -2,11 +2,11 @@
 # climatrends
 
 <!-- badges: start -->
+[![JOSS status](https://joss.theoj.org/papers/03d54683d5c1d7759519070442ef4500/status.svg)](https://joss.theoj.org/papers/03d54683d5c1d7759519070442ef4500)
 [![CRAN status](https://www.r-pkg.org/badges/version/climatrends)](https://cran.r-project.org/package=climatrends)
 [![cran checks](https://cranchecks.info/badges/worst/climatrends)](https://cran.r-project.org/web/checks/check_results_climatrends.html)
 [![Downloads](https://cranlogs.r-pkg.org/badges/climatrends)](https://cran.r-project.org/package=climatrends)
 [![codecov](https://codecov.io/gh/agrdatasci/climatrends/master.svg)](https://codecov.io/github/agrdatasci/climatrends?branch=master)
-[![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![DOI](https://zenodo.org/badge/239103060.svg)](https://zenodo.org/badge/latestdoi/239103060)
 <!-- badges: end -->
