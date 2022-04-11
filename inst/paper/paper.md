@@ -270,7 +270,7 @@ The trends show a decrease in the cold spell duration (number of consecutive col
 
 }
 
-\caption{Fig. 2. Trends in temperature indices across Southern Norway and Sweeden from 2000 to 2019. CSDI, maximum cold spell duration, consecutive nights with temperature < 10th percentile. WSDI, maximum warm spell duration, consecutive days with temperature > 90th percentile. T10p, the 10th percentile of night temperature. T90p, the 90th percentile of day temperature. Red line indicates the historical mean of each index in the time series. Blue line indicates the smoothed trends in each index using the 'loess' method.}\label{fig:fig_nordic}
+\caption{Fig. 2. Trends in temperature indices across Southern Norway and Sweden from 2000 to 2019. CSDI, maximum cold spell duration, consecutive nights with temperature < 10th percentile. WSDI, maximum warm spell duration, consecutive days with temperature > 90th percentile. T10p, the 10th percentile of night temperature. T90p, the 90th percentile of day temperature. Red line indicates the historical mean of each index in the time series. Blue line indicates the smoothed trends in each index using the 'loess' method.}\label{fig:fig_nordic}
 \end{figure}
 
 # Further development
