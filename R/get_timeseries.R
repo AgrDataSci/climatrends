@@ -436,7 +436,7 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
     
     h <- stats::hclust(h)
     
-    regions <- stats::cutree(h, h = 3)
+    regions <- stats::cutree(h, h = 2)
     
     nregions <- max(regions)
   }
