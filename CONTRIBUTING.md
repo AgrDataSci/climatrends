@@ -1,6 +1,6 @@
 # Contributing
 
-When contributing to this project, please first discuss the change you wish to make via [issue](https://github.com/agrdatasci/climatrends/issues) before making a change and pull request. Please submit questions, bug reports, and requests in the issues tracker.
+When contributing to this project, please first discuss the change you wish to make via [issue](https://github.com/agrdatasci/climatrends/issues) before making a change and pull request, unless it is a minor change that doesn't affect package functionality. Please submit questions, bug reports, and requests in the issues tracker.
 
 Note that we have a [code of conduct](https://agrdatasci.github.io/climatrends/CODE_OF_CONDUCT.html), please follow it in all your interactions with the project.
 
