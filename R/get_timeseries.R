@@ -401,13 +401,13 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
 #' to download. See help("parameters", "nasapower") for details.
 #' @examples 
 #'  
-#' library("nasapower")
-#' lonlat <- data.frame(lon = c(-66.48),# -83.08, -66.45, -66.4),
-#'                      lat = c(-4.60))#, 9.85, -5.19, -0.15))
-#' 
-#' .nasapower(dates = c("2010-01-01", "2010-01-30"),
-#'            lonlat = lonlat,
-#'            pars = c("T2M_MAX","T2M_MIN"))
+library("nasapower")
+lonlat <- data.frame(lon = c(-66.48, -83.08, -66.45, -66.4),
+                     lat = c(-4.60, 9.85, -5.19, -0.15))
+
+.nasapower(dates = c("2010-01-01", "2013-01-30"),
+           lonlat = lonlat,
+           pars = c("T2M_MAX","T2M_MIN"))
 #' 
 #' 
 #'                      
@@ -458,7 +458,7 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
                 nrow = nr,
                 ncol = (sp * npars),
                 dimnames = list(1:nr))
-
+  
   
   for (i in seq_len(nregions)) {
     
@@ -470,7 +470,7 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
                            floor(min(lonlat_i[, 2])),
                            ceiling(max(lonlat_i[, 1]) + 2),
                            ceiling(max(lonlat_i[, 2])) + 2))
-
+    
     args <- list(community = community,
                  lonlat = lims,
                  pars = pars,
@@ -542,7 +542,7 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
       result[[i]] <- rs
     }
   }
- 
+  
   if (length(pars) == 1) {
     dat <- as.data.frame(dat)
     names(dat) <- namedays
@@ -554,4 +554,5 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
   return(result)
   
 }
+
 
