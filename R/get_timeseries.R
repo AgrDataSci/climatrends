@@ -401,13 +401,13 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
 #' to download. See help("parameters", "nasapower") for details.
 #' @examples 
 #'  
-library("nasapower")
-lonlat <- data.frame(lon = c(-66.48, -83.08, -66.45, -66.4),
-                     lat = c(-4.60, 9.85, -5.19, -0.15))
-
-.nasapower(dates = c("2010-01-01", "2013-01-30"),
-           lonlat = lonlat,
-           pars = c("T2M_MAX","T2M_MIN"))
+#' library("nasapower")
+#' lonlat <- data.frame(lon = c(-66.48, -83.08, -66.45, -66.4),
+#'                      lat = c(-4.60, 9.85, -5.19, -0.15))
+#' 
+#' .nasapower(dates = c("2010-01-01", "2013-01-30"),
+#'            lonlat = lonlat,
+#'            pars = c("T2M_MAX","T2M_MIN"))
 #' 
 #' 
 #'                      
