@@ -7,13 +7,13 @@
   "codeRepository": "https://agrdatasci.github.io/climatrends/",
   "issueTracker": "https://github.com/agrdatasci/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.2",
+  "version": "0.3",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.1.0 (2021-05-18)",
+  "runtimePlatform": "R version 4.2.1 (2022-06-23)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -25,7 +25,7 @@
       "@type": "Person",
       "givenName": "Kauê",
       "familyName": "de Sousa",
-      "email": "kaue.desousa@inn.no",
+      "email": "desousa.kaue@gmail.com",
       "@id": "https://orcid.org/0000-0002-7571-7845"
     }
   ],
@@ -60,7 +60,7 @@
       "@type": "Person",
       "givenName": "Kauê",
       "familyName": "de Sousa",
-      "email": "kaue.desousa@inn.no",
+      "email": "desousa.kaue@gmail.com",
       "@id": "https://orcid.org/0000-0002-7571-7845"
     }
   ],
@@ -157,7 +157,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "22768.83KB",
+  "fileSize": "937.707KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",

@@ -17,3 +17,4 @@
 ^vignettes/precompile\.R$
 ^vignettes/Overview\.Rmd\.orig$
 ^inst/paper$
+^LICENSE\.md$

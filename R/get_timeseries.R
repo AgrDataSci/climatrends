@@ -87,7 +87,7 @@ get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL
   }
   
   sts <- .st_span(day.one, span, last.day, days.before)
-
+  
   object <- as.data.frame(object)
   
   makecall <- paste0(".", data.from)
@@ -97,7 +97,7 @@ get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL
                pars = pars)
   
   object <- do.call(makecall, args)
-
+  
   r <- lapply(object, function(x){
     .st_ts(x,
            days = sts$begin,
@@ -200,7 +200,7 @@ get_timeseries.matrix <- function(object, day.one, span = NULL, last.day = NULL,
 #' @method get_timeseries array
 #' @export
 get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL, 
-                                  ...){
+                                 ...){
   
   
   dm1 <- get_timeseries(object[,,1], day.one, span = span, last.day = last.day, ...)
@@ -245,14 +245,14 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
   if (!.is_Date(day.one)) {
     
     day.one <- .coerce2Date(day.one)
-  
+    
   }
   
   # the time span
   if (!is.null(span)) {
     
     span <- as.vector(t(span)) 
-  
+    
   }
   
   # or from last.day
@@ -401,13 +401,13 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
 #' to download. See help("parameters", "nasapower") for details.
 #' @examples 
 #'  
-library("nasapower")
-lonlat <- data.frame(lon = c(-66.48, -83.08, -66.45, -66.4),
-                     lat = c(-4.60, 9.85, -5.19, -0.15))
-
-.nasapower(dates = c("2010-01-01", "2013-01-30"),
-           lonlat = lonlat,
-           pars = c("T2M_MAX","T2M_MIN"))
+#' library("nasapower")
+#' lonlat <- data.frame(lon = c(-66.48),# -83.08, -66.45, -66.4),
+#'                      lat = c(-4.60))#, 9.85, -5.19, -0.15))
+#' 
+#' .nasapower(dates = c("2010-01-01", "2010-01-30"),
+#'            lonlat = lonlat,
+#'            pars = c("T2M_MAX","T2M_MIN"))
 #' 
 #' 
 #'                      
@@ -436,7 +436,7 @@ lonlat <- data.frame(lon = c(-66.48, -83.08, -66.45, -66.4),
     
     h <- stats::hclust(h)
     
-    regions <- stats::cutree(h, h = 2)
+    regions <- stats::cutree(h, h = 3)
     
     nregions <- max(regions)
   }
@@ -554,5 +554,3 @@ lonlat <- data.frame(lon = c(-66.48, -83.08, -66.45, -66.4),
   return(result)
   
 }
-
-

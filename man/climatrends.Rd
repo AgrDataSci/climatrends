@@ -6,7 +6,7 @@
 \alias{climatrends-package}
 \title{Climate Variability Indices for Ecological Modelling}
 \description{
-\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
 Supports analysis of trends in climate change, ecological and crop modelling.
 }
