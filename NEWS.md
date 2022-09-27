@@ -1,3 +1,8 @@
+climatrends 0.4 (2022-09-26)
+=========================
+
+* Fix issues in CRAN cmd checks 
+
 climatrends 0.2 (2022-02-14)
 =========================
 
