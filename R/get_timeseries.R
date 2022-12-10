@@ -411,6 +411,7 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
 #' 
 #' 
 #'                      
+#' @importFrom nasapower get_power
 #' @noRd
 .nasapower <- function(dates, 
                        lonlat, 
