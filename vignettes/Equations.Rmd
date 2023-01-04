@@ -1,0 +1,97 @@
+---
+title: "Equations used in climatrends"
+package: climatrends
+author:
+- name: Kauê de Sousa
+  affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway </br> Digital Inclusion, Bioversity International, Montpellier, France 
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{Overview}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
+bibliography: ["climatrends.bib"]
+csl: citation_style.csl
+---
+
+Here I present a description of main equations used in the functions available in the package `climatrends`.
+
+## Growing degree-days
+
+Growing degree-days (gdd) is an heuristic tool in phenology that measures heat accumulation and is used to predict plant and animal development rates [@Prentice1992]. Growing degree-days are calculated by taking the integral of warmth above a base temperature ($T_{0}$). The function `GDD()` applies by default the following equation.
+
+Equation [1]
+
+$$GDD = \frac{T_{max} + T_{min}}{2} - T_{0}$$
+
+where $T_{max}$ is the maximum temperature in the given day, $T_{min}$ is the minimum temperature in the given day and $T_{0}$ is the minimum temperature for growth (as per the physiology of the focal organism or ecosystem averages). 
+
+Additionally, the function `GDD()` offers three modified equations designed for cold environments and for tropical environments. For cold environments, where $T_{min}$ may be lower than $T_{0}$, there are two modified equations that adjust either $T_{mean}$ (variant a) or $T_{min}$ (variant b). The variant a changes $T_{mean}$ to $T_{0}$ if $T_{mean} < T_{0}$ and is expressed as follow.
+
+Equation [2]
+
+$$ GDD = max \left(\frac{T_{max} + T_{min}}{2} - T_{0}, \; 0 \right)$$
+
+The variant b, is calculated using Equation 1, but adjusts $T_{min}$ or $T_{max}$ to $T_{0}$ if $T < T_{0}$, the equation is adjusted as follows.
+
+Equation [3]
+
+$$ T < T_{0} \; \rightarrow \; T = T_{0} $$
+
+where $T$ may refer to $T_{min}$ and/or $T_{max}$ when the condition of being below $T_{0}$ applies.
+
+For tropical areas, where the temperature may surpass a maximum threshold ($T_{0_{max}}$), resulting in limited development, the minimum temperature is adjusted using Equation 3 and the maximum temperature is adjusted to a maximum base temperature as follow.
+
+Equation [4]
+
+$$ T_{max} > T_{0_{max}} \; \rightarrow \; T_{max} = T_{0_{max}} $$
+
+where $T_{0_{max}}$ is the maximum base temperature for growth, defined in `GDD()` using the argument `tbase_max`.
+
+These modified equations are defined as 'a', 'b' and 'c', respectively, and can be selected using the argument `equation`.
+
+By default, the function returns the degree-days that is accumulated over the time series using Equation 1. Additionally, the function may return the daily values of degree-days or the number of days that a given organism required to reach a certain number of accumulated degree-days. These values are defined by 'acc', 'daily' or 'ndays' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset the photosynthesis [@JWu2013]. In that case, `GDD()` will calculate the growing degree-days ($gdd$) and sum up the values until it reaches 105 $^\circ C$ and return the number of days required in the given season ($GDD_{r}$), as follows.
+
+\pagebreak
+
+Equation [5]
+
+$$\parallel GDD_{r} \parallel \: = \; ggd_1 \;+ \; ...  \; +  \; gdd_n$$
+
+where $GDD_{r}$ is the length of the vector with accumulated degree-days from day 1 to $n$. 
+
+## Late-spring frost
+
+Late-spring frost is a freezing event occurring after a substantial accumulation of warmth. Frost damage is a known issue in temperate and boreal regions, it is associated with the formation of extracellular ice crystals that cause damage in the membranes [@Lambers2008]. Freezing occurring after an advanced phenological stage during spring may harm some plant species, resulting in lost of productivity in crop systems [@Trnka2014] and important ecological impacts [@Zohner2020]. 
+
+The function `late_frost()` supports the computation of late-spring frost events. The function counts for the number of freezing days with minimum temperature below a certain threshold (argument `tfrost`). And returns the number of days spanned by frost events (temperature below `tfrost`), latency (event with no freezing temperature but also no accumulation of growing degree-days) and warming (when growing degree-days are accumulated enabling the development of the target organism). Additionally the function returns the first day of the events. The function calculates the growing degree-days applying the variant b (Eq. 3), which can be adjusted using the argument `equation` passed to `GDD()` as explained in the later section. The main inputs are a vector with maximum and minimum temperatures to compute the degree-days, a vector of dates (argument `date`), and, if needed, the `tbase` and `tfrost`, set by default to 4 and -2 $^\circ C$.
+
+## Crop ecology indices
+
+Two functions in **climatrends** are mainly designed to capture the effects of climate on the development and stress of crop species, `crop_sensitive()` computes indices that aim to capture the changes in temperature extremes during key phenological stages (e.g. anthesis), and `ETo()` computes the reference evapotranspiration. 
+
+The crop ecology indices available in **climatrends** are described in Table 3. These indices were previously used in crop models to project the impacts of climate change on crop yield [@Challinor2016; @Trnka2014]. Each index has a default temperature threshold(s) which can be adjusted by using the arguments `*.threshold`. Where the `*` means the index. For example, to change the defaults for hts_max (high temperature stress), a vector with the temperature thresholds is passed through the argument `hts_max.thresholds`.  
+
+Table 3: Crop sensitive indices computed by climatrends.
+
+|**Index** | **Definition** | **Default thresholds**|
+|------|------------|-------------------|
+|hts_mean | High temperature stress using tmean | 32, 35, 38 °C|
+|hts_max | High temperature stress using tmax | 36, 39, 42 °C|
+|hse | Heat stress event | 31 °C|
+|hse_ms | Heat stress event for at least two consecutive days | 31 °C|
+|cdi_mean | Crop duration index | 22, 23, 24 °C|
+|cdi_max | Crop duration index max temperature | 27, 28, 29 °C|
+|lethal | Lethal temperatures | 43, 46, 49 °C|
+
+The reference evapotranspiration measures the influence of the climate on a given plant's water need [@Brouwer1986]. The function `ETo()` applies the Blaney-Criddle method, a general theoretical method used when only air-temperature is available locally. It should be noted that this method is not very accurate and aims to provide the order of magnitude of evapotranspitation. The reference evapotranspiration is calculated using the following equation.
+
+Equation [6]
+
+$$ETo = p \times \left(0.46 \times \frac{T_{max} + T_{min}}{2} + 8 \right) \times K_c$$
+
+Where $p$ is the mean daily percentage of annual daytime hours, $T_{max}$ is the maximum temperature, $T_{min}$ is the minimum temperature, and $K_c$ is the factor for organism water need.
+
+The percentage of daytime hours ($p$) is calculated internally by the 'data.frame' and 'sf' methods in `ETo()` using the given latitude (taken from the inputted `object`) and date (taken from the inputted `day.one`). It matches the latitude and date with a table of daylight percentage derived from Brouwer and Heibloem [-@Brouwer1986]. The table can be verified using `climatrends:::daylight`.
+
+## References
+

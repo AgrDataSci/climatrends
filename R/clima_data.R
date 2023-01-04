@@ -4,10 +4,13 @@
 #' 
 #' @details 
 #' 
-#' \code{temp_dat}: array with two layers 1) day temperature and 2) night temperature. 
-#'  An excerpt of MODIS (MYD11A1) data to represent an example 
-#'  of the input data in \code{temperature()} and \code{get_timeseries()} 
-#'  when an array is provided.
+#' \code{commonbean}: a list with three data sets 1) on-farm variety performance data,
+#'  2) chirps data, and 3) modis data. 
+#' 
+#' \code{rain_dat}: matrix with precipitation from CHIRPS. An excerpt to represent 
+#'  an example of the input data in \code{rainfall()} or 
+#' 
+#' \code{get_timeseries()} when a matrix is provided.
 #' 
 #' \code{rain_dat}: matrix with precipitation from CHIRPS. An excerpt to represent 
 #'  an example of the input data in \code{rainfall()} or 
@@ -19,7 +22,7 @@
 #' \code{lonlatsf}: a 'sf' object with 'POINT' geometry with five random points around 
 #'  the municipality of Sinop, Brazil 
 #'  
-#' In \code{temp_dat} and \code{rain_dat}, rows represents the coordinates for the 
+#' \code{temp_dat} and \code{rain_dat}, rows represents the coordinates for the 
 #'  given lonlat provided in \code{raster::extract()} and colunms represents the dates 
 #'  from the observed precipitation/temperature.
 #' 
@@ -30,6 +33,7 @@
 #' @aliases temp_dat
 #' @aliases rain_dat
 #' @aliases innlandet
+#' @aliases commonbean
 #' @keywords datasets
 #' @source 
 #' 
@@ -37,12 +41,16 @@
 #' with stations—a new environmental record for monitoring extremes. 
 #' Scientific Data, 2, 150066. \doi{https://doi.org/10.1038/sdata.2015.66}
 #' 
+#' van Etten, J. et. al. (2019). PNAS 116(10) 4194-4199 
+#'    \doi{http://doi.org/10.1073/pnas.1813720116}
+#' 
 #' Wan Z, Hook S, Hulley G (2015) MYD11A1 MODIS/Aqua Land Surface 
 #' Temperature/Emissivity 8-Day L3 Global 1km
 #' SIN Grid V006 \doi{http://doi.org/10.5067/MODIS/MYD11A2.006}.
 #' 
 #' @format 
 #' an array with two layers (temp_dat) a matrix (rain_dat),
-#'  a data.frame (innlandet), a sf object (lonlatsf)
-c("rain_dat", "temp_dat", "lonlatsf","innlandet")
+#'  a data.frame (innlandet), a sf object (lonlatsf), 
+#'  a list ("commonbean")
+c("rain_dat", "temp_dat", "lonlatsf","innlandet", "commonbean")
 
