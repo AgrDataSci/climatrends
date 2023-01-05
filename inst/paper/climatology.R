@@ -42,8 +42,6 @@ save(temp, file = "inst/paper/climatology.rda")
 
 i <- c("CSDI","WSDI")
 
-#i <- c("TR", "minDT", "maxDT", "maxNT", "minNT", "DTR")
-
 temp %>% 
   filter(index %in% i) %>% 
   group_by(index) %>% 
