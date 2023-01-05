@@ -6,7 +6,7 @@ author:
   affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway </br> Digital Inclusion, Bioversity International, Montpellier, France 
 output: html_document
 vignette: >
-  %\VignetteIndexEntry{Overview}
+  %\VignetteIndexEntry{Equations}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown_notangle}
 bibliography: ["climatrends.bib"]

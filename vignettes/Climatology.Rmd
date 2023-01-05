@@ -6,7 +6,7 @@ author:
   affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway </br> Digital Inclusion, Bioversity International, Montpellier, France 
 output: html_document
 vignette: >
-  %\VignetteIndexEntry{Overview}
+  %\VignetteIndexEntry{Climatology}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown_notangle}
 bibliography: ["climatrends.bib"]
@@ -118,10 +118,5 @@ pl <- gg1 / gg2
 ```
 
 The trends show a decrease in the cold spell duration (number of consecutive cold nights bellow the 10th percentile) and warm spell duration (number of consecutive warm days above the 90th percentile). However, the values of the percentiles show an increase over the time series. The T10p index shows a decrease around the year of 2010, but again rises up to the a value around the -10 $^\circ$C, meaning that the cold nights are becoming a bit warmer over the time. The T90p index also shows an increase in the temperature across the sampled area, with the average 90th percentile rising from ~ 16 $^\circ$C to ~ 18 $^\circ$C over the time series. 
-
-\begin{figure}
-{\centering \includegraphics[width=0.8\linewidth]{nordic.png}}
-\caption{Fig. 1. Trends in temperature indices across Southern Norway and Sweden from 2000 to 2019. CSDI, maximum cold spell duration, consecutive nights with temperature < 10th percentile. WSDI, maximum warm spell duration, consecutive days with temperature > 90th percentile. T10p, the 10th percentile of night temperature. T90p, the 90th percentile of day temperature. Red line indicates the historical mean of each index in the time series. Blue line indicates the smoothed trends in each index using the 'loess' method.}\label{fig:fig_nordic}
-\end{figure}
 
 # References

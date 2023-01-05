@@ -18,3 +18,4 @@
 ^vignettes/Overview\.Rmd\.orig$
 ^inst/paper$
 ^LICENSE\.md$
+^data-raw$
