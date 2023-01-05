@@ -392,7 +392,6 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
   
 }
 
-
 #' Get data from NASAPOWER using nasapower::get_power()
 #' 
 #' @param dates character with first and final date in the format YYYY-MM-DD
@@ -555,3 +554,4 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
   return(result)
   
 }
+
