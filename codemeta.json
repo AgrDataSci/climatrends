@@ -7,7 +7,7 @@
   "codeRepository": "https://agrdatasci.github.io/climatrends/",
   "issueTracker": "https://github.com/agrdatasci/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.4",
+  "version": "0.5",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -67,6 +67,18 @@
   "softwareSuggestions": [
     {
       "@type": "SoftwareApplication",
+      "identifier": "ag5Tools",
+      "name": "ag5Tools",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ag5Tools"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "chirps",
       "name": "chirps",
       "provider": {
@@ -88,18 +100,6 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=knitr"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "nasapower",
-      "name": "nasapower",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=nasapower"
     },
     {
       "@type": "SoftwareApplication",
@@ -155,9 +155,21 @@
       "identifier": "stats",
       "name": "stats"
     },
+    "4": {
+      "@type": "SoftwareApplication",
+      "identifier": "nasapower",
+      "name": "nasapower",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=nasapower"
+    },
     "SystemRequirements": null
   },
-  "fileSize": "937.747KB",
+  "fileSize": "4498.756KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",

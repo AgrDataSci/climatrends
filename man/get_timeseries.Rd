@@ -3,7 +3,6 @@
 \name{get_timeseries}
 \alias{get_timeseries}
 \alias{get_timeseries.default}
-\alias{get_timeseries.sf}
 \alias{get_timeseries.matrix}
 \alias{get_timeseries.array}
 \title{Time series climate data}
@@ -15,15 +14,7 @@ get_timeseries(object, day.one, ...)
   day.one,
   span = NULL,
   last.day = NULL,
-  data.from = "nasapower",
-  ...
-)
-
-\method{get_timeseries}{sf}(
-  object,
-  day.one,
-  span = NULL,
-  last.day = NULL,
+  as.matrix = FALSE,
   data.from = "nasapower",
   ...
 )
@@ -51,6 +42,8 @@ given) for the length of the time series to be captured}
 \item{last.day}{optional to \var{span}, an object of class \code{Date} or
 any other object that can be coerced to \code{Date} (e.g. integer, character 
 YYYY-MM-DD)  for the last day of the time series}
+
+\item{as.matrix}{logical, optional, to return a matrix or array instead of a data.frame}
 
 \item{data.from}{character, for the source of climate data. See details.}
 }
@@ -80,6 +73,7 @@ to download. See help("parameters", "nasapower") when \var{data.from} = "nasapow
  included in the timespan.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Using local sources
 # an array with temperature data
 data("temp_dat", package = "climatrends")
@@ -94,18 +88,18 @@ data("rain_dat", package = "climatrends")
 
 get_timeseries(rain_dat, "2013-10-28", span = span)
 
-# library("nasapower")
-# library("sf")
-# # Fetch data from NASA POWER using 'sf' method
-# data("lonlatsf", package = "climatrends")
-# 
-# g <- get_timeseries(lonlatsf, 
-#                     day.one = "2018-05-16", 
-#                     last.day = "2018-05-30",
-#                     pars = c("PRECTOT", "T2M", "T10M"))
-# 
-# 
-# g
+\donttest{
+# data can be returned as matrix
+library("sf")
+# Fetch data from NASA POWER using 'sf' method
+data("lonlatsf", package = "climatrends")
 
+g <- get_timeseries(object = lonlatsf,
+                    day.one = "2018-05-16",
+                    last.day = "2018-05-30",
+                    pars = c("PRECTOTCORR", "T2M"),
+                    as.matrix = TRUE)
+}
+\dontshow{\}) # examplesIf}
 }
 \concept{GET functions}

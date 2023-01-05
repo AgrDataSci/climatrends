@@ -16,6 +16,7 @@
 #'  any other object that can be coerced to \code{Date} (e.g. integer, character 
 #'  YYYY-MM-DD)  for the last day of the time series
 #' @param data.from character, for the source of climate data. See details.
+#' @param as.matrix logical, optional, to return a matrix or array instead of a data.frame 
 #' @param ... additional arguments passed to methods. See details.
 #' @details 
 #' The \code{default} method and the \code{sf} method assumes that the climate 
@@ -38,7 +39,7 @@
 #' @return A list with class \code{clima_ls} with data.frame(s) with 
 #'  the class \code{clima_df} 
 #' @family GET functions
-#' @examples 
+#' @examplesIf interactive()
 #' # Using local sources
 #' # an array with temperature data
 #' data("temp_dat", package = "climatrends")
@@ -53,19 +54,18 @@
 #' 
 #' get_timeseries(rain_dat, "2013-10-28", span = span)
 #' 
-#' # library("nasapower")
-#' # library("sf")
-#' # # Fetch data from NASA POWER using 'sf' method
-#' # data("lonlatsf", package = "climatrends")
-#' # 
-#' # g <- get_timeseries(lonlatsf, 
-#' #                     day.one = "2018-05-16", 
-#' #                     last.day = "2018-05-30",
-#' #                     pars = c("PRECTOT", "T2M", "T10M"))
-#' # 
-#' # 
-#' # g
+#' \donttest{
+#' # data can be returned as matrix
+#' library("sf")
+#' # Fetch data from NASA POWER using 'sf' method
+#' data("lonlatsf", package = "climatrends")
 #' 
+#' g <- get_timeseries(object = lonlatsf,
+#'                     day.one = "2018-05-16",
+#'                     last.day = "2018-05-30",
+#'                     pars = c("PRECTOTCORR", "T2M"),
+#'                     as.matrix = TRUE)
+#' }
 #' @importFrom stats dist hclust cutree
 #' @export
 get_timeseries <- function(object, day.one, ...) {
@@ -76,7 +76,10 @@ get_timeseries <- function(object, day.one, ...) {
 
 #' @rdname get_timeseries
 #' @export
-get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL,
+get_timeseries.default <- function(object, day.one, 
+                                   span = NULL, 
+                                   last.day = NULL, 
+                                   as.matrix = FALSE,
                                    data.from = "nasapower", ...){
   
   dots <- list(...)
@@ -86,47 +89,12 @@ get_timeseries.default <- function(object, day.one, span = NULL, last.day = NULL
     days.before <- 0
   }
   
-  sts <- .st_span(day.one, span, last.day, days.before)
-  
-  object <- as.data.frame(object)
-  
-  makecall <- paste0(".", data.from)
-  
-  args <- list(dates = sts$dates,
-               lonlat = object,
-               pars = pars)
-  
-  object <- do.call(makecall, args)
-  
-  r <- lapply(object, function(x){
-    .st_ts(x,
-           days = sts$begin,
-           span = sts$span,
-           maxspan = sts$maxspan)
-  })
-  
-  class(r) <- union("clima_ls", class(r))
-  
-  return(r)
-  
-}
-
-#' @rdname get_timeseries
-#' @method get_timeseries sf
-#' @export
-get_timeseries.sf <- function(object, day.one, span = NULL, last.day = NULL, 
-                              data.from = "nasapower",
-                              ...){
-  
-  dots <- list(...)
-  pars <- dots[["pars"]]
-  days.before <- dots[["days.before"]]
-  if (is.null(days.before)) {
-    days.before <- 0
+  if (isTRUE("sf" %in% class(object))) {
+    
+    object <- .lonlat_from_sf(object)
+    
   }
   
-  object <- .lonlat_from_sf(object)
-  
   object <- as.data.frame(object)
   
   sts <- .st_span(day.one, span, last.day, days.before)
@@ -137,8 +105,15 @@ get_timeseries.sf <- function(object, day.one, span = NULL, last.day = NULL,
                lonlat = object,
                pars = pars)
   
-  
   object <- do.call(makecall, args)
+  
+  if (isTRUE(as.matrix)) {
+    
+    object <- lapply(object, as.matrix)
+    
+    return(object)
+    
+  }
   
   r <- lapply(object, function(x){
     .st_ts(x,
@@ -152,7 +127,6 @@ get_timeseries.sf <- function(object, day.one, span = NULL, last.day = NULL,
   return(r)
   
 }
-
 
 #' @rdname get_timeseries
 #' @method get_timeseries matrix
