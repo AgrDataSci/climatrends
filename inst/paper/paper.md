@@ -31,10 +31,6 @@ year: 2023
 bibliography: paper.bib
 output: rticles::joss_article
 journal: JOSS
-#output:
-#  pdf_document:
-#    keep_tex: false
-#header-includes: \usepackage{caption} \captionsetup[figure]{labelformat=empty}
 ---
 
 # Summary
@@ -43,7 +39,7 @@ Abiotic factors play an important role in most ecological and crop systems that 
 
 # Statement of need
 
-Reproducibility, the ability to repeat the analysis, and replicability, the ability to repeat an experiment [@Stevens2017], are key to perform collaborative scientific research [@Powers2019; @Munafo2017]. It allows scientists to re-perform analysis after a long hiatus and the peers to validate analysis and get new insights using original or new data. This is still a gap in most of the studies in agriculture and ecology. `climatrends` addresses this specific issue. The package originates from a set of scripts to compute climate indices in our previous studies [@deSousa2018; @vanEtten2019]. Building up on the interest in expanding the analysis to other regions and to enable reproducible and replicable studies among different research groups across the CGIAR (https://www.cgiar.org) and partner institutions we developed `climatrends`. Most of the package functions take into account the heterogeneity of testing sites (locations), dates and seasons, a common characteristic of decentralized agricultural trials [@vanEtten2019]. Further development was made to enable time series analysis with fixed periods of time and locations [@deSousa2018]. The package `climatrends` computes temperature and precipitation indices that were suggested by previous studies on climatology and crop science [@Kehel2016; @Aguilar2005; @Challinor2016]. The indices are described in the package's documentation. `climatrends` was released on CRAN on February 2020 and, by that time, was the first package to provide methods for agroclimatic indices in R. Currently the package belongs to the CRAN Task View in Agriculture (https://cran.r-project.org/web/views/Agriculture.html) and is complementary to other new packages like `agroclim` [@agroclim] and `cropgrowdays` [@cropgrowdays].
+Reproducibility, the ability to repeat the analysis, and replicability, the ability to repeat an experiment [@Stevens2017], are key to perform collaborative scientific research [@Powers2019; @Munafo2017]. It allows scientists to re-perform analysis after a long hiatus and the peers to validate analysis and get new insights using original or new data. This is still a gap in most of the studies in agriculture and ecology. `climatrends` addresses this specific issue. The package originates from a set of scripts to compute climate indices in our previous studies [@deSousa2018; @vanEtten2019]. Building up on the interest in expanding the analysis to other regions and to enable reproducible and replicable studies among different research groups within the CGIAR (https://www.cgiar.org) and partner institutions we developed `climatrends`. Most of the package functions take into account the heterogeneity of testing sites (locations), dates and seasons, a common characteristic of decentralized agricultural trials [@vanEtten2019]. Further development was made to enable time series analysis with fixed periods of time and locations [@deSousa2018]. The package `climatrends` computes temperature, precipitation, crop growing and crop stress indices that were validated by previous studies on climatology and crop science [@Kehel2016; @Aguilar2005; @Challinor2016]. The indices are described in the package's documentation. `climatrends` was released on CRAN in February 2020 and was the first package to provide methods for agroclimatic indices in R, being able to deal with site heterogeneity and time series analysis. `climatrends` is also unique in its integration with API Client data like NASA POWER [@Sparks2018], CHIRPS [@Funk2015; @chirps] and AgERA5 [@Hersbach2020; @Brown2023]. Other packages like `pollen` [@pollen] and `cropgrowdays` [@cropgrowdays] are limited to growing degree days, whereas the package `agroclim` [@agroclim] provides temperature and precipitation indices but is limited to zoning areas. Currently `climatrends` belongs to the CRAN Task View in Agriculture (https://cran.r-project.org/web/views/Agriculture.html) and is complementary to `agroclim` and `cropgrowdays`.
 
 The package contains eight main functions (Table 1), with a default method for numeric 'vector' and additional methods implemented via the package `methods` [@RCoreTeam] for classes 'matrix' (or array), 'data.frame', and 'sf' (of geometry POINT or POLYGON) [@sf]. The last two methods are designed to fetch data using API Client, currently from the packages `nasapower` [@Sparks2018] and `chirps` [@chirps]. 
 
@@ -122,7 +118,7 @@ The package can support the integration with other datasets as they become avail
 
 # Acknowledgements
 
-This work was supported by The Nordic Joint Committee for Agricultural and Food Research (grant num. 202100-2817).
+This work was supported by The Nordic Joint Committee for Agricultural and Food Research (grant 202100-2817). Additional support was provided by the projects Accelerated Varietal Improvement and Seed Systems in Africa (AVISA, INV-009649) and 1000FARMS (INV-031561) supported by the Bill & Melinda Gates Foundation. The views expressed in this document cannot be taken to reflect the official opinions of these organizations.
 
 # References
 
