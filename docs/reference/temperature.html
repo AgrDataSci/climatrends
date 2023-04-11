@@ -222,29 +222,58 @@ temperature &lt; 10th percentile</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># the default method</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"innlandet"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># a single temporal observation</span></span>
-<span><span class="fu">temperature</span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># return as timeseries with 30-day intervals</span></span>
-<span><span class="fu">temperature</span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, </span>
-<span>            <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>, </span>
-<span>            dates <span class="op">=</span> <span class="va">innlandet</span><span class="op">$</span><span class="va">dates</span>,</span>
-<span>            timeseries <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>            intervals <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">#####################################################</span></span>
-<span></span>
-<span><span class="co"># array method</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"temp_dat"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">temperature</span><span class="op">(</span><span class="va">temp_dat</span>,</span>
-<span>            day.one <span class="op">=</span> <span class="st">"2013-10-28"</span>,</span>
-<span>            span <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
-<span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># the default method</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"innlandet"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># a single temporal observation</span></span></span>
+<span class="r-in"><span><span class="fu">temperature</span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1: 15.13 -14.86  6.77 -19.25     6     0     0   115     4     5 -15.81  9.09</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># return as timeseries with 30-day intervals</span></span></span>
+<span class="r-in"><span><span class="fu">temperature</span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, </span></span>
+<span class="r-in"><span>            <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>, </span></span>
+<span class="r-in"><span>            dates <span class="op">=</span> <span class="va">innlandet</span><span class="op">$</span><span class="va">dates</span>,</span></span>
+<span class="r-in"><span>            timeseries <span class="op">=</span> <span class="cn">TRUE</span>, </span></span>
+<span class="r-in"><span>            intervals <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        id       date index  value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;int&gt;     &lt;date&gt; &lt;chr&gt;  &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      1 2019-01-01 maxDT  -0.15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:      1 2019-01-01 minDT -14.86</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:      1 2019-01-01 maxNT  -3.41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:      1 2019-01-01 minNT -18.67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:      1 2019-01-01   DTR   4.35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68:     1 2019-05-31   CFD   3.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69:     1 2019-05-31  WSDI   2.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70:     1 2019-05-31  CSDI   3.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71:     1 2019-05-31  T10p   0.20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72:     1 2019-05-31  T90p  11.14</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#####################################################</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># array method</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"temp_dat"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">temperature</span><span class="op">(</span><span class="va">temp_dat</span>,</span></span>
+<span class="r-in"><span>            day.one <span class="op">=</span> <span class="st">"2013-10-28"</span>,</span></span>
+<span class="r-in"><span>            span <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     maxDT minDT maxNT minNT   DTR    SU    TR   CFD  WSDI  CSDI  T10p  T90p</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:  33.50 33.20  8.40  8.20    25    12     0     0     5     2  8.21 33.50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:  34.90 34.60  9.50  8.90    25    12     0     0     6     2  8.91 34.90</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:  32.30 31.70  8.50  8.00    23    12     0     0     8     2  8.01 32.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:  27.50 26.90  2.10  1.50    25     0     0     0     2     5  1.60 27.40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6:  27.60 26.90  6.50  5.90    20     0     0     0     2     2  6.01 27.40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7:  32.80 32.00  6.40  5.70    26    12     0     0     2     3  5.70 32.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8:  31.90 31.00  4.90  4.60    26    12     0     0     2     2  4.61 31.57</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9:  32.60 31.30  5.10  4.30    27    12     0     0     2     3  4.30 32.27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10: 28.70 28.00  4.40  2.70    24     0     0     0     2     2  2.81 28.50</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

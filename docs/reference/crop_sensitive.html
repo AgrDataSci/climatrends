@@ -188,30 +188,100 @@ day to capture the climate data</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># the default method</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">78</span><span class="op">)</span></span>
-<span><span class="va">tmax</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">37</span>, <span class="fl">47</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">79</span><span class="op">)</span></span>
-<span><span class="va">tmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">31</span>, <span class="fl">34</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">crop_sensitive</span><span class="op">(</span><span class="va">tmax</span>, <span class="va">tmin</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">###############################################</span></span>
-<span></span>
-<span><span class="co"># the array method</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"temp_dat"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># use the default thresholds</span></span>
-<span><span class="fu">crop_sensitive</span><span class="op">(</span><span class="va">temp_dat</span>,</span>
-<span>               day.one <span class="op">=</span> <span class="st">"2013-10-27"</span>,</span>
-<span>               last.day <span class="op">=</span> <span class="st">"2013-11-04"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># or change the thresholds based on the crop physiology</span></span>
-<span><span class="fu">crop_sensitive</span><span class="op">(</span><span class="va">temp_dat</span>,</span>
-<span>               day.one <span class="op">=</span> <span class="st">"2013-10-27"</span>,</span>
-<span>               last.day <span class="op">=</span> <span class="st">"2013-11-04"</span>,</span>
-<span>               hts_mean.threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">24</span><span class="op">)</span>,</span>
-<span>               hts_max.threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">31</span>, <span class="fl">33</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># the default method</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">78</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tmax</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">37</span>, <span class="fl">47</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">79</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tmin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">31</span>, <span class="fl">34</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">crop_sensitive</span><span class="op">(</span><span class="va">tmax</span>, <span class="va">tmin</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    hts_mean_32 hts_mean_35 hts_mean_38 hts_max_36 hts_max_39 hts_max_42 hse_31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:        1.00        0.94        0.30       1.00       0.82       0.44   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    hse_ms_31 cdi_mean_22 cdi_mean_23 cdi_mean_24 cdi_max_27 cdi_max_28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:     50.00       19.74       18.74       17.74      10.10       9.10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    cdi_max_29 lethal_43 lethal_46 lethal_49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:       8.10      0.00      0.00      0.00</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">###############################################</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the array method</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"temp_dat"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use the default thresholds</span></span></span>
+<span class="r-in"><span><span class="fu">crop_sensitive</span><span class="op">(</span><span class="va">temp_dat</span>,</span></span>
+<span class="r-in"><span>               day.one <span class="op">=</span> <span class="st">"2013-10-27"</span>,</span></span>
+<span class="r-in"><span>               last.day <span class="op">=</span> <span class="st">"2013-11-04"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     hts_mean_32 hts_mean_35 hts_mean_38 hts_max_36 hts_max_39 hts_max_42 hse_31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:         0.00        0.00        0.00       0.00       0.00       0.00   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:         0.00        0.00        0.00       0.00       0.00       0.00   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:         0.00        0.00        0.00       0.00       0.00       0.00   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:         0.00        0.00        0.00       0.00       0.00       0.00   0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:         0.00        0.00        0.00       0.00       0.00       0.00   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6:         0.00        0.00        0.00       0.00       0.00       0.00   0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7:         0.00        0.00        0.00       0.00       0.00       0.00   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8:         0.00        0.00        0.00       0.00       0.00       0.00   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9:         0.00        0.00        0.00       0.00       0.00       0.00   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:        0.00        0.00        0.00       0.00       0.00       0.00   0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     hse_ms_31 cdi_mean_22 cdi_mean_23 cdi_mean_24 cdi_max_27 cdi_max_28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:       9.00       11.40       10.40        9.40       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:       9.00       12.81       11.81       10.81       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:       9.00        9.88        8.88        7.88       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:       0.00        5.23        4.23        3.23       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:       9.00       10.47        9.47        8.47       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6:       0.00        5.29        4.29        3.29       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7:       9.00       10.47        9.47        8.47       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8:       9.00        9.41        8.41        7.41       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9:       9.00       10.04        9.04        8.04       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:      0.00        6.36        5.36        4.36       0.00       0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     cdi_max_29 lethal_43 lethal_46 lethal_49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:        0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:        0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:        0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:        0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:        0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6:        0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7:        0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8:        0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9:        0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:       0.00      0.00      0.00      0.00</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># or change the thresholds based on the crop physiology</span></span></span>
+<span class="r-in"><span><span class="fu">crop_sensitive</span><span class="op">(</span><span class="va">temp_dat</span>,</span></span>
+<span class="r-in"><span>               day.one <span class="op">=</span> <span class="st">"2013-10-27"</span>,</span></span>
+<span class="r-in"><span>               last.day <span class="op">=</span> <span class="st">"2013-11-04"</span>,</span></span>
+<span class="r-in"><span>               hts_mean.threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">24</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               hts_max.threshold <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">31</span>, <span class="fl">33</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     hts_mean_24 hts_max_31 hts_max_33 hse_31 hse_ms_31 cdi_mean_22 cdi_mean_23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:         0.00       1.00       1.00   1.00      9.00       11.40       10.40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:         0.00       1.00       1.00   1.00      9.00       12.81       11.81</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:         0.00       1.00       0.00   1.00      9.00        9.88        8.88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:         0.00       0.00       0.00   0.00      0.00        5.23        4.23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:         0.00       1.00       0.00   1.00      9.00       10.47        9.47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6:         0.00       0.00       0.00   0.00      0.00        5.29        4.29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7:         0.00       1.00       0.00   1.00      9.00       10.47        9.47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8:         0.00       1.00       0.00   1.00      9.00        9.41        8.41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9:         0.00       1.00       0.00   1.00      9.00       10.04        9.04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:        0.00       0.00       0.00   0.00      0.00        6.36        5.36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     cdi_mean_24 cdi_max_27 cdi_max_28 cdi_max_29 lethal_43 lethal_46 lethal_49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:         9.40       0.00       0.00       0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:        10.81       0.00       0.00       0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:         7.88       0.00       0.00       0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:         3.23       0.00       0.00       0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:         8.47       0.00       0.00       0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6:         3.29       0.00       0.00       0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7:         8.47       0.00       0.00       0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8:         7.41       0.00       0.00       0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9:         8.04       0.00       0.00       0.00      0.00      0.00      0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:        4.36       0.00       0.00       0.00      0.00      0.00      0.00</span>
+</code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

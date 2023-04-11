@@ -185,30 +185,69 @@ day to capture the climate data</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"innlandet"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># use the default equation</span></span>
-<span><span class="fu">GDD</span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>, tbase <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># set the equation "b", which is a better option for this case</span></span>
-<span><span class="co"># tmin = tbase if tmin &lt; tbase </span></span>
-<span><span class="co"># tmax = tbase if tmax &lt; tbase</span></span>
-<span><span class="fu">GDD</span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>, tbase <span class="op">=</span> <span class="fl">2</span>, equation <span class="op">=</span> <span class="st">"b"</span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span><span class="co">#####################################################</span></span>
-<span></span>
-<span><span class="co"># return as the number of days required to reach a certain accumulated GDD</span></span>
-<span><span class="co"># use equation "c", which adjusts tmax base on a tbase_max</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"temp_dat"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">GDD</span><span class="op">(</span><span class="va">temp_dat</span>, </span>
-<span>    day.one <span class="op">=</span> <span class="st">"2013-10-27"</span>, </span>
-<span>    degree.days <span class="op">=</span> <span class="fl">90</span>, </span>
-<span>    return.as <span class="op">=</span> <span class="st">"ndays"</span>, </span>
-<span>    tbase_max <span class="op">=</span> <span class="fl">32</span>,</span>
-<span>    equation <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"innlandet"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use the default equation</span></span></span>
+<span class="r-in"><span><span class="fu">GDD</span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>, tbase <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         gdd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 178: 130.98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 179: 135.32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 180: 141.84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 181: 150.12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 182: 152.30</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># set the equation "b", which is a better option for this case</span></span></span>
+<span class="r-in"><span><span class="co"># tmin = tbase if tmin &lt; tbase </span></span></span>
+<span class="r-in"><span><span class="co"># tmax = tbase if tmax &lt; tbase</span></span></span>
+<span class="r-in"><span><span class="fu">GDD</span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>, tbase <span class="op">=</span> <span class="fl">2</span>, equation <span class="op">=</span> <span class="st">"b"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         gdd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;dbl&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:     0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 178: 143.04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 179: 147.38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 180: 153.89</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 181: 162.18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 182: 164.89</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#####################################################</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># return as the number of days required to reach a certain accumulated GDD</span></span></span>
+<span class="r-in"><span><span class="co"># use equation "c", which adjusts tmax base on a tbase_max</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"temp_dat"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">GDD</span><span class="op">(</span><span class="va">temp_dat</span>, </span></span>
+<span class="r-in"><span>    day.one <span class="op">=</span> <span class="st">"2013-10-27"</span>, </span></span>
+<span class="r-in"><span>    degree.days <span class="op">=</span> <span class="fl">90</span>, </span></span>
+<span class="r-in"><span>    return.as <span class="op">=</span> <span class="st">"ndays"</span>, </span></span>
+<span class="r-in"><span>    tbase_max <span class="op">=</span> <span class="fl">32</span>,</span></span>
+<span class="r-in"><span>    equation <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       gdd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;int&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1:      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2:      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3:      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4:     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5:      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6:     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7:      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8:      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9:      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:     9</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

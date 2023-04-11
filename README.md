@@ -6,7 +6,6 @@
 [![CRAN status](https://www.r-pkg.org/badges/version/climatrends)](https://cran.r-project.org/package=climatrends)
 [![cran checks](https://badges.cranchecks.info/worst/climatrends.svg)](https://cran.r-project.org/web/checks/check_results_climatrends.html)
 [![Downloads](https://cranlogs.r-pkg.org/badges/climatrends)](https://cran.r-project.org/package=climatrends)
-[![codecov](https://codecov.io/gh/agrdatasci/climatrends/master.svg)](https://codecov.io/github/agrdatasci/climatrends?branch=master)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![DOI](https://zenodo.org/badge/239103060.svg)](https://zenodo.org/badge/latestdoi/239103060)
 <!-- badges: end -->
@@ -16,6 +15,11 @@
 ## Overview
 
 The **climatrends** package provides methods to compute precipitation and temperature indices for climate models in ecology. The indices produced here can be used as explanatory variables for ecological modelling, crop modelling, and to assess trends in climate change.
+
+
+## Statement of need
+
+Reproducibility, the ability to repeat the analysis, and Replicability, the ability to repeat an experiment are key to perform collaborative scientific research. This is still a gap in most of the studies in agriculture and ecology. `climatrends` addresses this specific issue. The package originates from a set of scripts to compute climate indices in our previous studies. Building up on the interest in expanding the analysis to other regions and to enable reproducible and replicable studies we developed `climatrends`. Most of the package functions take into account the heterogeneity of testing sites (locations), dates and seasons, a common characteristic of decentralized agricultural trials. Further development was made to enable time series analysis with fixed periods of time and locations. The package `climatrends` computes temperature, precipitation, crop growing and crop stress indices that were validated by previous studies on climatology and crop science. Currently `climatrends` is part of the CRAN Task View in Agriculture (https://cran.r-project.org/web/views/Agriculture.html).
 
 ## Package website
 
