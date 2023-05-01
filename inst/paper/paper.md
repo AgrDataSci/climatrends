@@ -109,7 +109,7 @@ Seasonal distribution of maxNT captured for each incomplete block in this experi
 
 {\centering \includegraphics[width=0.8\linewidth]{cbean}}
 
-\caption{Fig. 1. Application of `climatrends` functions to support the analysis of decentralized on-farm trial data. (A) Days required to reach 900 growing-degree days from planting date calculated using the function `GDD()`. (B) Maximum night temperature (°C) distributed across seasons computed using the function `temperature()`. (C) Plackett-Luce Tree showing the probability that a given variety outperforms the other varieties (axys X) in three different nodes splitted with the summer days (day temperature > 30 °C) and maximum night temperature (°C). Note: the first season (primera, Pr) spans from May to August, the second (postrera, Po) from September to October, and the third (apante, Ap) from November to January.}\label{fig:fig_cbean}
+\caption{Fig. 1. Application of \texttt{climatrends} functions to support the analysis of decentralized on-farm trial data. (A) Days required to reach 900 growing-degree days from planting date calculated using the function \texttt{GDD()}. (B) Maximum night temperature (°C) distributed across seasons computed using the function \texttt{temperature()}. (C) Plackett-Luce Tree showing the probability that a given variety outperforms the other varieties (axys X) in three different nodes splitted with the summer days (day temperature > 30 °C) and maximum night temperature (°C). Note: the first season (primera, Pr) spans from May to August, the second (postrera, Po) from September to October, and the third (apante, Ap) from November to January.}\label{fig:fig_cbean}
 \end{figure}
 
 # Further development
