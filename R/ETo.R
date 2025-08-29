@@ -147,9 +147,11 @@ ETo.data.frame <- function(object, day.one, ..., Kc = 1){
     pars <- c("T2M_MAX", "T2M_MIN")
   }
   
-  dat <- get_timeseries(object, day.one, pars = pars, ...)
+  tmax <- get_timeseries(object, day.one, span, pars = pars[1], ...)
   
-  temp <- cbind(dat[[pars[[1]]]], tmin = dat[[pars[[2]]]]$value)
+  tmin <- get_timeseries(object, day.one, span, pars = pars[2], ...)
+  
+  temp <- cbind(tmax[[pars[[1]]]], tmin = tmin[[pars[[2]]]]$value)
   
   names(temp)[names(temp) == "value"] <- "tmax"
   

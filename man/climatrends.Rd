@@ -2,8 +2,8 @@
 % Please edit documentation in R/climatrends.R
 \docType{package}
 \name{climatrends}
-\alias{climatrends}
 \alias{climatrends-package}
+\alias{climatrends}
 \title{Climate Variability Indices for Ecological Modelling}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}

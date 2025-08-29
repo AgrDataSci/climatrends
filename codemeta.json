@@ -7,13 +7,13 @@
   "codeRepository": "https://agrdatasci.github.io/climatrends/",
   "issueTracker": "https://github.com/agrdatasci/climatrends/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.5",
+  "version": "1.1",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.2.1 (2022-06-23)",
+  "runtimePlatform": "R version 4.3.3 (2024-02-29)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -169,7 +169,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "4498.756KB",
+  "fileSize": "4501.063KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
@@ -193,7 +193,7 @@
       ],
       "name": "climatrends: Climate Variability Indices for Ecological Modelling",
       "url": "https://CRAN.R-project.org/package=climatrends",
-      "description": "R package version 0.2"
+      "description": "R package version 0.5"
     }
   ]
 }
