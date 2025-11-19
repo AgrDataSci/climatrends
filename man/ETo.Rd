@@ -93,9 +93,9 @@ Additional arguments:
 \examples{
 # the default method
 set.seed(78)
-tmax <- runif(50, 37, 47)
+tmax = runif(50, 37, 47)
 set.seed(79)
-tmin <- runif(50, 31, 34)
+tmin = runif(50, 31, 34)
 
 ETo(tmax, tmin, lat = 22, month = 10)
 

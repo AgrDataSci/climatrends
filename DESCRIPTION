@@ -23,7 +23,6 @@ Imports:
     stats,
     nasapower
 Suggests:
-    ag5Tools,
     chirps,
     knitr,
     rmarkdown,

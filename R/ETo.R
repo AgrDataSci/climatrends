@@ -59,9 +59,9 @@
 #' @examples
 #' # the default method
 #' set.seed(78)
-#' tmax <- runif(50, 37, 47)
+#' tmax = runif(50, 37, 47)
 #' set.seed(79)
-#' tmin <- runif(50, 31, 34)
+#' tmin = runif(50, 31, 34)
 #' 
 #' ETo(tmax, tmin, lat = 22, month = 10)
 #' 
@@ -76,36 +76,36 @@
 #'     Kc = 0.92)
 #'     
 #' @export
-ETo <- function(object, ..., Kc = 1){
+ETo = function(object, ..., Kc = 1){
   
   UseMethod("ETo")
-
+  
 }
 
 #' @rdname ETo
 #' @method ETo default
 #' @export
-ETo.default <- function(object, tmin, ..., Kc = 1, lat = NULL, month = NULL){
+ETo.default = function(object, tmin, ..., Kc = 1, lat = NULL, month = NULL){
   
-  dots <- list(...)
-  p <- dots[["p"]]
+  dots = list(...)
+  p = dots[["p"]]
   
   # get p if lat is provided
   if (all(!is.null(lat), !is.null(month))) {
-    m <- as.integer(month)
-    p <- .p_daytime(lat = lat, month = m)
+    m = as.integer(month)
+    p = .p_daytime(lat = lat, month = m)
   }
   
   if (is.null(p)) {
-    p <- 0.27
+    p = 0.27
   }
   
-  temp <- data.frame(id = 1, 
-                     tmax = object, 
-                     tmin = tmin,
-                     stringsAsFactors = FALSE)
+  temp = data.frame(id = 1, 
+                    tmax = object, 
+                    tmin = tmin,
+                    stringsAsFactors = FALSE)
   
-  result <- .eto(temp, Kc, p)
+  result = .eto(temp, Kc, p)
   
   return(result)
   
@@ -114,48 +114,48 @@ ETo.default <- function(object, tmin, ..., Kc = 1, lat = NULL, month = NULL){
 #' @rdname ETo
 #' @method ETo data.frame
 #' @export
-ETo.data.frame <- function(object, day.one, ..., Kc = 1){
+ETo.data.frame = function(object, day.one, ..., Kc = 1){
   
-  dots <- list(...)
-  pars <- dots[["pars"]]
+  dots = list(...)
+  pars = dots[["pars"]]
   
   # coerce inputs to data.frame
-  object <- as.data.frame(object)
+  object = as.data.frame(object)
   if(dim(object)[[2]] != 2) {
     stop("Subscript out of bounds. In ETo.default(),",
          " only lonlat should be provided. \n")
   }
   
-  day.one <- as.vector(t(day.one))
+  day.one = as.vector(t(day.one))
   
   # get the latitude
-  lat <- object[, 2]
+  lat = object[, 2]
   
   # check if day.one is a 'Date' else try to coerce to Date
   if (!.is_Date(day.one)) {
     
-    day.one <- .coerce2Date(day.one)
+    day.one = .coerce2Date(day.one)
     
   }
   
   # get p using lat and day.one
-  m <- as.integer(format(day.one, "%m"))
+  m = as.integer(format(day.one, "%m"))
   
-  p <- .p_daytime(lat = lat, month = m)
+  p = .p_daytime(lat = lat, month = m)
   
   if (is.null(pars)) {
-    pars <- c("T2M_MAX", "T2M_MIN")
+    pars = c("T2M_MAX", "T2M_MIN")
   }
   
-  tmax <- get_timeseries(object, day.one, span, pars = pars[1], ...)
+  tmax = get_timeseries(object, day.one, pars = pars[1], ...)
   
-  tmin <- get_timeseries(object, day.one, span, pars = pars[2], ...)
+  tmin = get_timeseries(object, day.one, pars = pars[2], ...)
   
-  temp <- cbind(tmax[[pars[[1]]]], tmin = tmin[[pars[[2]]]]$value)
+  temp = cbind(tmax[[pars[[1]]]], tmin = tmin[[pars[[2]]]]$value)
   
-  names(temp)[names(temp) == "value"] <- "tmax"
+  names(temp)[names(temp) == "value"] = "tmax"
   
-  result <- .eto(temp, Kc, p)
+  result = .eto(temp, Kc, p)
   
   return(result)
 }
@@ -164,39 +164,39 @@ ETo.data.frame <- function(object, day.one, ..., Kc = 1){
 #' @rdname ETo
 #' @method ETo array
 #' @export
-ETo.array <- function(object, day.one, ..., Kc = 1, lat = NULL, p = 0.27){
+ETo.array = function(object, day.one, ..., Kc = 1, lat = NULL, p = 0.27){
   
-  dots <- list(...)
-  span <- dots[["span"]]
-  last.day <- dots[["last.day"]]
+  dots = list(...)
+  span = dots[["span"]]
+  last.day = dots[["last.day"]]
   
   # coerce to vector
-  day.one <- as.vector(t(day.one))
+  day.one = as.vector(t(day.one))
   
   # check if day.one is a 'Date' else try to coerce to Date
   if (isFALSE(.is_Date(day.one))) {
-    day.one <- .coerce2Date(day.one)
+    day.one = .coerce2Date(day.one)
   }
   
   if (all(is.null(span), is.null(last.day))) {
-    do <- as.character(max(day.one))
-    do <- match(do, dimnames(object[,,1])[[2]])
-    span <- dim(object)[[2]] - do
+    do = as.character(max(day.one))
+    do = match(do, dimnames(object[,,1])[[2]])
+    span = dim(object)[[2]] - do
   }
-
+  
   # get p if lat is provided
   if (!is.null(lat)) {
-    m <- as.integer(format(day.one, "%m"))
-    p <- .p_daytime(lat = lat, month = m)
+    m = as.integer(format(day.one, "%m"))
+    p = .p_daytime(lat = lat, month = m)
   }
   
-  dat <- get_timeseries(object, day.one, span, last.day)
+  dat = get_timeseries(object, day.one, span, last.day)
   
-  temp <- cbind(dat[[1]], tmin = dat[[2]]$value)
+  temp = cbind(dat[[1]], tmin = dat[[2]]$value)
   
-  names(temp)[names(temp) == "value"] <- "tmax"
+  names(temp)[names(temp) == "value"] = "tmax"
   
-  result <- .eto(temp, Kc, p)
+  result = .eto(temp, Kc, p)
   
   return(result)
   
@@ -206,42 +206,42 @@ ETo.array <- function(object, day.one, ..., Kc = 1, lat = NULL, p = 0.27){
 #' @rdname ETo
 #' @method ETo sf
 #' @export
-ETo.sf <- function(object, day.one, ..., Kc = 1, as.sf = TRUE){
+ETo.sf = function(object, day.one, ..., Kc = 1, as.sf = TRUE){
   
-  dots <- list(...)
-  pars <- dots[["pars"]]
+  dots = list(...)
+  pars = dots[["pars"]]
   
   # get lat
-  lat <- .lonlat_from_sf(object)
-  lat <- lat[, 2]
+  lat = .lonlat_from_sf(object)
+  lat = lat[, 2]
   
-  day.one <- as.vector(t(day.one))
+  day.one = as.vector(t(day.one))
   
   # check if day.one is a 'Date' else try to coerce to Date
   if (!.is_Date(day.one)) {
     
-    day.one <- .coerce2Date(day.one)
+    day.one = .coerce2Date(day.one)
     
   }
   
   # get p
-  m <- as.integer(format(day.one, "%m"))
-  p <- .p_daytime(lat = lat, month = m)
+  m = as.integer(format(day.one, "%m"))
+  p = .p_daytime(lat = lat, month = m)
   
   if (is.null(pars)) {
-    pars <- c("T2M_MAX", "T2M_MIN")
+    pars = c("T2M_MAX", "T2M_MIN")
   }
   
-  dat <- get_timeseries(object, day.one, pars = pars, ...)
+  dat = get_timeseries(object, day.one, pars = pars, ...)
   
-  temp <- cbind(dat[[pars[[1]]]], tmin = dat[[pars[[2]]]]$value)
+  temp = cbind(dat[[pars[[1]]]], tmin = dat[[pars[[2]]]]$value)
   
-  names(temp)[names(temp) == "value"] <- "tmax"
+  names(temp)[names(temp) == "value"] = "tmax"
   
-  result <- .eto(temp, Kc, p)
+  result = .eto(temp, Kc, p)
   
   if (isTRUE(as.sf)) {
-    result <- cbind(object, result)
+    result = cbind(object, result)
   }
   
   return(result)
@@ -260,23 +260,23 @@ ETo.sf <- function(object, day.one, ..., Kc = 1, as.sf = TRUE){
 #' 
 #' .eto(innlandet, 0.8, 0.1)
 #' @noRd 
-.eto <- function(temp, Kc = 1, p = 0.27) {
+.eto = function(temp, Kc = 1, p = 0.27) {
   
-  temp <- split(temp, temp$id)
+  temp = split(temp, temp$id)
   
-  Tmean <-lapply(temp, function(x){
+  Tmean =lapply(temp, function(x){
     (mean(x$tmax, na.rm = TRUE) + mean(x$tmin, na.rm = TRUE)) / 2
   })
   
-  Tmean <- do.call("rbind", Tmean)
+  Tmean = do.call("rbind", Tmean)
   
   # evapotranspiration
-  eto <- p * (0.46 * Tmean + 8) * Kc
+  eto = p * (0.46 * Tmean + 8) * Kc
   
-  result <- data.frame(ETo = eto, stringsAsFactors = FALSE)
+  result = data.frame(ETo = eto, stringsAsFactors = FALSE)
   
-  class(result) <- union("clima_df", class(result))
-
+  class(result) = union("clima_df", class(result))
+  
   return(result)
   
 }
@@ -284,13 +284,13 @@ ETo.sf <- function(object, day.one, ..., Kc = 1, as.sf = TRUE){
 
 # Compute daylight percentage of daytime
 # get p if lat is provided
-.p_daytime <- function(lat, month){
-  lat <- as.data.frame(lat)[, 1]
+.p_daytime = function(lat, month){
+  lat = as.data.frame(lat)[, 1]
   
-  l <- .round5(lat, 5)
+  l = .round5(lat, 5)
   
-  p <- daylight[cbind(match(l , daylight[, "y"]), match(month, names(daylight)))]
+  p = daylight[cbind(match(l , daylight[, "y"]), match(month, names(daylight)))]
   
   return(p)
-
+  
 }
