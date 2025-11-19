@@ -1,4 +1,4 @@
-climatrends 1.1 (2025-08-29)
+climatrends 1.1 (2025-11-19)
 =========================
 
 * Fixes an issue in `temperature.data.frame()` and `ETo.data.frame()` in requesting data from nasapower as the API cannot handle more than one parameter (TMAX, TMIN)
