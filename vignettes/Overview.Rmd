@@ -3,7 +3,7 @@ title: "Introduction to climatrends"
 package: climatrends
 author:
 - name: Kauê de Sousa
-  affiliation: Department of Agricultural Sciences, Inland Norway University, Hamar, Norway </br> Digital Inclusion, Bioversity International, Montpellier, France
+  affiliation: Department of Agricultural Sciences, University of Inland Norway, Hamar, Norway </br> Digital Inclusion, Bioversity International, Montpellier, France
 output: html_document
 vignette: >
   %\VignetteIndexEntry{Overview}
@@ -15,57 +15,81 @@ csl: citation_style.csl
 
 # Summary
 
-Understanding how climate variability influences ecological processes is a key approach to provide recommendations for climate adaptation and biodiversity conservation. **climatrends** provides methods to compute precipitation and temperature indices that serves as input for crop modelling, ecological modelling and trends in climate change. The climate variables available in **climatrends** were previously used to identify climate patterns in crop growing cycles[@Kehel2016], regional climate change assessment[@Aguilar2005; @Challinor2016; @Trnka2014; @Zohner2020], crowdsourcing citizen science in agriculture[@vanEtten2019] and trends in climate change compared with farmers' perceptions[@DeSousa2018].
+Understanding how climate variability influences ecological and agricultural systems is essential for climate adaptation, biodiversity conservation, and environmental modeling. **climatrends** provides a unified framework to compute temperature, precipitation, and crop-related climate indices. These indices serve as inputs for crop models, ecological analyses, phenology studies, and assessments of climate trends.
+
+The methods implemented in **climatrends** have been applied in several research domains, including crop growing cycle analysis[@Kehel2016], regional climate trend detection[@Aguilar2005; @Challinor2016; @Trnka2014; @Zohner2020], citizen science in agriculture[@vanEtten2019], and studies comparing climate trends with farmers’ perceptions[@DeSousa2018].
 
 # Statement of need
 
-Reproducibility, the ability to repeat the analysis, and Replicability, the ability to repeat an experiment are key to perform collaborative scientific research. This is still a gap in most of the studies in agriculture and ecology. `climatrends` addresses this specific issue. The package originates from a set of scripts to compute climate indices in our previous studies. Building up on the interest in expanding the analysis to other regions and to enable reproducible and replicable studies we developed `climatrends`. Most of the package functions take into account the heterogeneity of testing sites (locations), dates and seasons, a common characteristic of decentralized agricultural trials. Further development was made to enable time series analysis with fixed periods of time and locations. The package `climatrends` computes temperature, precipitation, crop growing and crop stress indices that were validated by previous studies on climatology and crop science. Currently `climatrends` is part of the CRAN Task View in Agriculture (https://cran.r-project.org/web/views/Agriculture.html).
+Reproducibility (being able to repeat an analysis) and replicability (being able to repeat an experiment) are essential principles in science, yet they remain challenging in many agricultural and ecological studies. Analyses often rely on custom scripts, inconsistent definitions of climate indices, or non-standard workflows, making results difficult to reuse across locations and seasons.
+
+**climatrends** was developed to address this gap. The package evolved from a collection of scripts used in previous studies and now provides standardized, transparent, and reproducible methods to compute well-established climate indices. The functions are designed to handle heterogeneous testing environments—a common characteristic of decentralized agricultural trials—where locations differ in climate, timing, and growing seasons. The package also supports fixed-period time-series analysis and integrates smoothly with API-based climate data sources (e.g., *nasapower*).
+
+The temperature, precipitation, and crop-sensitive indices implemented in **climatrends** draw from validated methods in climatology and crop science. The package is listed in the [CRAN Task View for Agricultural Science](https://cran.r-project.org/view=Agriculture).
 
 # Usage
 
-By default, the functions in **climatrends** requires a vector with climate data, and optionally a vector of dates that can be linked to the data for time series analysis. The package also provides methods for objects of classes `array` (or `matrix`), `sf` and `data.frame`, where the last two are designed to be used to request remote data from `R` packages that uses API clients, such as nasapower[@Sparks2018]. This vignette presents the main functions and the methods available in **climatrends**. Overall, these applications can be generalized to all functions.
+Most functions in **climatrends** accept a numeric vector of climate data and, optionally, a vector of dates to enable time-series calculations. The package provides S3 methods for objects of classes:
 
-## Temperature 
+- `numeric`  
+- `array` / `matrix`  
+- `data.frame`  
+- `sf`
 
-Here we compute temperature indices for the first semester of 2019 in the Innlandet county in Norway:
+Methods for `sf` and `data.frame` allow seamless integration with climate data services accessed through API clients such as *nasapower*[@Sparks2018].
+
+This vignette introduces the main functions and illustrates how to compute indices commonly used in ecological and agricultural research.
+
+---
+
+# Temperature
+
+Temperature-based indices are foundational in ecological and crop modeling. They summarize daily temperature dynamics and help identify heat accumulation, thermal stress, and seasonality.
+
+Below we compute temperature indices for the first half of 2019 in Innlandet county, Norway:
 
 ```{r temperature, message=TRUE, eval=TRUE, echo=TRUE}
 library("climatrends")
 
 data("innlandet", package = "climatrends")
 
-temp1 <- temperature(innlandet$tmax, innlandet$tmin)
+temp1 = temperature(innlandet$tmax, innlandet$tmin)
 
 temp1
-
 ```
 
-With the argument `timeseries = TRUE`, temperature() returns the indices for a time series based on `intervals`. Here we compute the indices for intervals of 30 days:
+To compute indices for a time series, set `timeseries = TRUE`. The argument intervals defines the window size (in days) for each period:
 
 ```{r temperature2, message=TRUE, eval=TRUE, echo=TRUE}
-temp2 <- temperature(innlandet$tmax, innlandet$tmin,
-                     dates = innlandet$dates,
-                     timeseries = TRUE, 
-                     intervals = 30)
+temp2 = temperature(innlandet$tmax, innlandet$tmin,
+                    dates = innlandet$dates,
+                    timeseries = TRUE, 
+                    intervals = 30)
 
 temp2
 ```
 
-## Growing degree-days 
+# Growing Degree-Days
 
-Growing degree-days is a heuristic tool in phenology, it is a measure of heat accumulation used to predict plant and animal development rates[@Prentice1992]. With the function `GDD()` we can compute the growing degree-days over a time series. In this case we apply an adjusted equation designed for cold areas with the argument `equation`:
+Growing degree-days (GDD) represent accumulated heat over time and are widely used in phenology to estimate plant and insect developmental rates[@Prentice1992]. `climatrends` computes GDD using the `GDD()` function.
+Here we calculate GDD using an adjusted equation suited for cold regions:
 
 ```{r gdd, message=TRUE, eval=TRUE, echo=TRUE}
-gdd <- GDD(innlandet$tmax, innlandet$tmin, tbase = 2, equation = "b")
+gdd = GDD(innlandet$tmax, innlandet$tmin, tbase = 2, equation = "b")
 
 gdd
 ```
 
-Additionally, the function may return the daily values of degree-days or the number of days that a given organism required to reach a certain number of accumulated degree-days. These values are defined by 'daily' or 'ndays' and can be adjusted using the argument `return.as`. The required accumulated gdd is defined with argument `degree.days`. For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated gdd to onset of photosynthesis [@JWu2013]. In that case, the function will calculate the growing degree-days and sum up the values until it reaches the defined gdd (105 $^\circ C$) and return the number of days needed in the given season, as follows.
+The function can also:
+
+- return daily degree-day values (`return.as = "daily"`), or
+- compute the number of days needed to reach a specified heat sum (`return.as = "ndays"`).
+
+For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated GDD to initiate photosynthesis[@JWu2013]. Below, we ask the function to compute the number of days required to reach 150 °C for a given location:
 
 ```{r gdd2, message=FALSE, eval=FALSE, echo=TRUE}
-lonlat <- data.frame(lon = 129.19,
-                     lat = 36.39)
+lonlat = data.frame(lon = 129.19,
+                    lat = 36.39)
 
 GDD(lonlat, 
     day.one = "2019-04-01",
@@ -74,14 +98,19 @@ GDD(lonlat,
     return.as = "ndays")
 ```
 
-This means that 45 days were required to reach 150 degree-days from April 2019.
+This means that 45 days were needed to accumulate 150 $^\circ C$ degree-days during the 2019 season.
 
 ## Late spring frost
 
-Late frost is a freezing event occurring after a substantial accumulation of warmth. These events can be tracked using the function `late_frost()`. The function returns a data.frame with the duration and gdd accumulated during the `events` of frost, latency (where there is no frost event, but also there is no GDD), and warming (where GDD is accumulated).
+Late spring frost occurs when a freezing event follows a period of accumulated warmth—potentially damaging sensitive early growth stages. The `late_frost()` function identifies frost events and describes:
+
+- frost duration,
+- accumulated GDD during frost,
+-latency periods (no frost, no GDD),
+- warming periods (positive GDD accumulation).
 
 ```{r latefrost, message=TRUE, eval=TRUE, echo=TRUE}
-lf <- late_frost(innlandet$tmax, 
+lf = late_frost(innlandet$tmax, 
                  innlandet$tmin, 
                  dates = innlandet$date, 
                  base = 2)
@@ -91,15 +120,17 @@ lf
 
 ## Rainfall 
 
-Precipitation indices are computed in the same way as the `temperature()` indices using the function `rainfall()`. But here, we fetch data from NASA POWER using the [nasapower](https://CRAN.R-project.org/package=nasapower) package passed to the `data.frame` method.  
+Precipitation indices are available through the `rainfall()` function. They follow the same principles as the temperature indices but use daily precipitation.
+
+Below we illustrate how climatrends works with remote-sensing data retrieved from NASA POWER through `nasapower` package: 
 
 ```{r rain, message=FALSE, eval=FALSE, echo=TRUE}
 library("nasapower")
 
-lonlat <- data.frame(lon = c(-73.3, -74.5),
+lonlat = data.frame(lon = c(-73.3, -74.5),
                      lat = c(-6.1, - 6.2))
 
-rain <- rainfall(lonlat, 
+rain = rainfall(lonlat, 
                  day.one = "2018-11-01",
                  last.day = "2018-12-31")
 
@@ -108,7 +139,7 @@ rain
 
 ## Crop sensitive indices
 
-These indices are designed to capture variability in sensitive stages of crop development [@Challinor2016; @Trnka2014] and can be computed using the function `crop_sensitive()`. Here we use the `sf` method with 5 random points across the Sinop municipality in Brazil.
+Crop-sensitive indices capture climatic variability during key developmental stages in crop growth. These indices have been used in agroclimatic assessments and impact studies[@Challinor2016; @Trnka2014]. Below, we compute them using the `sf` method for five spatial locations in Sinop, Brazil:
 
 ```{r csenstive, message=FALSE, eval=FALSE, echo=TRUE}
 library("sf")
@@ -120,24 +151,28 @@ crop_sensitive(lonlatsf,
                as.sf = FALSE)
 ```
 
-Additionally the thresholds for each index can be adjusted using the argument `*.threshold` (where * is replaced by the index abbreviation).
+Thresholds for individual indices can be modified using arguments of the form `*.threshold` (e.g., `tmax.threshold`).
 
 ## Reference evapotranspiration
 
-Evapotranspiration can be defined as the sum of evaporation and plant transpiration from the Earth's surface to the atmosphere. This is also an important index to include in models for ecological interactions. In **climatrends* this index can be calculate using the function `ETo()` which computes the evapotranspiration based on the Blaney-Criddle method[@Brouwer1986], an ideal equation when only air-temperature data sets are available for a site. Here we use the `array` method to compute the reference evapotranspiration. And the duration of the time series in each row is adjusted with the argument `span` based on the duration of the anthesis period in the latitude 25N, adjusted with argument `lat`.
+Evapotranspiration (ETo) is the combined loss of water through evaporation and plant transpiration, representing a fundamental component of ecological and agricultural models. `climatrends` computes reference evapotranspiration using the Blaney–Criddle method[@Brouwer1986], which is suitable when only temperature data are available.
 
+The `ETo()` function supports array inputs, where each row represents a location and each column a day. The argument:
+
+- span defines the number of days per time series,
+- lat sets the latitude used in the calculation,
+- Kc is the crop coefficient.
 
 ```{r eto, message=TRUE, eval=TRUE, echo=TRUE}
 data("temp_dat", package = "climatrends")
 
-eto <- ETo(temp_dat, 
+eto = ETo(temp_dat, 
            day.one = "2013-10-28",
            span = c(9, 10, 11, 12, 8, 10, 11, 11, 12, 10),
            lat = rep(25, 10),
            Kc = 0.92)
 
 eto
-
 ```
 
 ## References

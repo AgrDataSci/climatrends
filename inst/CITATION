@@ -1,4 +1,4 @@
-bibentry(entry = "Article",
+bibentry(bibtype = "Article",
     title = "{Climate variability indices for ecological and crop models in R: the climatrends package}",
     author = c(person("Kauê", "de Sousa"), 
                person("Jacob","van Etten"), 

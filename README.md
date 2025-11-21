@@ -14,12 +14,18 @@
 
 ## Overview
 
-The **climatrends** package provides methods to compute precipitation and temperature indices for climate models in ecology. The indices produced here can be used as explanatory variables for ecological modelling, crop modelling, and to assess trends in climate change.
+Understanding how climate variability influences ecological and agricultural systems is essential for climate adaptation, biodiversity conservation, and environmental modeling. **climatrends** provides a unified framework to compute temperature, precipitation, and crop-related climate indices. These indices serve as inputs for crop models, ecological analyses, phenology studies, and assessments of climate trends.
 
+The methods implemented in **climatrends** have been applied in several research domains, including crop growing cycle analysis, regional climate trend detection, citizen science in agriculture, and studies comparing climate trends with farmers’ perceptions.
 
 ## Statement of need
 
-Reproducibility, the ability to repeat the analysis, and Replicability, the ability to repeat an experiment are key to perform collaborative scientific research. This is still a gap in most of the studies in agriculture and ecology. `climatrends` addresses this specific issue. The package originates from a set of scripts to compute climate indices in our previous studies. Building up on the interest in expanding the analysis to other regions and to enable reproducible and replicable studies we developed `climatrends`. Most of the package functions take into account the heterogeneity of testing sites (locations), dates and seasons, a common characteristic of decentralized agricultural trials. Further development was made to enable time series analysis with fixed periods of time and locations. The package `climatrends` computes temperature, precipitation, crop growing and crop stress indices that were validated by previous studies on climatology and crop science. Currently `climatrends` is part of the CRAN Task View in Agriculture (https://cran.r-project.org/web/views/Agriculture.html).
+Reproducibility (being able to repeat an analysis) and replicability (being able to repeat an experiment) are essential principles in science, yet they remain challenging in many agricultural and ecological studies. Analyses often rely on custom scripts, inconsistent definitions of climate indices, or non-standard workflows, making results difficult to reuse across locations and seasons.
+
+**climatrends** was developed to address this gap. The package evolved from a collection of scripts used in previous studies and now provides standardized, transparent, and reproducible methods to compute well-established climate indices. The functions are designed to handle heterogeneous testing environments—a common characteristic of decentralized agricultural trials—where locations differ in climate, timing, and growing seasons. The package also supports fixed-period time-series analysis and integrates smoothly with API-based climate data sources (e.g., *nasapower*).
+
+The temperature, precipitation, and crop-sensitive indices implemented in **climatrends** draw from validated methods in climatology and crop science. The package is listed in the [CRAN Task View for Agricultural Science](https://cran.r-project.org/view=Agriculture).
+
 
 ## Package website
 

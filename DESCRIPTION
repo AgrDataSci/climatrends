@@ -1,7 +1,7 @@
 Package: climatrends
 Type: Package
 Title: Climate Variability Indices for Ecological Modelling
-Version: 1.1
+Version: 1.2
 Authors@R: c(person("Kauê", "de Sousa", 
         email = "desousa.kaue@gmail.com", role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-7571-7845")),

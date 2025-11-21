@@ -54,7 +54,6 @@
 #' Brouwer C. & Heibloem M. (1986). Irrigation water management: 
 #' Irrigation water needs. Food and Agriculture Organization of The 
 #' United Nations, Rome, Italy. 
-#' \url{https://www.fao.org/3/S2022E/s2022e00.htm}
 #' 
 #' @examples
 #' # the default method

@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">climatrends</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
       </span>
     </div>
 
@@ -93,7 +93,7 @@
                         <h4 data-toc-skip class="author">Kauê de
 Sousa</h4>
             <address class="author_afil">
-      Department of Agricultural Sciences, Inland Norway University,
+      Department of Agricultural Sciences, University of Inland Norway,
 Hamar, Norway  Digital Inclusion, Bioversity International,
 Montpellier, France<br><small class="dont-index">Source: <a href="https://github.com/agrdatasci/climatrends/blob/HEAD/vignettes/Overview.Rmd" class="external-link"><code>vignettes/Overview.Rmd</code></a></small>
       <div class="hidden name"><code>Overview.Rmd</code></div>
@@ -106,74 +106,97 @@ Montpellier, France<br><small class="dont-index">Source: <a href="https://github
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p>Understanding how climate variability influences ecological processes
-is a key approach to provide recommendations for climate adaptation and
-biodiversity conservation. <strong>climatrends</strong> provides methods
-to compute precipitation and temperature indices that serves as input
-for crop modelling, ecological modelling and trends in climate change.
-The climate variables available in <strong>climatrends</strong> were
-previously used to identify climate patterns in crop growing cycles<span class="citation"><sup>1</sup></span>, regional climate change
-assessment<span class="citation"><sup>2–5</sup></span>, crowdsourcing
-citizen science in agriculture<span class="citation"><sup>6</sup></span>
-and trends in climate change compared with farmers’ perceptions<span class="citation"><sup>7</sup></span>.</p>
+<p>Understanding how climate variability influences ecological and
+agricultural systems is essential for climate adaptation, biodiversity
+conservation, and environmental modeling. <strong>climatrends</strong>
+provides a unified framework to compute temperature, precipitation, and
+crop-related climate indices. These indices serve as inputs for crop
+models, ecological analyses, phenology studies, and assessments of
+climate trends.</p>
+<p>The methods implemented in <strong>climatrends</strong> have been
+applied in several research domains, including crop growing cycle
+analysis<span class="citation"><sup>1</sup></span>, regional climate
+trend detection<span class="citation"><sup>2–5</sup></span>, citizen
+science in agriculture<span class="citation"><sup>6</sup></span>, and
+studies comparing climate trends with farmers’ perceptions<span class="citation"><sup>7</sup></span>.</p>
 </div>
 <div class="section level2">
 <h2 id="statement-of-need">Statement of need<a class="anchor" aria-label="anchor" href="#statement-of-need"></a>
 </h2>
-<p>Reproducibility, the ability to repeat the analysis, and
-Replicability, the ability to repeat an experiment are key to perform
-collaborative scientific research. This is still a gap in most of the
-studies in agriculture and ecology. <code>climatrends</code> addresses
-this specific issue. The package originates from a set of scripts to
-compute climate indices in our previous studies. Building up on the
-interest in expanding the analysis to other regions and to enable
-reproducible and replicable studies we developed
-<code>climatrends</code>. Most of the package functions take into
-account the heterogeneity of testing sites (locations), dates and
-seasons, a common characteristic of decentralized agricultural trials.
-Further development was made to enable time series analysis with fixed
-periods of time and locations. The package <code>climatrends</code>
-computes temperature, precipitation, crop growing and crop stress
-indices that were validated by previous studies on climatology and crop
-science. Currently <code>climatrends</code> is part of the CRAN Task
-View in Agriculture (<a href="https://cran.r-project.org/web/views/Agriculture.html" class="external-link uri">https://cran.r-project.org/web/views/Agriculture.html</a>).</p>
+<p>Reproducibility (being able to repeat an analysis) and replicability
+(being able to repeat an experiment) are essential principles in
+science, yet they remain challenging in many agricultural and ecological
+studies. Analyses often rely on custom scripts, inconsistent definitions
+of climate indices, or non-standard workflows, making results difficult
+to reuse across locations and seasons.</p>
+<p><strong>climatrends</strong> was developed to address this gap. The
+package evolved from a collection of scripts used in previous studies
+and now provides standardized, transparent, and reproducible methods to
+compute well-established climate indices. The functions are designed to
+handle heterogeneous testing environments—a common characteristic of
+decentralized agricultural trials—where locations differ in climate,
+timing, and growing seasons. The package also supports fixed-period
+time-series analysis and integrates smoothly with API-based climate data
+sources (e.g., <em>nasapower</em>).</p>
+<p>The temperature, precipitation, and crop-sensitive indices
+implemented in <strong>climatrends</strong> draw from validated methods
+in climatology and crop science. The package is listed in the <a href="https://cran.r-project.org/view=Agriculture" class="external-link">CRAN Task View for
+Agricultural Science</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>By default, the functions in <strong>climatrends</strong> requires a
-vector with climate data, and optionally a vector of dates that can be
-linked to the data for time series analysis. The package also provides
-methods for objects of classes <code>array</code> (or
-<code>matrix</code>), <code>sf</code> and <code>data.frame</code>, where
-the last two are designed to be used to request remote data from
-<code>R</code> packages that uses API clients, such as nasapower<span class="citation"><sup>8</sup></span>. This vignette presents the main
-functions and the methods available in <strong>climatrends</strong>.
-Overall, these applications can be generalized to all functions.</p>
-<div class="section level3">
-<h3 id="temperature">Temperature<a class="anchor" aria-label="anchor" href="#temperature"></a>
-</h3>
-<p>Here we compute temperature indices for the first semester of 2019 in
-the Innlandet county in Norway:</p>
+<p>Most functions in <strong>climatrends</strong> accept a numeric
+vector of climate data and, optionally, a vector of dates to enable
+time-series calculations. The package provides S3 methods for objects of
+classes:</p>
+<ul>
+<li>
+<code>numeric</code><br>
+</li>
+<li>
+<code>array</code> / <code>matrix</code><br>
+</li>
+<li>
+<code>data.frame</code><br>
+</li>
+<li><code>sf</code></li>
+</ul>
+<p>Methods for <code>sf</code> and <code>data.frame</code> allow
+seamless integration with climate data services accessed through API
+clients such as <em>nasapower</em><span class="citation"><sup>8</sup></span>.</p>
+<p>This vignette introduces the main functions and illustrates how to
+compute indices commonly used in ecological and agricultural
+research.</p>
+<hr>
+</div>
+<div class="section level2">
+<h2 id="temperature">Temperature<a class="anchor" aria-label="anchor" href="#temperature"></a>
+</h2>
+<p>Temperature-based indices are foundational in ecological and crop
+modeling. They summarize daily temperature dynamics and help identify
+heat accumulation, thermal stress, and seasonality.</p>
+<p>Below we compute temperature indices for the first half of 2019 in
+Innlandet county, Norway:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://agrdatasci.github.io/climatrends/" class="external-link">"climatrends"</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"innlandet"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">temp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/temperature.html">temperature</a></span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span><span class="op">)</span></span>
+<span><span class="va">temp1</span> <span class="op">=</span> <span class="fu"><a href="../reference/temperature.html">temperature</a></span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">temp1</span></span></code></pre></div>
 <pre><code><span><span class="co">##    maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p</span></span>
 <span><span class="co">##    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
 <span><span class="co">## 1: 15.13 -14.86  6.77 -19.25     6     0     0   115     4     5 -15.81  9.09</span></span></code></pre>
-<p>With the argument <code>timeseries = TRUE</code>, temperature()
-returns the indices for a time series based on <code>intervals</code>.
-Here we compute the indices for intervals of 30 days:</p>
+<p>To compute indices for a time series, set
+<code>timeseries = TRUE</code>. The argument intervals defines the
+window size (in days) for each period:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">temp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/temperature.html">temperature</a></span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>,</span>
-<span>                     dates <span class="op">=</span> <span class="va">innlandet</span><span class="op">$</span><span class="va">dates</span>,</span>
-<span>                     timeseries <span class="op">=</span> <span class="cn">TRUE</span>, </span>
-<span>                     intervals <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">temp2</span> <span class="op">=</span> <span class="fu"><a href="../reference/temperature.html">temperature</a></span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>,</span>
+<span>                    dates <span class="op">=</span> <span class="va">innlandet</span><span class="op">$</span><span class="va">dates</span>,</span>
+<span>                    timeseries <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>                    intervals <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">temp2</span></span></code></pre></div>
 <pre><code><span><span class="co">##        id       date index  value</span></span>
@@ -190,17 +213,17 @@ Here we compute the indices for intervals of 30 days:</p>
 <span><span class="co">## 71:     1 2019-05-31  T10p   0.20</span></span>
 <span><span class="co">## 72:     1 2019-05-31  T90p  11.14</span></span></code></pre>
 </div>
-<div class="section level3">
-<h3 id="growing-degree-days">Growing degree-days<a class="anchor" aria-label="anchor" href="#growing-degree-days"></a>
-</h3>
-<p>Growing degree-days is a heuristic tool in phenology, it is a measure
-of heat accumulation used to predict plant and animal development
-rates<span class="citation"><sup>9</sup></span>. With the function
-<code><a href="../reference/GDD.html">GDD()</a></code> we can compute the growing degree-days over a time
-series. In this case we apply an adjusted equation designed for cold
-areas with the argument <code>equation</code>:</p>
+<div class="section level2">
+<h2 id="growing-degree-days">Growing Degree-Days<a class="anchor" aria-label="anchor" href="#growing-degree-days"></a>
+</h2>
+<p>Growing degree-days (GDD) represent accumulated heat over time and
+are widely used in phenology to estimate plant and insect developmental
+rates<span class="citation"><sup>9</sup></span>.
+<code>climatrends</code> computes GDD using the <code><a href="../reference/GDD.html">GDD()</a></code>
+function. Here we calculate GDD using an adjusted equation suited for
+cold regions:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gdd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GDD.html">GDD</a></span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>, tbase <span class="op">=</span> <span class="fl">2</span>, equation <span class="op">=</span> <span class="st">"b"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">gdd</span> <span class="op">=</span> <span class="fu"><a href="../reference/GDD.html">GDD</a></span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>, tbase <span class="op">=</span> <span class="fl">2</span>, equation <span class="op">=</span> <span class="st">"b"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">gdd</span></span></code></pre></div>
 <pre><code><span><span class="co">##         gdd</span></span>
@@ -216,43 +239,45 @@ areas with the argument <code>equation</code>:</p>
 <span><span class="co">## 180: 153.89</span></span>
 <span><span class="co">## 181: 162.18</span></span>
 <span><span class="co">## 182: 164.89</span></span></code></pre>
-<p>Additionally, the function may return the daily values of degree-days
-or the number of days that a given organism required to reach a certain
-number of accumulated degree-days. These values are defined by ‘daily’
-or ‘ndays’ and can be adjusted using the argument
-<code>return.as</code>. The required accumulated gdd is defined with
-argument <code>degree.days</code>. For example, the Korean pine
-(<em>Pinus koraiensis</em>) requires 105
+<p>The function can also:</p>
+<ul>
+<li>return daily degree-day values (<code>return.as = "daily"</code>),
+or</li>
+<li>compute the number of days needed to reach a specified heat sum
+(<code>return.as = "ndays"</code>).</li>
+</ul>
+<p>For example, the Korean pine (<em>Pinus koraiensis</em>) requires 105
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi></mi><mo>∘</mo></msup><mi>C</mi></mrow><annotation encoding="application/x-tex">^\circ C</annotation></semantics></math>
-accumulated gdd to onset of photosynthesis<span class="citation"><sup>10</sup></span>. In that case, the function will
-calculate the growing degree-days and sum up the values until it reaches
-the defined gdd (105
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi></mi><mo>∘</mo></msup><mi>C</mi></mrow><annotation encoding="application/x-tex">^\circ C</annotation></semantics></math>)
-and return the number of days needed in the given season, as
-follows.</p>
+accumulated GDD to initiate photosynthesis<span class="citation"><sup>10</sup></span>. Below, we ask the function to
+compute the number of days required to reach 150 °C for a given
+location:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lonlat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="fl">129.19</span>,</span>
-<span>                     lat <span class="op">=</span> <span class="fl">36.39</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">lonlat</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="fl">129.19</span>,</span>
+<span>                    lat <span class="op">=</span> <span class="fl">36.39</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/GDD.html">GDD</a></span><span class="op">(</span><span class="va">lonlat</span>, </span>
 <span>    day.one <span class="op">=</span> <span class="st">"2019-04-01"</span>,</span>
 <span>    last.day <span class="op">=</span> <span class="st">"2019-10-01"</span>,</span>
 <span>    degree.days <span class="op">=</span> <span class="fl">150</span>, </span>
 <span>    return.as <span class="op">=</span> <span class="st">"ndays"</span><span class="op">)</span></span></code></pre></div>
-<p>This means that 45 days were required to reach 150 degree-days from
-April 2019.</p>
-</div>
+<p>This means that 45 days were needed to accumulate 150
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi></mi><mo>∘</mo></msup><mi>C</mi></mrow><annotation encoding="application/x-tex">^\circ C</annotation></semantics></math>
+degree-days during the 2019 season.</p>
 <div class="section level3">
 <h3 id="late-spring-frost">Late spring frost<a class="anchor" aria-label="anchor" href="#late-spring-frost"></a>
 </h3>
-<p>Late frost is a freezing event occurring after a substantial
-accumulation of warmth. These events can be tracked using the function
-<code><a href="../reference/late_frost.html">late_frost()</a></code>. The function returns a data.frame with the
-duration and gdd accumulated during the <code>events</code> of frost,
-latency (where there is no frost event, but also there is no GDD), and
-warming (where GDD is accumulated).</p>
+<p>Late spring frost occurs when a freezing event follows a period of
+accumulated warmth—potentially damaging sensitive early growth stages.
+The <code><a href="../reference/late_frost.html">late_frost()</a></code> function identifies frost events and
+describes:</p>
+<ul>
+<li>frost duration,</li>
+<li>accumulated GDD during frost, -latency periods (no frost, no
+GDD),</li>
+<li>warming periods (positive GDD accumulation).</li>
+</ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/late_frost.html">late_frost</a></span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, </span>
+<code class="sourceCode R"><span><span class="va">lf</span> <span class="op">=</span> <span class="fu"><a href="../reference/late_frost.html">late_frost</a></span><span class="op">(</span><span class="va">innlandet</span><span class="op">$</span><span class="va">tmax</span>, </span>
 <span>                 <span class="va">innlandet</span><span class="op">$</span><span class="va">tmin</span>, </span>
 <span>                 dates <span class="op">=</span> <span class="va">innlandet</span><span class="op">$</span><span class="va">date</span>, </span>
 <span>                 base <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -274,18 +299,18 @@ warming (where GDD is accumulated).</p>
 <div class="section level3">
 <h3 id="rainfall">Rainfall<a class="anchor" aria-label="anchor" href="#rainfall"></a>
 </h3>
-<p>Precipitation indices are computed in the same way as the
-<code><a href="../reference/temperature.html">temperature()</a></code> indices using the function
-<code><a href="../reference/rainfall.html">rainfall()</a></code>. But here, we fetch data from NASA POWER using
-the <a href="https://CRAN.R-project.org/package=nasapower" class="external-link">nasapower</a>
-package passed to the <code>data.frame</code> method.</p>
+<p>Precipitation indices are available through the
+<code><a href="../reference/rainfall.html">rainfall()</a></code> function. They follow the same principles as the
+temperature indices but use daily precipitation.</p>
+<p>Below we illustrate how climatrends works with remote-sensing data
+retrieved from NASA POWER through <code>nasapower</code> package:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://docs.ropensci.org/nasapower/" class="external-link">"nasapower"</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">lonlat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">73.3</span>, <span class="op">-</span><span class="fl">74.5</span><span class="op">)</span>,</span>
+<span><span class="va">lonlat</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">73.3</span>, <span class="op">-</span><span class="fl">74.5</span><span class="op">)</span>,</span>
 <span>                     lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6.1</span>, <span class="op">-</span> <span class="fl">6.2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">rain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rainfall.html">rainfall</a></span><span class="op">(</span><span class="va">lonlat</span>, </span>
+<span><span class="va">rain</span> <span class="op">=</span> <span class="fu"><a href="../reference/rainfall.html">rainfall</a></span><span class="op">(</span><span class="va">lonlat</span>, </span>
 <span>                 day.one <span class="op">=</span> <span class="st">"2018-11-01"</span>,</span>
 <span>                 last.day <span class="op">=</span> <span class="st">"2018-12-31"</span><span class="op">)</span></span>
 <span></span>
@@ -294,11 +319,10 @@ package passed to the <code>data.frame</code> method.</p>
 <div class="section level3">
 <h3 id="crop-sensitive-indices">Crop sensitive indices<a class="anchor" aria-label="anchor" href="#crop-sensitive-indices"></a>
 </h3>
-<p>These indices are designed to capture variability in sensitive stages
-of crop development<span class="citation"><sup>3,4</sup></span> and can
-be computed using the function <code><a href="../reference/crop_sensitive.html">crop_sensitive()</a></code>. Here we
-use the <code>sf</code> method with 5 random points across the Sinop
-municipality in Brazil.</p>
+<p>Crop-sensitive indices capture climatic variability during key
+developmental stages in crop growth. These indices have been used in
+agroclimatic assessments and impact studies<span class="citation"><sup>3,4</sup></span>. Below, we compute them using the
+<code>sf</code> method for five spatial locations in Sinop, Brazil:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://r-spatial.github.io/sf/" class="external-link">"sf"</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lonlatsf"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span>
@@ -307,29 +331,30 @@ municipality in Brazil.</p>
 <span>               day.one <span class="op">=</span> <span class="st">"2018-12-01"</span>,</span>
 <span>               last.day <span class="op">=</span> <span class="st">"2019-01-31"</span>, </span>
 <span>               as.sf <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>Additionally the thresholds for each index can be adjusted using the
-argument <code>*.threshold</code> (where * is replaced by the index
-abbreviation).</p>
+<p>Thresholds for individual indices can be modified using arguments of
+the form <code>*.threshold</code> (e.g.,
+<code>tmax.threshold</code>).</p>
 </div>
 <div class="section level3">
 <h3 id="reference-evapotranspiration">Reference evapotranspiration<a class="anchor" aria-label="anchor" href="#reference-evapotranspiration"></a>
 </h3>
-<p>Evapotranspiration can be defined as the sum of evaporation and plant
-transpiration from the Earth’s surface to the atmosphere. This is also
-an important index to include in models for ecological interactions. In
-**climatrends* this index can be calculate using the function
-<code><a href="../reference/ETo.html">ETo()</a></code> which computes the evapotranspiration based on the
-Blaney-Criddle method<span class="citation"><sup>11</sup></span>, an
-ideal equation when only air-temperature data sets are available for a
-site. Here we use the <code>array</code> method to compute the reference
-evapotranspiration. And the duration of the time series in each row is
-adjusted with the argument <code>span</code> based on the duration of
-the anthesis period in the latitude 25N, adjusted with argument
-<code>lat</code>.</p>
+<p>Evapotranspiration (ETo) is the combined loss of water through
+evaporation and plant transpiration, representing a fundamental
+component of ecological and agricultural models.
+<code>climatrends</code> computes reference evapotranspiration using the
+Blaney–Criddle method<span class="citation"><sup>11</sup></span>, which
+is suitable when only temperature data are available.</p>
+<p>The <code><a href="../reference/ETo.html">ETo()</a></code> function supports array inputs, where each row
+represents a location and each column a day. The argument:</p>
+<ul>
+<li>span defines the number of days per time series,</li>
+<li>lat sets the latitude used in the calculation,</li>
+<li>Kc is the crop coefficient.</li>
+</ul>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"temp_dat"</span>, package <span class="op">=</span> <span class="st">"climatrends"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">eto</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ETo.html">ETo</a></span><span class="op">(</span><span class="va">temp_dat</span>, </span>
+<span><span class="va">eto</span> <span class="op">=</span> <span class="fu"><a href="../reference/ETo.html">ETo</a></span><span class="op">(</span><span class="va">temp_dat</span>, </span>
 <span>           day.one <span class="op">=</span> <span class="st">"2013-10-28"</span>,</span>
 <span>           span <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">10</span>, <span class="fl">11</span>, <span class="fl">12</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">11</span>, <span class="fl">11</span>, <span class="fl">12</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>           lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">10</span><span class="op">)</span>,</span>

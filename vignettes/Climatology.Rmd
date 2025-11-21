@@ -25,28 +25,28 @@ library("patchwork")
 library("tidyverse")
 
 # create a polygon within the coordinates 7, 17, 59, 63
-e <- matrix(c(7, 59, 17, 59, 17, 63,
+e = matrix(c(7, 59, 17, 59, 17, 63,
               7, 63, 7, 59),
             nrow = 5, ncol = 2, byrow = TRUE)
 
-e <- st_polygon(list(e))
+e = st_polygon(list(e))
 # sample 100 points in the hexagonal type
-p <- st_sample(e, 100, type = 'hexagonal')
-p <- st_as_sf(p, crs = 4326)
+p = st_sample(e, 100, type = 'hexagonal')
+p = st_as_sf(p, crs = 4326)
 
-dayone <- paste0(2000:2019, "-01-01")
-dayone <- as.Date(dayone, origin = "1970-01-01")
+dayone = paste0(2000:2019, "-01-01")
+dayone = as.Date(dayone, origin = "1970-01-01")
 
-temp <- data.frame()
+temp = data.frame()
 
 for (d in seq_along(dayone)) {
-  temp_d <- temperature(p, 
+  temp_d = temperature(p, 
                         day.one = dayone[d], 
                         last.day = dayone[d] + 365,
                         timeseries = TRUE,
                         intervals = 365)
   
-  temp <- rbind(temp, temp_d)
+  temp = rbind(temp, temp_d)
   
 }
 
@@ -55,7 +55,7 @@ for (d in seq_along(dayone)) {
 We then select the indices CSDI (cold spell duration of night temperature), WSDI (warm spell duration of day temperature), and their associated indices the T10p (the 10th percentile of night temperature) and T90p (the 90th percentile of day temperature), in Figure 1. Plots are generated with `ggplot2` and `patchwork`.
 
 ```r
-i <- c("CSDI","WSDI")
+i = c("CSDI","WSDI")
 
 temp %>% 
   filter(index %in% i) %>% 
@@ -83,7 +83,7 @@ temp %>%
 gg1
 
 
-i <- c("T10p","T90p")
+i = c("T10p","T90p")
 
 
 temp %>% 
@@ -113,8 +113,7 @@ temp %>%
 gg2
 
 
-pl <- gg1 / gg2
-
+pl = gg1 / gg2
 ```
 
 The trends show a decrease in the cold spell duration (number of consecutive cold nights bellow the 10th percentile) and warm spell duration (number of consecutive warm days above the 90th percentile). However, the values of the percentiles show an increase over the time series. The T10p index shows a decrease around the year of 2010, but again rises up to the a value around the -10 $^\circ$C, meaning that the cold nights are becoming a bit warmer over the time. The T90p index also shows an increase in the temperature across the sampled area, with the average 90th percentile rising from ~ 16 $^\circ$C to ~ 18 $^\circ$C over the time series. 
