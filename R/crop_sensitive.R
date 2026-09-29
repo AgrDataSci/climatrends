@@ -311,11 +311,11 @@ crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
       }),
       
       sapply(cdi_mean.threshold, function(x){
-        .cdi(max, NULL, threshold = x)
-      }),
-      
-      sapply(cdi_max.threshold, function(x){
         .cdi(max, min, threshold = x)
+      }),
+
+      sapply(cdi_max.threshold, function(x){
+        .cdi(max, NULL, threshold = x)
       }),
       
       sapply(lethal.threshold, function(x){
