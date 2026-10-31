@@ -46,9 +46,12 @@ test_that("nasapower and sf ok", {
   expected <- do.call("rbind", lapply(split(ts$value, ts$id), function(x) {
     as.data.frame(rainfall(x))
   }))
+  rownames(expected) <- NULL
+  r <- as.data.frame(r)
+  rownames(r) <- NULL
   
   expect_equal(nrow(r), nrow(ll))
-  expect_equal(as.data.frame(r), expected, ignore_attr = TRUE)
+  expect_equal(r, expected)
   expect_true(all(r$Rtotal >= 0))
   
 })
