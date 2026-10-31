@@ -303,7 +303,7 @@ latefrost <- function(tmax, tmin, dates, tbase, tfrost, equation = "b") {
   
   dat <- do.call("rbind", dat)
   
-  # find the latent events, where the tempeture dont drops below tfrost
+  # find the latent events, where the temperature does not drop below tfrost
   # but also there is no GDD accumulated
   l <- !dat$frost_id %in% isfrost & dat$gdd == 0
   

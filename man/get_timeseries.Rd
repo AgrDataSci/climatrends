@@ -55,8 +55,8 @@ A list with class \code{clima_ls} with data.frame(s) with
 General functions and methods to concatenate climate data across a time series
 }
 \details{
-The \code{default} method and the \code{sf} method assumes that the climate 
- data will be fetched from an remote (cloud) \var{data.from}.
+The \code{default} method and the \code{sf} method assume that the climate 
+ data will be fetched from a remote (cloud) \var{data.from}.
 
 The \code{matrix} method assumes that the climate data was previously handled 
  and will be inputted in the format of a named matrix. 

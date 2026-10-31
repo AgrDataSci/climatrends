@@ -43,36 +43,36 @@
 #' # S3 Methods
 #' 
 #' The \code{array} method assumes that \var{object} contains climate data available 
-#'  in your R section; this requires an array with two dimensions, 1st dimension 
+#'  in your R session; this requires an array with two dimensions, 1st dimension 
 #'  contains the day temperature and 2nd dimension the night temperature, 
 #'  see help("temp_dat", package = "climatrends") for an example on input structure.
 #' 
-#' The \code{data.frame} and the \code{sf} methods assumes that the climate data
-#'  will be fetched from a remote (cloud) source that be adjusted using the argument 
+#' The \code{data.frame} and the \code{sf} methods assume that the climate data
+#'  will be fetched from a remote (cloud) source that can be set using the argument 
 #'  \var{data.from}.
 #'
 #' When \var{timeseries = TRUE}, an id is created, 
 #'  which is the index for the rownames of the inputted \var{object}.
 #' 
 #' @return A dataframe with temperature indices:
-#' \item{maxDT}{maximun day temperature (degree Celsius)}
+#' \item{maxDT}{maximum day temperature (degree Celsius)}
 #' \item{minDT}{minimum day temperature (degree Celsius)}
-#' \item{maxNT}{maximun night temperature (degree Celsius)}
+#' \item{maxNT}{maximum night temperature (degree Celsius)}
 #' \item{minNT}{minimum night temperature (degree Celsius) }
 #' \item{DTR}{diurnal temperature range (mean difference between DT 
 #' and NT (degree Celsius)) }
 #' \item{SU}{summer days, number of days with maximum temperature > 
 #' 30 (degree Celsius)}
-#' \item{TR}{tropical nights, number of nights with maximum 
+#' \item{TR}{tropical nights, number of nights with minimum 
 #' temperature > 25 (degree Celsius)}
 #' \item{CFD}{consecutive frosty days, number of days with temperature 
-#' bellow 0 degree Celsius}
+#' below 0 degree Celsius}
 #' \item{WSDI}{maximum warm spell duration, consecutive days with 
 #' temperature > 90th percentile}
 #' \item{CSDI}{maximum cold spell duration, consecutive nights with 
 #' temperature < 10th percentile}
-#' \item{T10p}{the 10th percentile of night tempeture (degree Celsius)}
-#' \item{T90p}{the 90th percentile of day tempeture (degree Celsius)}
+#' \item{T10p}{the 10th percentile of night temperature (degree Celsius)}
+#' \item{T90p}{the 90th percentile of day temperature (degree Celsius)}
 #' @references 
 #' Aguilar E., et al. (2005). Journal of Geophysical Research, 
 #' 110(D23), D23107. \doi{https://doi.org/10.1029/2005JD006119}
@@ -434,7 +434,7 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   # days above q90 should be returned as 0s
   ws <- as.integer(x < q90)
   
-  # get the lengths of each sequency of zeros (0)
+  # get the lengths of each sequence of zeros (0)
   keep <- rle(ws)$values
   
   keep <- keep == 0
@@ -445,7 +445,7 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   if (length(ws) == 0) {
     ws <- 0L
   }
-  # if there is values, take the maximum sequecy
+  # if there is values, take the maximum sequence
   if (length(ws) != 0) {
     ws <- max(ws, na.rm = TRUE)
     ws <- as.integer(ws)
@@ -480,7 +480,7 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   # days below q10 should be returned as 0s
   cs <- as.integer(x > q10)
   
-  # get the lengths of each sequency of zeros (0)
+  # get the lengths of each sequence of zeros (0)
   keep <- rle(cs)$values
   
   keep <- keep == 0
@@ -491,7 +491,7 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   if (length(cs) == 0) {
     cs <- 0L
   }
-  # if there is values, take the maximum sequecy
+  # if there is values, take the maximum sequence
   if (length(cs) != 0) {
     cs <- max(cs, na.rm = TRUE)
     cs <- as.integer(cs)
@@ -589,9 +589,9 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   return(x)
 }
 
-#' Tropical days
+#' Tropical nights
 #' 
-#' Compute number of nights with maximum temperature > 25 C
+#' Compute number of nights with minimum temperature > 25 C
 #' 
 #' @param x a numeric vector
 #' @return the summer days index
@@ -614,7 +614,7 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
 #' Consecutive frosty days 
 #' 
 #' Compute number of consecutive days with temperature 
-#' bellow 0 degree Celsius
+#' below 0 degree Celsius
 #' 
 #' @param x numeric vector
 #' @return the CFD index
@@ -633,7 +633,7 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   # the function rle is applied
   # which looks for the sequencies of numbers
   # in this case, zeros (0)
-  # take the maximum sequency
+  # take the maximum sequence
   # first all values x <= 0 are converted to zero (0)
   
   x <- x[!is.na(x)]
@@ -641,7 +641,7 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
   fd <- ifelse(x <= 0, 0, 
                ifelse(x > 0, 2, x))
   
-  # get the lengths of each sequency of zeros (0)
+  # get the lengths of each sequence of zeros (0)
   keep <- rle(fd)$values
   
   keep <- keep == 0
@@ -654,7 +654,7 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
     fd <- 0L
   }
   
-  # if there is values, take the maximum sequency
+  # if there is values, take the maximum sequence
   if (length(fd) != 0) {
     fd <- max(fd, na.rm = TRUE)
     fd <- as.integer(fd)

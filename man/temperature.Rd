@@ -50,24 +50,24 @@ given) for the length of the time series to be captured}
 }
 \value{
 A dataframe with temperature indices:
-\item{maxDT}{maximun day temperature (degree Celsius)}
+\item{maxDT}{maximum day temperature (degree Celsius)}
 \item{minDT}{minimum day temperature (degree Celsius)}
-\item{maxNT}{maximun night temperature (degree Celsius)}
+\item{maxNT}{maximum night temperature (degree Celsius)}
 \item{minNT}{minimum night temperature (degree Celsius) }
 \item{DTR}{diurnal temperature range (mean difference between DT 
 and NT (degree Celsius)) }
 \item{SU}{summer days, number of days with maximum temperature > 
 30 (degree Celsius)}
-\item{TR}{tropical nights, number of nights with maximum 
+\item{TR}{tropical nights, number of nights with minimum 
 temperature > 25 (degree Celsius)}
 \item{CFD}{consecutive frosty days, number of days with temperature 
-bellow 0 degree Celsius}
+below 0 degree Celsius}
 \item{WSDI}{maximum warm spell duration, consecutive days with 
 temperature > 90th percentile}
 \item{CSDI}{maximum cold spell duration, consecutive nights with 
 temperature < 10th percentile}
-\item{T10p}{the 10th percentile of night tempeture (degree Celsius)}
-\item{T90p}{the 90th percentile of day tempeture (degree Celsius)}
+\item{T10p}{the 10th percentile of night temperature (degree Celsius)}
+\item{T90p}{the 90th percentile of day temperature (degree Celsius)}
 }
 \description{
 Methods to compute temperature indices over a time series
@@ -100,12 +100,12 @@ Additional arguments:
 # S3 Methods
 
 The \code{array} method assumes that \var{object} contains climate data available 
- in your R section; this requires an array with two dimensions, 1st dimension 
+ in your R session; this requires an array with two dimensions, 1st dimension 
  contains the day temperature and 2nd dimension the night temperature, 
  see help("temp_dat", package = "climatrends") for an example on input structure.
 
-The \code{data.frame} and the \code{sf} methods assumes that the climate data
- will be fetched from a remote (cloud) source that be adjusted using the argument 
+The \code{data.frame} and the \code{sf} methods assume that the climate data
+ will be fetched from a remote (cloud) source that can be set using the argument 
  \var{data.from}.
 
 When \var{timeseries = TRUE}, an id is created, 

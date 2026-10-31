@@ -36,18 +36,18 @@
 #' # S3 Methods 
 #' 
 #' The \code{matrix} method assumes that \var{object} contains climate data available in
-#'  your R section; see help("rain_dat", package = "climatrends") for an example on input 
+#'  your R session; see help("rain_dat", package = "climatrends") for an example on input 
 #'  structure.
 #' 
-#' The \code{data.frame} and the \code{sf} methods assumes that the climate data
-#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
+#' The \code{data.frame} and the \code{sf} methods assume that the climate data
+#'  will be fetched from a remote (cloud) source that can be set using the argument 
 #'  \var{data.from}.
 #'
 #' When \var{timeseries} = \code{TRUE}, an id is created, 
 #'  which is the index for the rownames of the inputted \var{object}.
 #'
 #' @return A dataframe with rainfall indices:
-#' \item{MLDS}{maximum length of consecutive dry day, rain < 1 mm (days)}
+#' \item{MLDS}{maximum length of consecutive dry days, rain < 1 mm (days)}
 #' \item{MLWS}{maximum length of consecutive wet days, rain >= 1 mm (days)}
 #' \item{R10mm}{number of heavy precipitation days 10 >= rain < 20 mm (days)}
 #' \item{R20mm}{number of very heavy precipitation days rain >= 20 (days)}
@@ -392,13 +392,13 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
   # the function rle is applied
   # which looks for the sequencies of numbers
   # in this case, zeros (0)
-  # take the maximum sequency
+  # take the maximum sequence
   # first all values < 1 are converted to zero (0)
   ds <- x[!is.na(x)]
   
   ds <- ifelse(ds < 1, 0, ds)
   
-  # get the lengths of each sequency of zeros (0)
+  # get the lengths of each sequence of zeros (0)
   keep <- rle(ds)$values
   
   keep <- keep == 0
@@ -411,7 +411,7 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
     ds <- 0
   }
   
-  # if there is values, take the maximum sequency
+  # if there is values, take the maximum sequence
   if (length(ds) != 0) {
     ds <- max(ds, na.rm = TRUE)
   }
@@ -438,14 +438,14 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
   
   # the function rle is applied
   # which looks for the sequencies of zeros
-  # take the maximum sequency
+  # take the maximum sequence
   # first all values >= 1 are converted to zero (0)
   # no precipitation (r < 1) is converted to two (2)
   ws <- x[!is.na(x)]
   
   ws <- ifelse(ws >= 1, 0, 2)
   
-  # get the lengths of each sequency of zeros (0)
+  # get the lengths of each sequence of zeros (0)
   keep <- rle(ws)$values
   
   keep <- keep == 0
@@ -456,7 +456,7 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
   if (length(ws) == 0) {
     ws <- 0
   }
-  # if there is values, take the maximum sequecy
+  # if there is values, take the maximum sequence
   if (length(ws) != 0) {
     ws <- max(ws, na.rm = TRUE)
   }
@@ -548,7 +548,7 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
 
 #' Compute Rx5day rainfall index
 #' @param x numeric vector
-#' @return the Rx5day index, which is the maximun sum 
+#' @return the Rx5day index, which is the maximum sum 
 #' of rain in consecutive 5 days
 #' @examples
 #' set.seed(12)

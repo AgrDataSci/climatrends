@@ -27,6 +27,17 @@ Reproducibility (being able to repeat an analysis) and replicability (being able
 The temperature, precipitation, and crop-sensitive indices implemented in **climatrends** draw from validated methods in climatology and crop science. The package is listed in the [CRAN Task View for Agricultural Science](https://cran.r-project.org/view=Agriculture).
 
 
+## What it does
+
+* `temperature()` and `rainfall()` compute temperature and precipitation indices, for a whole period or in intervals.
+* `GDD()` computes growing degree-days, daily, accumulated or as the number of days to reach a heat sum, and `late_frost()` finds frost events after warming.
+* `crop_sensitive()` computes heat stress and crop duration indices for key crop stages, and `ETo()` the reference evapotranspiration.
+* Each function works on local data (vectors, matrices, arrays) or fetches daily data from [NASA POWER](https://power.larc.nasa.gov/) for coordinates given as a `data.frame` or an `sf` object. Each site can have its own start date and length, as in decentralised on-farm trials.
+
+## What's new in 1.3.0
+
+Version 1.3.0 fixes the NASA POWER requests for `sf` objects and several indices. SDII, DTR and the proportions in `crop_sensitive()` change. See [NEWS](NEWS.md) before comparing with analyses run on earlier versions.
+
 ## Package website
 
 <https://agrdatasci.github.io/climatrends/>
@@ -58,17 +69,17 @@ data("innlandet", package = "climatrends")
 temperature(innlandet$tmax, innlandet$tmin)
 
    maxDT  minDT maxNT  minNT   DTR    SU    TR   CFD  WSDI  CSDI   T10p  T90p
-   <dbl>  <dbl> <dbl>  <dbl> <int> <int> <int> <int> <int> <int>  <dbl> <dbl>
-1: 15.13 -14.86  6.77 -19.25     6     0     0   115     4     5 -15.81  9.09
+   <dbl>  <dbl> <dbl>  <dbl> <dbl> <int> <int> <int> <int> <int>  <dbl> <dbl>
+1: 15.13 -14.86  6.77 -19.25  6.07     0     0   115     4     5 -15.81  9.09
 
 ```
 
-The indices can be splitted in intervals for series analysis. Here we get the temperature indices with intervals of 30 days.
+The indices can be split into intervals for time series analysis. Here we get the temperature indices with intervals of 30 days.
 
 ```r
 
 temperature(innlandet$tmax, innlandet$tmin,
-            dates = innlandet$day, 
+            dates = innlandet$dates, 
             timeseries = TRUE, 
             intervals = 30)
 
@@ -105,6 +116,6 @@ vignette("Overview", package = "climatrends")
 
   - Get citation information for *climatrends* in R by typing `citation(package = "climatrends")`.
 
-  - You are welcome to contribute to the *climatrends* project. Please read our [contribution guide lines](CONTRIBUTING.md).
+  - You are welcome to contribute to the *climatrends* project. Please read our [contribution guidelines](CONTRIBUTING.md).
 
   - Please note that the *climatrends* project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in the *climatrends* project you agree to abide by its terms.

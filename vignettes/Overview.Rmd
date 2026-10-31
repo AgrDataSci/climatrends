@@ -85,7 +85,7 @@ The function can also:
 - return daily degree-day values (`return.as = "daily"`), or
 - compute the number of days needed to reach a specified heat sum (`return.as = "ndays"`).
 
-For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated GDD to initiate photosynthesis[@JWu2013]. Below, we ask the function to compute the number of days required to reach 150 °C for a given location:
+For example, the Korean pine (*Pinus koraiensis*) requires 105 $^\circ C$ accumulated GDD to initiate photosynthesis[@JWu2013]. Below, we ask the function for the number of days needed to accumulate 105 °C degree-days, with a base temperature of 5 °C, at a location in South Korea:
 
 ```{r gdd2, message=FALSE, eval=FALSE, echo=TRUE}
 lonlat = data.frame(lon = 129.19,
@@ -94,11 +94,12 @@ lonlat = data.frame(lon = 129.19,
 GDD(lonlat, 
     day.one = "2019-04-01",
     last.day = "2019-10-01",
-    degree.days = 150, 
+    tbase = 5,
+    degree.days = 105, 
     return.as = "ndays")
 ```
 
-This means that 45 days were needed to accumulate 150 $^\circ C$ degree-days during the 2019 season.
+The result is the number of days, counted from `day.one`, whose accumulated degree-days do not exceed `degree.days`.
 
 ## Late spring frost
 
@@ -106,14 +107,14 @@ Late spring frost occurs when a freezing event follows a period of accumulated w
 
 - frost duration,
 - accumulated GDD during frost,
--latency periods (no frost, no GDD),
+- latency periods (no frost, no GDD),
 - warming periods (positive GDD accumulation).
 
 ```{r latefrost, message=TRUE, eval=TRUE, echo=TRUE}
 lf = late_frost(innlandet$tmax, 
                  innlandet$tmin, 
-                 dates = innlandet$date, 
-                 base = 2)
+                 dates = innlandet$dates, 
+                 tbase = 2)
 
 lf
 ```
@@ -122,7 +123,7 @@ lf
 
 Precipitation indices are available through the `rainfall()` function. They follow the same principles as the temperature indices but use daily precipitation.
 
-Below we illustrate how climatrends works with remote-sensing data retrieved from NASA POWER through `nasapower` package: 
+Below we illustrate how climatrends works with gridded daily data from NASA POWER, fetched through the `nasapower` package. Rainfall from CHIRPS, fetched with the `chirps` package, can be passed as a matrix in the same way: 
 
 ```{r rain, message=FALSE, eval=FALSE, echo=TRUE}
 library("nasapower")
@@ -151,7 +152,7 @@ crop_sensitive(lonlatsf,
                as.sf = FALSE)
 ```
 
-Thresholds for individual indices can be modified using arguments of the form `*.threshold` (e.g., `tmax.threshold`).
+Thresholds for individual indices can be modified using arguments of the form `*.threshold` (e.g., `hts_max.threshold = c(35, 38)`). Indices given as proportions range from 0 to 1.
 
 ## Reference evapotranspiration
 

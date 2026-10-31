@@ -1,7 +1,7 @@
 Package: climatrends
 Type: Package
 Title: Climate Variability Indices for Ecological Modelling
-Version: 1.2
+Version: 1.3.0
 Authors@R: c(person("Kauê", "de Sousa", 
         email = "desousa.kaue@gmail.com", role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-7571-7845")),
@@ -11,8 +11,14 @@ Authors@R: c(person("Kauê", "de Sousa",
         comment = c(ORCID = "0000-0002-4491-4483")))
 URL: https://agrdatasci.github.io/climatrends/
 BugReports: https://github.com/agrdatasci/climatrends/issues
-Description: Supports analysis of trends in climate change,
-        ecological and crop modelling.
+Description: Computes climate indices for the analysis of climate trends 
+    and for ecological and crop modelling: temperature and precipitation 
+    indices (Aguilar et al. 2005 <doi:10.1029/2005JD006119>), growing 
+    degree-days, late spring frost, crop-sensitive heat stress indices 
+    (Challinor et al. 2016 <doi:10.1038/nclimate3061>) and reference 
+    evapotranspiration. Indices are computed from local data or from daily 
+    data fetched from 'NASA POWER' for each site, with start dates and 
+    lengths that can differ between sites, as in decentralised on-farm trials.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

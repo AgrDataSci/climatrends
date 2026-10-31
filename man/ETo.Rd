@@ -62,12 +62,12 @@ When \var{lat} is provided, it is combined with the month provided in
  to 0.27 as default.
  
 The \code{array} method assumes that \var{object} contains climate data available 
- in your R section; this requires an array with two dimensions, 1st dimension 
+ in your R session; this requires an array with two dimensions, 1st dimension 
  contains the day temperature and 2nd dimension the night temperature, 
  see help("temp_dat", package = "climatrends") for an example on input structure.
 
-The \code{data.frame} method and the \code{sf} method assumes that the climate data
- will be fetched from a remote (cloud) source that be adjusted using the argument 
+The \code{data.frame} method and the \code{sf} method assume that the climate data
+ will be fetched from a remote (cloud) source that can be set using the argument 
  \var{data.from}.
 
 Additional arguments:

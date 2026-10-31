@@ -30,7 +30,7 @@
 #'  the time series to be captured. For \code{data.frame}, \code{array} 
 #'  and \code{sf} methods
 #' 
-#' @return A dataframe with crop sensitive indices with n colunms depending on the 
+#' @return A dataframe with crop sensitive indices with n columns depending on the 
 #'  number of thresholds passed to each index:
 #' \item{hts_mean}{high temperature stress using daily MEAN temperature, 
 #'  and given as the proportion (0 to 1) of days with data in which a 
@@ -408,7 +408,7 @@ crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
   # days above threshold should be returned as 0s
   a <- as.integer(x < threshold)
   
-  # get the lengths of each sequency of zeros (0)
+  # get the lengths of each sequence of zeros (0)
   keep <- rle(a)$values
   
   keep <- keep == 0
@@ -419,7 +419,7 @@ crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
   if (length(a) == 0) {
     a <- 0L
   }
-  # if there is values, take the maximum sequecy
+  # if there is values, take the maximum sequence
   if (length(a) != 0) {
     a <- max(a, na.rm = TRUE)
     a <- as.integer(a)
@@ -456,7 +456,7 @@ crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
   # days above threshold should be returned as 0s
   a <- as.integer(x < threshold)
   
-  # get the lengths of each sequency of zeros (0)
+  # get the lengths of each sequence of zeros (0)
   keep <- rle(a)$values
   
   keep <- keep == 0
