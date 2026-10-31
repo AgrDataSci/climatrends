@@ -176,7 +176,8 @@ late_frost.array <- function(object, day.one, ..., tbase = 4, tfrost = -2){
   if (all(is.null(span), is.null(last.day))) {
     do <- as.character(max(day.one))
     do <- match(do, dimnames(object[,,1])[[2]])
-    span <- dim(object)[[2]] - do
+    # all days from day.one to the last day in object
+    span <- dim(object)[[2]] - do + 1
   }
   
   ts <- get_timeseries(object, day.one, span = span, last.day = last.day, ...)

@@ -1,3 +1,59 @@
+climatrends (development version)
+=========================
+
+### CHANGES IN RESULTS
+
+* `rainfall()` computes SDII as the rain in wet days (>= 1 mm) divided by
+  the number of wet days, as in Aguilar et al. (2005). Earlier versions
+  divided the total rain, including days below 1 mm, by the number of wet
+  days, which overestimated SDII.
+* `temperature()` returns DTR (diurnal temperature range) as a decimal
+  number. Earlier versions truncated it to an integer when
+  `timeseries = FALSE`.
+* `crop_sensitive()` reports `hts_*`, `hse_*` and `lethal_*` as the
+  proportion of days with data. Earlier versions divided by all days,
+  including days with missing data. The documentation now says proportion
+  (0 to 1) instead of percentage.
+* `crop_sensitive()` assigns `cdi_mean` to the daily mean temperature and
+  `cdi_max` to the daily maximum temperature (#19, #20). The two were
+  swapped before.
+* The `array` methods of `GDD()`, `ETo()` and `late_frost()` include the
+  last day of the data when neither `span` nor `last.day` is given. Earlier
+  versions dropped it.
+
+### BUG FIXES
+
+* Data from NASA POWER are requested one parameter at a time and in
+  windows of at most 365 days, as the regional API requires. Methods that
+  fetch two parameters at once, such as `temperature()`, `GDD()`, `ETo()`,
+  `crop_sensitive()` and `late_frost()` for `sf` objects, failed before.
+  Values are matched to dates and grid cells by name, so a parameter whose
+  name is part of another (for example `T2M` and `T2M_MAX`) is no longer
+  mixed up. Missing values coded as -999 are returned as `NA`.
+* `rainfall()` for `sf` objects uses "PRECTOTCORR" by default. The previous
+  default, "PRECTOT", is no longer offered by NASA POWER.
+* Coordinates of `sf` objects are read with 'sf' by namespace, so 'sf' no
+  longer needs to be attached. Polygon centroids are computed on the
+  geometry only; other columns of the object were mixed into the
+  coordinates before.
+* `GDD()` with `equation = "c"` stops with a clear message when
+  `tbase_max` is missing. The documentation of equation "c" now says that
+  tmax is capped at `tbase_max`.
+* `rainfall()` and `temperature()` with `timeseries = TRUE` stop with a
+  clear message when `intervals` is missing or longer than the series.
+* `cumrain()` and `cumdrought()` return a vector of the same length as the
+  input when it has a single value.
+* `.st_span()` requests NASA POWER data up to the last day actually needed
+  when sites have different start dates and spans.
+
+### TESTS
+
+* Tests now run under `R CMD check` (they were excluded in
+  `.Rbuildignore`), with new known-answer tests that do not need the
+  internet.
+* Added an R CMD check workflow for Linux, macOS and Windows, and
+  `AGENTS.md`, a guide for AI agents working on the package.
+
 climatrends 1.1 (2025-11-19)
 =========================
 

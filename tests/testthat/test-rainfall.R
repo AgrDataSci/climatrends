@@ -7,10 +7,19 @@ load("../test_data.rda")
 test_that("rain local ok", {
   
   r <- rainfall(rain, day.one = "2013-10-27", span = 15)
-
-  istrue <- all(r == rain_local_ok)
   
-  expect_true(istrue)
+  # all indices except SDII match the stored values
+  keep <- names(r) != "SDII"
+  expect_true(all(as.data.frame(r)[keep] == as.data.frame(rain_local_ok)[keep],
+                  na.rm = TRUE))
+  
+  # SDII is the rain in wet days (>= 1 mm) divided by the number of wet days
+  idx <- match("2013-10-27", dimnames(rain)[[2]]) + 0:14
+  sdii <- apply(rain[, idx, drop = FALSE], 1, function(x) {
+    wet <- x[!is.na(x) & x >= 1]
+    if (length(wet) == 0) 0 else sum(wet) / length(wet)
+  })
+  expect_equal(as.vector(r$SDII), as.vector(sdii), tolerance = 1e-8)
 
 })
 
@@ -18,6 +27,7 @@ test_that("rain local ok", {
 test_that("nasapower and sf ok", {
   
   skip_on_cran()
+  skip_if_offline("power.larc.nasa.gov")
 
   ll <- data.frame(lon = lonlat[,1],
                    lat = lonlat[,2])
@@ -28,10 +38,21 @@ test_that("nasapower and sf ok", {
                 day.one = "2013-01-01",
                 last.day = "2013-01-10",
                 as.sf = FALSE)
-
-  istrue <- all(r == rain_nasapower_ok)
-
-  expect_true(istrue)
+  
+  # the stored values were computed with the old default "PRECTOT", so
+  # compare with the indices computed from the same PRECTOTCORR series
+  ts <- get_timeseries(ll, day.one = "2013-01-01", last.day = "2013-01-10",
+                       pars = "PRECTOTCORR")[[1]]
+  expected <- do.call("rbind", lapply(split(ts$value, ts$id), function(x) {
+    as.data.frame(rainfall(x))
+  }))
+  rownames(expected) <- NULL
+  r <- as.data.frame(r)
+  rownames(r) <- NULL
+  
+  expect_equal(nrow(r), nrow(ll))
+  expect_equal(lapply(as.list(r), as.vector), lapply(as.list(expected), as.vector))
+  expect_true(all(r$Rtotal >= 0))
   
 })
 

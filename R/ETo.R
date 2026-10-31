@@ -180,7 +180,8 @@ ETo.array = function(object, day.one, ..., Kc = 1, lat = NULL, p = 0.27){
   if (all(is.null(span), is.null(last.day))) {
     do = as.character(max(day.one))
     do = match(do, dimnames(object[,,1])[[2]])
-    span = dim(object)[[2]] - do
+    # all days from day.one to the last day in object
+    span = dim(object)[[2]] - do + 1
   }
   
   # get p if lat is provided

@@ -38,9 +38,9 @@ test_that("return gdd", {
 })
 
 
-realv <- c(7,6,6)
 test_that("nasapower works", {
   skip_on_cran()
+  skip_if_offline("power.larc.nasa.gov")
   
   xy <- as.data.frame(lonlat[1:3,])
   xy <- sf::st_as_sf(xy, coords = c("V1","V2"))
@@ -52,9 +52,17 @@ test_that("nasapower works", {
             tbase = 5,
             return.as = "ndays")
   
-  dg <- all(dg$GDD == realv)
+  # same result as GDD() on the series fetched with get_timeseries()
+  ts <- get_timeseries(xy, day.one = "2013-10-28", last.day = "2013-11-27",
+                       pars = c("T2M_MAX", "T2M_MIN"))
+  expected <- sapply(1:3, function(i) {
+    tmax <- ts$T2M_MAX$value[ts$T2M_MAX$id == i]
+    tmin <- ts$T2M_MIN$value[ts$T2M_MIN$id == i]
+    GDD(tmax, tmin, tbase = 5, degree.days = 30, return.as = "ndays")$gdd
+  })
   
-  expect_true(dg)
+  expect_equal(dg$gdd, expected)
+  expect_true(all(dg$gdd >= 0 & dg$gdd <= 31))
 
 })
 

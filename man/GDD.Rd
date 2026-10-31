@@ -95,7 +95,7 @@ Equations:
   adjust tmax = tbase if tmax < tbase
  
  \code{"c"}: adjust tmin = tbase if tmin < tbase, 
-  adjust tmax = tbase_max if tmax < tbase_max
+  adjust tmax = tbase_max if tmax > tbase_max
 }
 \examples{
 data("innlandet", package = "climatrends")

@@ -49,14 +49,14 @@ A dataframe with rainfall indices:
 \item{R95p}{total precipitation when rain > 95th percentile (mm)}
 \item{R99p}{total precipitation when rain > 99th percentile (mm)}
 \item{Rtotal}{total precipitation (mm) in wet days, rain >= 1 (mm)}
-\item{SDII}{simple daily intensity index, total precipitation divided by the
- number of wet days (mm/days)}
+\item{SDII}{simple daily intensity index, total precipitation in wet days
+ (rain >= 1 mm) divided by the number of wet days (mm/days)}
 }
 \description{
 Methods to compute rainfall indices over a time series
 }
 \details{
-#' Additional arguments:
+Additional arguments:
 
 \code{intervals}: an integer (no lower than 5), for the days intervals when
  \var{timeseries = TRUE}

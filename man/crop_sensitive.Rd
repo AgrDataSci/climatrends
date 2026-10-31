@@ -39,10 +39,12 @@ day to capture the climate data}
 A dataframe with crop sensitive indices with n colunms depending on the 
  number of thresholds passed to each index:
 \item{hts_mean}{high temperature stress using daily MEAN temperature, 
- and given as percentage number of days a certain threshold is exceeded}
+ and given as the proportion (0 to 1) of days with data in which a 
+ certain threshold is exceeded}
 \item{hts_max}{high temperature stress using daily MAX temperature,
- and given as percentage number of days a certain threshold is exceeded}
-\item{hse}{heat stress event, and given as percentage number of days a 
+ and given as the proportion (0 to 1) of days with data in which a 
+ certain threshold is exceeded}
+\item{hse}{heat stress event, and given as the proportion (0 to 1) of days
  a certain threshold is exceeded for at least two consecutive days}
 \item{hse_ms}{heat stress event, and given the maximum number of days 
  a certain threshold is exceeded for at least two consecutive days}
@@ -50,8 +52,8 @@ A dataframe with crop sensitive indices with n colunms depending on the
  and given as max(Tmean - threshold, 0)}
 \item{cdi_max}{crop duration index using daily MAX temperature, 
  and given as max(Tmax - threshold, 0)}
-\item{lethal}{lethal temperatures, defined as percentage of days during the 
- timeseries where daily MEAN temperature exceeds a given threshold}
+\item{lethal}{lethal temperatures, defined as the proportion (0 to 1) of 
+ days with data in which daily MEAN temperature exceeds a given threshold}
 }
 \description{
 Compute crop sensitive indices. These indices are designed to capture 

@@ -12,7 +12,7 @@
 #'  observation or \code{TRUE} for a time series based on \var{intervals}
 #' @param as.sf logical, to return an object of class 'sf'
 #' @details 
-#' #' Additional arguments:
+#' Additional arguments:
 #' 
 #' \code{intervals}: an integer (no lower than 5), for the days intervals when
 #'  \var{timeseries = TRUE}
@@ -56,8 +56,8 @@
 #' \item{R95p}{total precipitation when rain > 95th percentile (mm)}
 #' \item{R99p}{total precipitation when rain > 99th percentile (mm)}
 #' \item{Rtotal}{total precipitation (mm) in wet days, rain >= 1 (mm)}
-#' \item{SDII}{simple daily intensity index, total precipitation divided by the
-#'  number of wet days (mm/days)}
+#' \item{SDII}{simple daily intensity index, total precipitation in wet days
+#'  (rain >= 1 mm) divided by the number of wet days (mm/days)}
 #'  
 #' @references 
 #' Aguilar E., et al. (2005). Journal of Geophysical Research, 
@@ -191,7 +191,7 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
   day.one <- as.data.frame(day.one)[, 1]
   
   if (is.null(pars)) {
-    pars <- "PRECTOT"
+    pars <- "PRECTOTCORR"
   }
   
   rain <- get_timeseries(object, day.one, span, pars = pars, ...)[[1]]
@@ -254,11 +254,20 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
     # in that case, the last four observations are dropped to fit in a vector of
     # length == 49 (the maximum integer from dividing days/intervals)
     # organise bins, ids and dates
+    if (is.null(intervals)) {
+      stop("argument 'intervals' is required when timeseries = TRUE")
+    }
+    
     rain <- lapply(rain, function(x){
       
       r <- dim(x)[[1]]
       
       bins <- floor(r / intervals)
+      
+      if (bins < 1) {
+        stop("'intervals' (", intervals, " days) is longer than the time series (",
+             r, " days)")
+      }
       
       bins <- rep(1:bins, each = intervals, length.out = NA)
       
@@ -519,11 +528,12 @@ rainfall.sf <- function(object, day.one, span = NULL, ...,
     return(NA)
   }
   
-  # total precipitation
-  tp <- sum(x, na.rm = TRUE)
+  # total precipitation in wet days
+  wet <- x[!is.na(x) & x >= 1]
+  tp <- sum(wet)
   
   # number of wet days
-  wd <- length(x[x >= 1])
+  wd <- length(wet)
   
   #if both zero, then return 0
   if (wd == 0) {

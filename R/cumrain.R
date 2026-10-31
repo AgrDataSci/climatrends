@@ -29,7 +29,7 @@
 cumrain <- function(x){
   
   a <- ifelse(x >= 1, 1, 0)
-  for(i in 2:length(a))  a[i] <- ifelse(a[i] == 1, sum(a[i-1], a[i]), 0)
+  for(i in seq_along(a)[-1])  a[i] <- ifelse(a[i] == 1, sum(a[i-1], a[i]), 0)
   cummax(a)
   
 }
@@ -51,7 +51,7 @@ cumrain <- function(x){
 cumdrought <- function(x){
   
   a <- ifelse(x < 1, 1, 0)
-  for(i in 2:length(a))  a[i] <- ifelse(a[i] == 1, sum(a[i-1], a[i]), 0)
+  for(i in seq_along(a)[-1])  a[i] <- ifelse(a[i] == 1, sum(a[i-1], a[i]), 0)
   cummax(a)
   
 }

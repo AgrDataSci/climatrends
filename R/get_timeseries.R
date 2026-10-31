@@ -368,162 +368,132 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
 
 #' Get data from NASAPOWER using nasapower::get_power()
 #' 
-#' @param dates character with first and final date in the format YYYY-MM-DD
+#' Regional requests to NASA POWER accept one parameter at a time and a
+#' limited time window, so the data are requested by region, by parameter
+#' and in chunks of at most 365 days, then put back in the order of
+#' \code{lonlat}
+#' 
+#' @param dates first and final date, Date or character YYYY-MM-DD
 #' @param lonlat data.frame with longitude and latitude, in that order
 #' @param pars character vector of solar, meteorological or climatology parameters 
 #' to download. See help("parameters", "nasapower") for details.
+#' @return a list with one data.frame per parameter, with one row per point
+#'  in \code{lonlat} and one column per day, named YYYY-MM-DD
 #' @examples 
-#'  
-#' library("nasapower")
-#' lonlat <- data.frame(lon = c(-66.48),# -83.08, -66.45, -66.4),
-#'                      lat = c(-4.60))#, 9.85, -5.19, -0.15))
+#' lonlat = data.frame(lon = c(-66.48), lat = c(-4.60))
 #' 
 #' .nasapower(dates = c("2010-01-01", "2010-01-30"),
 #'            lonlat = lonlat,
 #'            pars = c("T2M_MAX","T2M_MIN"))
-#' 
-#' 
-#'                      
 #' @importFrom nasapower get_power
 #' @noRd
-.nasapower <- function(dates, 
-                       lonlat, 
-                       pars, 
-                       community = NULL, 
-                       temporal_average = NULL){
+.nasapower = function(dates, 
+                      lonlat, 
+                      pars, 
+                      community = NULL, 
+                      temporal_average = NULL){
   
   message("Getting climate data from NASA POWER \n")
   
   if (is.null(community)) {
-    community <- "ag"
+    community = "ag"
   }
   
   if (is.null(temporal_average)) {
-    temporal_average <- "daily"
+    temporal_average = "daily"
   }
   
-  nr <- dim(lonlat)[[1]]
+  if (is.null(pars) || length(pars) == 0) {
+    stop("argument 'pars' is required to fetch data from NASA POWER")
+  }
   
-  # check if data from multiple regions is required
+  lonlat = as.data.frame(lonlat)
+  
+  nr = dim(lonlat)[[1]]
+  
+  # group points in regions of about 3 arc-degrees
   if (isTRUE(nr > 1)) {
-    h <- stats::dist(lonlat)
-    
-    h <- stats::hclust(h)
-    
-    regions <- stats::cutree(h, h = 3)
-    
-    nregions <- max(regions)
+    h = stats::dist(lonlat)
+    h = stats::hclust(h)
+    regions = stats::cutree(h, h = 3)
+  } else {
+    regions = 1L
   }
   
-  if (isTRUE(nr == 1)) {
-    regions <- nr
-    nregions <- nr
-  }
+  nregions = max(regions)
   
   if (isTRUE(nregions > 1)) {
     message("Fetching data for ", nregions, " regions with 5 x 5 arc-degree \n")
   }
   
-  sp <- as.Date(dates, format = "%Y-%m-%d")
-  sp <- length(sp[1]:sp[2])
-  npars <- length(pars)
+  dates = as.Date(dates)
+  alldays = seq(dates[1], dates[2], by = "day")
+  daynames = as.character(alldays)
+  nd = length(alldays)
   
-  dat <- matrix(NA,
-                nrow = nr,
-                ncol = (sp * npars),
-                dimnames = list(1:nr))
+  # chunks of at most 365 days
+  chunk_start = seq(dates[1], dates[2], by = 365)
+  chunk_end = pmin(chunk_start + 364, dates[2])
   
+  result = lapply(pars, function(p) {
+    matrix(NA_real_, nrow = nr, ncol = nd, dimnames = list(seq_len(nr), daynames))
+  })
+  names(result) = pars
   
   for (i in seq_len(nregions)) {
     
-    r_i <- which(regions == i)
-    lonlat_i <- lonlat[r_i, ]
+    r_i = which(regions == i)
+    lonlat_i = lonlat[r_i, , drop = FALSE]
     
-    #define geographic boundaries for lonlat
-    lims <- with(lonlat, c(floor(min(lonlat_i[, 1])),
-                           floor(min(lonlat_i[, 2])),
-                           ceiling(max(lonlat_i[, 1]) + 2),
-                           ceiling(max(lonlat_i[, 2])) + 2))
+    # geographic boundaries for the region
+    lims = c(floor(min(lonlat_i[, 1])),
+             floor(min(lonlat_i[, 2])),
+             ceiling(max(lonlat_i[, 1])) + 2,
+             ceiling(max(lonlat_i[, 2])) + 2)
     
-    args <- list(community = community,
-                 lonlat = lims,
-                 pars = pars,
-                 dates = dates,
-                 temporal_api = temporal_average)
-    
-    # get NASA POWER
-    info <- do.call("get_power", args)
-    
-    info <- as.data.frame(info)
-    
-    # split by YYYYMMDD to create a list of data frames
-    info <- split(info, info$YYYYMMDD)
-    
-    # keep only coordinates and the variable fetched
-    info <- lapply(info, function(x) {
-      x[(!names(x) %in% c("YEAR", "MM", "DD", "DOY"))]
-    })
-    
-    # put this information in its right lonlat as provided in the input
-    xy2 <- info[[1]][,c("LON","LAT")]
-    
-    n <- dim(lonlat_i)[[1]]
-    
-    # split lonlat into a list by its rows
-    xy1 <- split(lonlat_i, seq_len(n))
-    
-    # get the index for lonlat in info
-    nn <- lapply(xy1, function(n) {
-      n <- as.vector(t(n))
-      .nearest(xy1 = n, xy2 = xy2)
-    })
-    
-    # unlist to get the vector
-    nn <- unlist(nn)
-    
-    # force the vector to be in the right order, from 1 to n 
-    nn <- nn[ sort(as.numeric(names(nn))) ]
-    
-    # retrieve the data from info using nn
-    d <- lapply(info, function(n) {
-      n <- n[nn, pars]
-      n
-    })
-    
-    namedays <- names(d)
-    
-    # combine vectors in this list
-    d <- do.call("cbind", d)
-    d <- as.matrix(d)
-    
-    namesdat <- dimnames(d)[[2]]
-    
-    dat[r_i, ] <- d
-    
-  }
-  
-  dimnames(dat)[[2]] <- namesdat
-  
-  dat <- as.data.frame(dat)
-  
-  result <- list()
-  if (length(pars) > 1) {
-    for(i in seq_along(pars)){
-      index <- grepl(pars[[i]], names(dat))
-      rs <- dat[, index]
-      rs <- as.data.frame(rs)
-      names(rs) <- namedays
-      result[[i]] <- rs
+    for (p in pars) {
+      
+      info = lapply(seq_along(chunk_start), function(k) {
+        args = list(community = community,
+                    lonlat = lims,
+                    pars = p,
+                    dates = as.character(c(chunk_start[k], chunk_end[k])),
+                    temporal_api = temporal_average)
+        as.data.frame(do.call(nasapower::get_power, args))
+      })
+      
+      info = do.call("rbind", info)
+      
+      if (is.null(info[[p]])) {
+        stop("NASA POWER did not return the parameter '", p, "'")
+      }
+      
+      day = info$YYYYMMDD
+      if (!.is_Date(day)) {
+        day = as.Date(as.character(day), format = "%Y%m%d")
+      }
+      
+      value = as.numeric(info[[p]])
+      # NASA POWER uses -999 for missing values
+      value[value <= -999] = NA
+      
+      # grid cells returned and the nearest cell for each point
+      cell = paste(info$LON, info$LAT)
+      cells = unique(info[, c("LON", "LAT")])
+      cellkey = paste(cells$LON, cells$LAT)
+      
+      nn = apply(lonlat_i, 1, function(xy) .nearest(xy1 = as.numeric(xy), xy2 = cells))
+      
+      m = matrix(NA_real_, nrow = nrow(cells), ncol = nd)
+      m[cbind(match(cell, cellkey), match(as.character(day), daynames))] = value
+      
+      result[[p]][r_i, ] = m[nn, , drop = FALSE]
+      
     }
+    
   }
   
-  if (length(pars) == 1) {
-    dat <- as.data.frame(dat)
-    names(dat) <- namedays
-    result[[1]] <- dat
-  }
-  
-  names(result) <- pars
+  result = lapply(result, as.data.frame)
   
   return(result)
   

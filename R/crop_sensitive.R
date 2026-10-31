@@ -33,10 +33,12 @@
 #' @return A dataframe with crop sensitive indices with n colunms depending on the 
 #'  number of thresholds passed to each index:
 #' \item{hts_mean}{high temperature stress using daily MEAN temperature, 
-#'  and given as percentage number of days a certain threshold is exceeded}
+#'  and given as the proportion (0 to 1) of days with data in which a 
+#'  certain threshold is exceeded}
 #' \item{hts_max}{high temperature stress using daily MAX temperature,
-#'  and given as percentage number of days a certain threshold is exceeded}
-#' \item{hse}{heat stress event, and given as percentage number of days a 
+#'  and given as the proportion (0 to 1) of days with data in which a 
+#'  certain threshold is exceeded}
+#' \item{hse}{heat stress event, and given as the proportion (0 to 1) of days
 #'  a certain threshold is exceeded for at least two consecutive days}
 #' \item{hse_ms}{heat stress event, and given the maximum number of days 
 #'  a certain threshold is exceeded for at least two consecutive days}
@@ -44,8 +46,8 @@
 #'  and given as max(Tmean - threshold, 0)}
 #' \item{cdi_max}{crop duration index using daily MAX temperature, 
 #'  and given as max(Tmax - threshold, 0)}
-#' \item{lethal}{lethal temperatures, defined as percentage of days during the 
-#'  timeseries where daily MEAN temperature exceeds a given threshold}
+#' \item{lethal}{lethal temperatures, defined as the proportion (0 to 1) of 
+#'  days with data in which daily MEAN temperature exceeds a given threshold}
 #' @references
 #' Challinor et al. (2016). Nature Climate Change 6(10):6954-958
 #' \doi{https://doi.org/10.1038/nclimate3061}
@@ -366,8 +368,12 @@ crop_sensitive.sf <- function(object, day.one, ..., as.sf = TRUE){
     x <- (x + y) / 2
   }
   
-  # length of x
-  l <- length(x)
+  # number of days with data
+  l <- sum(!is.na(x))
+  
+  if (l == 0) {
+    return(NA)
+  }
   
   # number of values above the threshold
   i <- sum(x > threshold, na.rm = TRUE)
