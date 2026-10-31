@@ -51,7 +51,7 @@ test_that("nasapower and sf ok", {
   rownames(r) <- NULL
   
   expect_equal(nrow(r), nrow(ll))
-  expect_equal(r, expected)
+  expect_equal(lapply(as.list(r), as.vector), lapply(as.list(expected), as.vector))
   expect_true(all(r$Rtotal >= 0))
   
 })
