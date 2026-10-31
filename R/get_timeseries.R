@@ -19,8 +19,8 @@
 #' @param as.matrix logical, optional, to return a matrix or array instead of a data.frame 
 #' @param ... additional arguments passed to methods. See details.
 #' @details 
-#' The \code{default} method and the \code{sf} method assumes that the climate 
-#'  data will be fetched from an remote (cloud) \var{data.from}.
+#' The \code{default} method and the \code{sf} method assume that the climate 
+#'  data will be fetched from a remote (cloud) \var{data.from}.
 #'
 #' The \code{matrix} method assumes that the climate data was previously handled 
 #'  and will be inputted in the format of a named matrix. 
@@ -211,7 +211,7 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
   }
   
   if (all(!is.null(span), !is.null(last.day))) {
-    stop("No visible bound for confliting arguments,", 
+    stop("No visible bound for conflicting arguments,", 
          " please provide either 'span' or 'last.day'\n")
   }
   

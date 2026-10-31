@@ -36,7 +36,7 @@ day to capture the climate data}
 \item{as.sf}{logical, to return an object of class 'sf'}
 }
 \value{
-A dataframe with crop sensitive indices with n colunms depending on the 
+A dataframe with crop sensitive indices with n columns depending on the 
  number of thresholds passed to each index:
 \item{hts_mean}{high temperature stress using daily MEAN temperature, 
  and given as the proportion (0 to 1) of days with data in which a 

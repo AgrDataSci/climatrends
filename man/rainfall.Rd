@@ -40,7 +40,7 @@ given) for the length of the time series to be captured}
 }
 \value{
 A dataframe with rainfall indices:
-\item{MLDS}{maximum length of consecutive dry day, rain < 1 mm (days)}
+\item{MLDS}{maximum length of consecutive dry days, rain < 1 mm (days)}
 \item{MLWS}{maximum length of consecutive wet days, rain >= 1 mm (days)}
 \item{R10mm}{number of heavy precipitation days 10 >= rain < 20 mm (days)}
 \item{R20mm}{number of very heavy precipitation days rain >= 20 (days)}
@@ -80,11 +80,11 @@ Additional arguments:
 # S3 Methods 
 
 The \code{matrix} method assumes that \var{object} contains climate data available in
- your R section; see help("rain_dat", package = "climatrends") for an example on input 
+ your R session; see help("rain_dat", package = "climatrends") for an example on input 
  structure.
 
-The \code{data.frame} and the \code{sf} methods assumes that the climate data
- will e fetched from a remote (cloud) source that be adjusted using the argument 
+The \code{data.frame} and the \code{sf} methods assume that the climate data
+ will be fetched from a remote (cloud) source that can be set using the argument 
  \var{data.from}.
 
 When \var{timeseries} = \code{TRUE}, an id is created, 

@@ -23,7 +23,7 @@
 #'  the municipality of Sinop, Brazil 
 #'  
 #' \code{temp_dat} and \code{rain_dat}, rows represents the coordinates for the 
-#'  given lonlat provided in \code{raster::extract()} and colunms represents the dates 
+#'  given lonlat provided in \code{raster::extract()} and columns represents the dates 
 #'  from the observed precipitation/temperature.
 #' 
 #' @name clima_data

@@ -1,6 +1,6 @@
 #' Growing degree-days
 #' 
-#' This a heuristic tool in phenology that measures heat accumulation and 
+#' This is a heuristic tool in phenology that measures heat accumulation and 
 #' is used to predict plant and animal development rates. Growing degree-days
 #' are calculated by taking the integral of warmth above a base temperature.
 #' 
@@ -41,12 +41,12 @@
 #' S3 Methods:
 #' 
 #' The \code{array} method assumes that \var{object} contains climate data available 
-#'  in your R section; this requires an array with two dimensions, 1st dimension 
+#'  in your R session; this requires an array with two dimensions, 1st dimension 
 #'  contains the day temperature and 2nd dimension the night temperature, 
 #'  see help("temp_dat", package = "climatrends") for an example on input structure.
 #' 
-#' The \code{data.frame} and \code{sf} methods assumes that the climate data
-#'  will e fetched from a remote (cloud) source that be adjusted using the argument 
+#' The \code{data.frame} and \code{sf} methods assume that the climate data
+#'  will be fetched from a remote (cloud) source that can be set using the argument 
 #'  \var{data.from}
 #'
 #'  

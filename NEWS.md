@@ -1,5 +1,9 @@
-climatrends (development version)
+climatrends 1.3.0 (2026-10-31)
 =========================
+
+This release fixes the NASA POWER requests for `sf` objects and several
+indices. Some results change. Check the items under CHANGES IN RESULTS
+before comparing with analyses run on earlier versions.
 
 ### CHANGES IN RESULTS
 
@@ -45,6 +49,14 @@ climatrends (development version)
   input when it has a single value.
 * `.st_span()` requests NASA POWER data up to the last day actually needed
   when sites have different start dates and spans.
+
+### DOCUMENTATION
+
+* Corrected typos in the help pages and vignettes, the description of
+  tropical nights (minimum temperature), of equation "c" in `GDD()`, of the
+  `hse` and `hse_ms` indices, and of the `*.threshold` arguments. The
+  Overview vignette passes `tbase` to `late_frost()` (it passed `base`,
+  which was ignored). The README example uses the right `dates` column.
 
 ### TESTS
 
