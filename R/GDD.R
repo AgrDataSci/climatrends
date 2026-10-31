@@ -60,7 +60,7 @@
 #'   adjust tmax = tbase if tmax < tbase
 #'  
 #'  \code{"c"}: adjust tmin = tbase if tmin < tbase, 
-#'   adjust tmax = tbase_max if tmax < tbase_max
+#'   adjust tmax = tbase_max if tmax > tbase_max
 #' 
 #' @references 
 #' Prentice I. C., et al. (1992) Journal of Biogeography, 19(2), 117.
@@ -233,7 +233,8 @@ GDD.array <- function(object, day.one, ..., tbase = 10){
   if (all(is.null(span), is.null(last.day))) {
     do <- as.character(max(day.one))
     do <- match(do, dimnames(object[,,1])[[2]])
-    span <- dim(object)[[2]] - do
+    # all days from day.one to the last day in object
+    span <- dim(object)[[2]] - do + 1
   }
   
   ts <- get_timeseries(object, day.one, span = span, last.day = last.day)
@@ -403,6 +404,9 @@ gdd <- function(tmax, tmin, tbase, tbase_max = 45,
   }
   
   if (isTRUE(equation == "c")) {
+    if (is.null(tbase_max)) {
+      stop("argument 'tbase_max' is required when equation = 'c'")
+    }
     tmax[tmax > tbase_max] <- tbase_max
     tmin[tmin < tbase] <- tbase
     g <- ((tmax + tmin) / 2) - tbase

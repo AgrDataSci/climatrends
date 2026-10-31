@@ -9,9 +9,16 @@ test_that("local ok", {
   
   x <- temperature(temp, day.one = "2013-10-27", span = 15)
   
-  istrue <- all(x == temp_local_ok)
+  # all indices except DTR match the stored values
+  keep <- names(x) != "DTR"
+  expect_true(all(as.data.frame(x)[keep] == as.data.frame(temp_local_ok)[keep], 
+                  na.rm = TRUE))
   
-  expect_true(istrue)
+  # DTR is the mean of tmax - tmin, not truncated to an integer
+  idx <- match("2013-10-27", dimnames(temp)[[2]]) + 0:14
+  dtr <- rowMeans(temp[, idx, 1] - temp[, idx, 2], na.rm = TRUE)
+  expect_equal(as.vector(x$DTR), as.vector(dtr), tolerance = 1e-8)
+  expect_type(x$DTR, "double")
 
 })
 

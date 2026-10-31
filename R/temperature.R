@@ -289,11 +289,20 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
     # in that case, the last four observations are dropped to fit in a vector of
     # length == 49 (the maximum integer from dividing days/intervals)
     # organise bins, ids and dates
+    if (is.null(intervals)) {
+      stop("argument 'intervals' is required when timeseries = TRUE")
+    }
+    
     temp <- lapply(temp, function(x){
       
       r <- dim(x)[[1]]
       
       bins <- floor(r / intervals)
+      
+      if (bins < 1) {
+        stop("'intervals' (", intervals, " days) is longer than the time series (",
+             r, " days)")
+      }
       
       bins <- rep(1:bins, each = intervals, length.out = NA)
       
@@ -389,7 +398,8 @@ temperature.sf <- function(object, day.one, span = NULL, ...,
     
     ind <- as.data.frame(ind, stringsAsFactors = FALSE)
     
-    integ <- c("DTR","SU","TR","CFD","WSDI","CSDI")
+    # DTR is a mean temperature difference and stays numeric
+    integ <- c("SU","TR","CFD","WSDI","CSDI")
     
     ind[integ] <- lapply(ind[integ] , as.integer)
     

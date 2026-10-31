@@ -9,7 +9,6 @@
 ^CODE_OF_CONDUCT\.md$
 ^README\.md$
 ^CONTRIBUTING\.md$
-^tests$
 ^logo\.svg$
 ^dev$
 ^codemeta\.json$
@@ -19,3 +18,5 @@
 ^inst/paper$
 ^LICENSE\.md$
 ^data-raw$
+^\.github$
+^AGENTS\.md$

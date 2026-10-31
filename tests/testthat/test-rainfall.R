@@ -7,10 +7,19 @@ load("../test_data.rda")
 test_that("rain local ok", {
   
   r <- rainfall(rain, day.one = "2013-10-27", span = 15)
-
-  istrue <- all(r == rain_local_ok)
   
-  expect_true(istrue)
+  # all indices except SDII match the stored values
+  keep <- names(r) != "SDII"
+  expect_true(all(as.data.frame(r)[keep] == as.data.frame(rain_local_ok)[keep],
+                  na.rm = TRUE))
+  
+  # SDII is the rain in wet days (>= 1 mm) divided by the number of wet days
+  idx <- match("2013-10-27", dimnames(rain)[[2]]) + 0:14
+  sdii <- apply(rain[, idx, drop = FALSE], 1, function(x) {
+    wet <- x[!is.na(x) & x >= 1]
+    if (length(wet) == 0) 0 else sum(wet) / length(wet)
+  })
+  expect_equal(as.vector(r$SDII), as.vector(sdii), tolerance = 1e-8)
 
 })
 
@@ -29,7 +38,8 @@ test_that("nasapower and sf ok", {
                 last.day = "2013-01-10",
                 as.sf = FALSE)
 
-  istrue <- all(r == rain_nasapower_ok)
+  keep <- names(r) != "SDII"
+  istrue <- all(as.data.frame(r)[keep] == as.data.frame(rain_nasapower_ok)[keep])
 
   expect_true(istrue)
   
