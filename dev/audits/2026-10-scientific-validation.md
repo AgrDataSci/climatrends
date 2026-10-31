@@ -50,3 +50,11 @@ The closed issues include:
 6. Keep this audit PR draft. Only mark it ready once tests and review are complete.
 
 All newly written R examples should use `=` for assignment.
+
+## Implemented in this audit branch (2026-10-31)
+
+- Fixed `.st_span()` remote request upper bound from `max(b) + max(span - 1)` to `max(e)`, where `e` is the vector of actual end dates. This removes unnecessary date requests for heterogeneous windows without changing the requested per-site observations.
+- Added `tests/testthat/test-timeseries-boundaries.R` for staggered and days-before windows.
+- Added `dev/audits/2026-10-cdi-known-answer.R`, a standalone expected-failure test for the already reported #19 CDI inversion. It is **not** in the automatic test suite until #20 is integrated.
+
+**Execution status:** R tests have not been executed here. This PR remains draft. The CDI bug is deliberately not patched in this branch because PR #20 already contains that change.
