@@ -269,7 +269,7 @@ get_timeseries.array <- function(object, day.one, span = NULL, last.day = NULL,
   maxspan <- max(span)
   
   # the maximum end date
-  maxend <- max(b) + max(span - 1)
+  maxend <- max(e)
   
   # the first and last date to fetch
   dates <- c(min(b), maxend)
