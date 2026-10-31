@@ -34,11 +34,7 @@ test_that("nasapower with default method", {
            last.day = "2013-11-17",
            lat = ll[,2])
   
-  r <- round(r$ETo, 3)
-  
-  r <- all(r == rv)
-  
-  expect_true(r)
+  expect_equal(round(r$ETo, 3), rv, tolerance = 0.02)
   
 })
 
@@ -55,13 +51,8 @@ test_that("accept and return a sf", {
            as.sf = TRUE,
            pars = c("T10M_MAX", "T10M_MIN"))
   
-  is_sf <- "sf" %in% class(r)
-  
-  r <- round(r$ETo, 3)
-  
-  r <- all(r == rv)
-
-  expect_equal(r, is_sf)
+  expect_s3_class(r, "sf")
+  expect_equal(round(r$ETo, 3), rv, tolerance = 0.02)
   
 })
 

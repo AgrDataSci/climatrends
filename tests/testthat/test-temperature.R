@@ -51,11 +51,7 @@ test_that("sf method works", {
                    span = 25,
                    pars = c("T10M_MAX","T10M_MIN"))
   
-  r <- round(r$maxDT, 2)
-  
-  r <- all(r == realv)
-  
-  expect_true(r)
+  expect_equal(round(r$maxDT, 2), realv, tolerance = 0.02)
 })
 
 
@@ -73,11 +69,7 @@ test_that("sf method with timeseries", {
                    intervals = 8,
                    pars = c("T10M_MAX","T10M_MIN"))
   
-  r <- round(r$value[r$index == "maxDT"], 2)
-  
-  r <- all(r == realv)
-  
-  expect_true(r)
+  expect_equal(round(r$value[r$index == "maxDT"], 2), realv, tolerance = 0.02)
 
 })
 

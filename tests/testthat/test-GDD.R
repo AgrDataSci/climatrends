@@ -52,9 +52,7 @@ test_that("nasapower works", {
             tbase = 5,
             return.as = "ndays")
   
-  dg <- all(dg$GDD == realv)
-  
-  expect_true(dg)
+  expect_equal(dg$gdd, realv)
 
 })
 
