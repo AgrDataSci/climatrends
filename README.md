@@ -2,12 +2,15 @@
 # climatrends
 
 <!-- badges: start -->
-[![JOSS status](https://joss.theoj.org/papers/03d54683d5c1d7759519070442ef4500/status.svg)](https://joss.theoj.org/papers/03d54683d5c1d7759519070442ef4500)
-[![CRAN status](https://www.r-pkg.org/badges/version/climatrends)](https://cran.r-project.org/package=climatrends)
-[![cran checks](https://badges.cranchecks.info/worst/climatrends.svg)](https://cran.r-project.org/web/checks/check_results_climatrends.html)
+[![JOSS](https://joss.theoj.org/papers/03d54683d5c1d7759519070442ef4500/status.svg)](https://joss.theoj.org/papers/03d54683d5c1d7759519070442ef4500)
+[![CRAN](https://www.r-pkg.org/badges/version/climatrends)](https://cran.r-project.org/package=climatrends)
+[![CRAN checks](https://badges.cranchecks.info/worst/climatrends.svg)](https://cran.r-project.org/web/checks/check_results_climatrends.html)
 [![Downloads](https://cranlogs.r-pkg.org/badges/climatrends)](https://cran.r-project.org/package=climatrends)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![DOI](https://zenodo.org/badge/239103060.svg)](https://zenodo.org/badge/latestdoi/239103060)
+[![R-CMD-check](https://github.com/AgrDataSci/climatrends/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/AgrDataSci/climatrends/actions/workflows/R-CMD-check.yaml)
+[![ProjStatus](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Lifecycle](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/AgrDataSci/climatrends/blob/master/LICENSE)
 <!-- badges: end -->
 
 # *climatrends*: Climate Variability Indices for Ecological Modelling <img align="right" src="man/figures/logo.png">
